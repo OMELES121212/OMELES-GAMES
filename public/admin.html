@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>OMELES GAMES - ADMIN</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background:
+            radial-gradient(circle at top, #15152b 0%, #050509 55%);
+        color: white;
+        font-family: Arial, Helvetica, sans-serif;
+        min-height: 100vh;
+    }
+
+    .container {
+        width: 95%;
+        max-width: 1400px;
+        margin: auto;
+        padding: 30px 0 60px;
+    }
+
+    .logo {
+        text-align: center;
+        font-size: 38px;
+        font-weight: 900;
+        letter-spacing: 3px;
+        margin-bottom: 5px;
+
+        background: linear-gradient(
+            90deg,
+            #00b7ff,
+            #7b2cff,
+            #00b7ff
+        );
+
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #777;
+        margin-bottom: 30px;
+    }
+
+    .panel {
+        background: rgba(15, 15, 25, 0.95);
+        border: 1px solid #25253a;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 0 30px rgba(0,0,0,.4);
+    }
+
+    h2 {
+        margin-top: 0;
+        color: #9d7cff;
+    }
+
+    h3 {
+        color: #00b7ff;
+    }
+
+    input,
+    textarea {
+        width: 100%;
+        padding: 14px;
+        border-radius: 10px;
+        border: 1px solid #30304a;
+        background: #08080e;
+        color: white;
+        outline: none;
+        font-size: 15px;
+        margin-bottom: 15px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus {
+        border-color: #7b2cff;
+        box-shadow: 0 0 10px rgba(123,44,255,.25);
+    }
+
+    button {
+        border: 0;
+        border-radius: 10px;
+        padding: 13px 18px;
+        color: white;
+        background: linear-gradient(
+            135deg,
+            #0077ff,
+            #7b2cff
+        );
+        cursor: pointer;
+        font-weight: bold;
+        transition: .2s;
+        margin: 5px;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.15);
+    }
+
+    .danger {
+        background: linear-gradient(
+            135deg,
+            #ff1744,
+            #a00025
+        );
+    }
+
+    .edit {
+        background: linear-gradient(
+            135deg,
+            #00a8ff,
+            #0066ff
+        );
+    }
+
+    .copy {
+        background: #171729;
+        border: 1px solid #343451;
+    }
+
+    .secondary {
+        background: #171729;
+        border: 1px solid #343451;
+    }
+
+    .key-result {
+        display: none;
+        background: #08080e;
+        border: 1px solid #7b2cff;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .generated-key {
+        font-size: 23px;
+        font-weight: bold;
+        color: #00c8ff;
+        word-break: break-all;
+        margin: 15px 0;
+    }
+
+    .buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .search {
+        margin-bottom: 15px;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1100px;
+    }
+
+    th,
+    td {
+        padding: 13px;
+        border-bottom: 1px solid #25253a;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    th {
+        color: #9d7cff;
+        background: #0b0b13;
+    }
+
+    tr:hover td {
+        background: rgba(123,44,255,.04);
+    }
+
+    .active {
+        color: #00ff9d;
+        font-weight: bold;
+    }
+
+    .inactive {
+        color: #ff4567;
+        font-weight: bold;
+    }
+
+    .one-use {
+        color: #ffd166;
+        font-weight: bold;
+    }
+
+    .message {
+        margin-top: 15px;
+        padding: 12px;
+        border-radius: 10px;
+        display: none;
+    }
+
+    .success {
+        background: rgba(0,255,157,.08);
+        border: 1px solid rgba(0,255,157,.25);
+        color: #00ff9d;
+    }
+
+    .error {
+        background: rgba(255,50,80,.08);
+        border: 1px solid rgba(255,50,80,.25);
+        color: #ff5672;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    .login-box {
+        max-width: 500px;
+        margin: 80px auto;
+    }
+
+    .center {
+        text-align: center;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .form-grid .full {
+        grid-column: 1 / -1;
+    }
+
+    .game-card {
+        background: #08080e;
+        border: 1px solid #25253a;
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 15px;
+    }
+
+    .game-card h3 {
+        margin-top: 0;
+        margin-bottom: 8px;
+    }
+
+    .game-info {
+        color: #888;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .game-status {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 8px;
+        background: rgba(0,255,157,.08);
+        color: #00ff9d;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .game-status.off {
+        background: rgba(255,50,80,.08);
+        color: #ff5672;
+    }
+
+    .nickname {
+        color: #00c8ff;
+        font-weight: bold;
+    }
+
+    .key-text {
+        font-size: 13px;
+        word-break: break-all;
+    }
+
+    .empty {
+        text-align: center;
+        color: #666;
+        padding: 30px;
+    }
+
+    @media (max-width: 800px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-grid .full {
+            grid-column: auto;
+        }
+
+        .logo {
+            font-size: 28px;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+<div class="container">
+
+```
+<div class="logo">
+    OMELES GAMES
+</div>
+
+<div class="subtitle">
+    PANEL DE ADMINISTRACIÓN
+</div>
+
+<!-- LOGIN -->
+
+<div id="adminLogin" class="panel login-box">
+
+    <h2>🔐 Acceso administrador</h2>
+
+    <input
+        id="adminKey"
+        type="password"
+        placeholder="Introduce la Admin Key"
+    >
+
+    <button
+        onclick="entrarAdmin()"
+        style="width:100%;"
+    >
+        ENTRAR AL PANEL
+    </button>
+
+    <div id="loginMessage" class="message"></div>
+
+</div>
+
+<!-- PANEL ADMIN -->
+
+<div id="adminPanel" class="hidden">
+
+    <!-- =========================
+         GENERADOR DE KEYS
+    ========================== -->
+
+    <div class="panel">
+
+        <h2>🔑 Generador de Keys</h2>
+
+        <p style="color:#777;">
+            Selecciona la duración de la key:
+        </p>
+
+        <div class="buttons">
+
+            <button onclick="crearKey('24H')">
+                24 HORAS
+            </button>
+
+            <button onclick="crearKey('7D')">
+                7 DÍAS
+            </button>
+
+            <button onclick="crearKey('30D')">
+                30 DÍAS
+            </button>
+
+            <button onclick="crearKey('LIFETIME')">
+                LIFETIME
+            </button>
+
+            <button onclick="crearKey('ONE_USE')">
+                1 SOLO USO
+            </button>
+
+        </div>
+
+        <div id="keyResult" class="key-result">
+
+            <div style="color:#777;">
+                KEY GENERADA
+            </div>
+
+            <div
+                id="generatedKey"
+                class="generated-key">
+            </div>
+
+            <button
+                class="copy"
+                onclick="copiarKey()">
+                📋 COPIAR KEY
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- =========================
+         KEYS
+    ========================== -->
+
+    <div class="panel">
+
+        <h2>📋 Keys creadas</h2>
+
+        <input
+            id="search"
+            class="search"
+            placeholder="Buscar key, mote, tipo, IP..."
+            oninput="filtrarKeys()"
+        >
+
+        <button onclick="cargarKeys()">
+            🔄 ACTUALIZAR
+        </button>
+
+        <div id="keysMessage" class="message"></div>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>MOTE</th>
+                        <th>KEY</th>
+                        <th>TIPO</th>
+                        <th>ESTADO</th>
+                        <th>CREADA</th>
+                        <th>EXPIRA</th>
+                        <th>ÚLTIMA IP</th>
+                        <th>ÚLTIMO USO</th>
+                        <th>USOS</th>
+                        <th>ACCIÓN</th>
+                    </tr>
+                </thead>
+
+                <tbody id="keysTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- =========================
+         CREAR JUEGO
+    ========================== -->
+
+    <div class="panel">
+
+        <h2>🎮 Añadir juego</h2>
+
+        <p style="color:#777;">
+            Añade un nuevo juego al catálogo de OMELES GAMES.
+        </p>
+
+        <div class="form-grid">
+
+            <div class="full">
+                <input
+                    id="gameName"
+                    placeholder="Nombre del juego"
+                >
+            </div>
+
+            <div>
+                <input
+                    id="gameDownload"
+                    placeholder="Link de descarga"
+                >
+            </div>
+
+            <div>
+                <input
+                    id="gameRepair"
+                    placeholder="Link de reparación"
+                >
+            </div>
+
+            <div class="full">
+                <input
+                    id="gamePassword"
+                    placeholder="Password del juego"
+                >
+            </div>
+
+        </div>
+
+        <button onclick="crearJuego()">
+            ➕ AÑADIR JUEGO
+        </button>
+
+        <div id="gameMessage" class="message"></div>
+
+    </div>
+
+    <!-- =========================
+         GESTOR DE JUEGOS
+    ========================== -->
+
+    <div class="panel">
+
+        <h2>🛠️ Editor de juegos</h2>
+
+        <input
+            id="gameSearch"
+            class="search"
+            placeholder="Buscar juego..."
+            oninput="filtrarJuegos()"
+        >
+
+        <button onclick="cargarJuegos()">
+            🔄 ACTUALIZAR JUEGOS
+        </button>
+
+        <div id="gamesList"></div>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+<script>
+
+let adminKeyValue = "";
+let todasLasKeys = [];
+let todosLosJuegos = [];
+
+// ======================================================
+// LOGIN ADMIN
+// ======================================================
+
+async function entrarAdmin() {
+
+    const key =
+        document
+            .getElementById("adminKey")
+            .value
+            .trim();
+
+    const message =
+        document.getElementById("loginMessage");
+
+    if (!key) {
+
+        mostrarMensaje(
+            message,
+            "Introduce la Admin Key.",
+            false
+        );
+
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "/api/admin/keys",
+            {
+                method: "GET",
+                headers: {
+                    "x-admin-key": key
+                }
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+
+            mostrarMensaje(
+                message,
+                data.message || "Admin Key incorrecta.",
+                false
+            );
+
+            return;
+        }
+
+        adminKeyValue = key;
+
+        document
+            .getElementById("adminLogin")
+            .classList.add("hidden");
+
+        document
+            .getElementById("adminPanel")
+            .classList.remove("hidden");
+
+        todasLasKeys = data.keys || [];
+
+        mostrarKeys(todasLasKeys);
+
+        await cargarJuegos();
+
+    } catch (error) {
+
+        console.error(error);
+
+        mostrarMensaje(
+            message,
+            "No se ha podido conectar con el servidor.",
+            false
+        );
+    }
+}
+
+// ======================================================
+// CREAR KEY
+// ======================================================
+
+async function crearKey(type) {
+
+    if (!adminKeyValue) {
+        alert("Primero inicia sesión como administrador.");
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "/api/keys",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-admin-key": adminKeyValue
+                },
+
+                body: JSON.stringify({
+                    type: type
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+
+            alert(
+                data.message ||
+                "Error creando la key."
+            );
+
+            return;
+        }
+
+        document
+            .getElementById("generatedKey")
+            .textContent = data.key;
+
+        document
+            .getElementById("keyResult")
+            .style.display = "block";
+
+        await cargarKeys();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "No se ha podido conectar con el servidor."
+        );
+    }
+}
+
+// ======================================================
+// COPIAR KEY
+// ======================================================
+
+async function copiarKey() {
+
+    const key =
+        document
+            .getElementById("generatedKey")
+            .textContent;
+
+    if (!key) {
+        return;
+    }
+
+    try {
+
+        await navigator.clipboard.writeText(key);
+
+        alert("Key copiada.");
+
+    } catch {
+
+        alert(
+            "No se ha podido copiar automáticamente."
+        );
+    }
+}
+
+// ======================================================
+// CARGAR KEYS
+// ======================================================
+
+async function cargarKeys() {
+
+    if (!adminKeyValue) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "/api/admin/keys",
+            {
+                method: "GET",
+
+                headers: {
+                    "x-admin-key": adminKeyValue
+                }
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+
+            alert(
+                data.message ||
+                "Error cargando las keys."
+            );
+
+            return;
+        }
+
+        todasLasKeys = data.keys || [];
+
+        mostrarKeys(todasLasKeys);
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "No se ha podido conectar con el servidor."
+        );
+    }
+}
+
+// ======================================================
+// MOSTRAR KEYS
+// ======================================================
+
+function mostrarKeys(keys) {
+
+    const table =
+        document.getElementById("keysTable");
+
+    table.innerHTML = "";
+
+    if (!keys || !keys.length) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="10" class="empty">
+                    No hay keys creadas.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    keys.forEach(key => {
+
+        const tr =
+            document.createElement("tr");
+
+        let estado = "";
+        let claseEstado = "";
+
+        if (!key.active) {
+
+            if (
+                key.type === "ONE_USE" &&
+                Number(key.use_count) > 0
+            ) {
+                estado = "USADA";
+            } else {
+                estado = "INACTIVA";
+            }
+
+            claseEstado = "inactive";
+
+        } else if (
+            key.expires_at &&
+            new Date(key.expires_at) <= new Date()
+        ) {
+
+            estado = "EXPIRADA";
+            claseEstado = "inactive";
+
+        } else {
+
+            estado = "ACTIVA";
+            claseEstado = "active";
+        }
+
+        const tipo =
+            key.type === "ONE_USE"
+                ? `<span class="one-use">1 USO</span>`
+                : escapeHTML(key.type);
+
+        tr.innerHTML = `
+
+            <td>
+                <span class="nickname">
+                    ${
+                        key.nickname
+                            ? escapeHTML(key.nickname)
+                            : "Sin mote"
+                    }
+                </span>
+            </td>
+
+            <td>
+                <strong class="key-text">
+                    ${escapeHTML(key.key)}
+                </strong>
+            </td>
+
+            <td>
+                ${tipo}
+            </td>
+
+            <td>
+                <span class="${claseEstado}">
+                    ${estado}
+                </span>
+            </td>
+
+            <td>
+                ${formatearFecha(key.created_at)}
+            </td>
+
+            <td>
+                ${
+                    key.expires_at
+                    ? formatearFecha(key.expires_at)
+                    : "∞"
+                }
+            </td>
+
+            <td>
+                ${
+                    key.last_ip
+                    ? escapeHTML(key.last_ip)
+                    : "-"
+                }
+            </td>
+
+            <td>
+                ${
+                    key.last_used_at
+                    ? formatearFecha(key.last_used_at)
+                    : "-"
+                }
+            </td>
+
+            <td>
+                ${Number(key.use_count) || 0}
+            </td>
+
+            <td>
+
+                <button
+                    class="edit"
+                    onclick="editarMote(${Number(key.id)}, '${escapeJS(key.nickname || "")}')">
+                    ✏️ MOTE
+                </button>
+
+                ${
+                    key.active
+                    ? `
+                        <button
+                            class="secondary"
+                            onclick="revocarKey(${Number(key.id)})">
+                            REVOCAR
+                        </button>
+                    `
+                    : ""
+                }
+
+                <button
+                    class="danger"
+                    onclick="eliminarKey(${Number(key.id)})">
+                    🗑️
+                </button>
+
+            </td>
+        `;
+
+        table.appendChild(tr);
+    });
+}
+
+// ======================================================
+// EDITAR MOTE
+// ======================================================
+
+async function editarMote(id, actual) {
+
+    const nickname = prompt(
+        "Introduce el mote de esta key:",
+        actual
+    );
+
+    if (nickname === null) {
+        return;
+    }
+
+    const nuevoMote = nickname.trim();
+
+    try {
+
+        const response = await fetch(
+            "/api/admin/update-key-nickname",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-admin-key": adminKeyValue
+                },
+
+                body: JSON.stringify({
+                    id: id,
+                    nickname: nuevoMote
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+
+            alert(
+                data.message ||
+                "No se pudo actualizar el mote."
+            );
+
+            return;
+        }
+
+        await cargarKeys();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Error conectando con el servidor."
+        );
+    }
+}
+
+// ======================================================
+// REVOCAR KEY
+// ======================================================
+
+async function revocarKey(id) {
+
+    const confirmar =
+        confirm(
+            "¿Seguro que quieres revocar esta key?\n\nLa key dejará de funcionar."
+        );
+
+    if (!confirmar) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "/api/admin/revoke-key",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-admin-key": adminKeyValue
+                },
+
+                body: JSON.stringify({
+                    id: id
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+
+            alert(
+                data.message ||
+                "No se pudo revocar."
+            );
+
+            return;
+        }
+
+        await cargarKeys();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Error conectando con el servidor."
+        );
+    }
+}
+
+// ======================================================
+// ELIMINAR KEY
+// ======================================================
+
+async function eliminarKey(id) {
+
+    const confirmar =
+        confirm(
+            "⚠️ ELIMINAR KEY\n\n" +
+            "Esta acción eliminará la key definitivamente " +
+            "de la base de datos.\n\n" +
+            "¿Quieres continuar?"
+        );
+
+    if (!confirmar) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "/api/admin/delete-key",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-admin-key": adminKeyValue
+                },
+
+                body: JSON.stringify({
+                    id: id
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+
+            alert(
+                data.message ||
+                "No se pudo eliminar la key."
+            );
+
+            return;
+        }
+
+        await cargarKeys();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Error conectando con el servidor."
+        );
+    }
+}
+
+// ======================================================
+// BUSCAR KEYS
+// ======================================================
+
+function filtrarKeys() {
+
+    const texto =
+        document
+            .getElementById("search")
+            .value
+            .toLowerCase()
+            .trim();
+
+    if (!texto) {
+
+        mostrarKeys(todasLasKeys);
+
+        return;
+    }
+
+    const filtradas =
+        todasLasKeys.filter(key => {
+
+            return (
+
+                String(key.key)
+                    .toLowerCase()
+                    .includes(texto)
+
+                ||
+
+                String(key.nickname || "")
+                    .toLowerCase()
+                    .includes(texto)
+
+                ||
+
+                String(key.type)
+                    .toLowerCase()
+                    .includes(texto)
+
+                ||
+
+                String(key.last_ip || "")
+                    .toLowerCase()
+                    .includes(texto)
+
+                ||
+
+                String(key.status || "")
+                    .toLowerCase()
+                    .includes(texto)
+            );
+        });
+
+    mostrarKeys(filtradas);
+}
+
+// ======================================================
+// CREAR JUEGO
+// ======================================================
+
+async function crearJuego() {
+
+    const name =
+        document
+            .getElementById("gameName")
+            .value
+            .trim();
+
+    const download =
+        document
+            .getElementById("gameDownload")
+            .value
+            .trim();
+
+    const repair =
+        document
+            .getElementById("gameRepair")
+            .value
+            .trim();
+
+    const password =
+        document
+            .getElementById("gamePassword")
+            .value
+            .trim();
+
+    const message =
+        document.getElementById("gameMessage");
+
+    if (!name) {
+
+        mostrarMensaje(
+            message,
+            "El nombre del juego es obligatorio.",
+            false
+        );
+
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "/api/games",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-admin-key": adminKeyValue
+                },
+
+                body: JSON.stringify({
+                    name,
+                    download,
+                    repair,
+                    password
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+
+            mostrarMensaje(
+                message,
+                data.message ||
+                "No se pudo crear el juego.",
+                false
+            );
+
+            return;
+        }
+
+        document.getElementById("gameName").value = "";
+        document.getElementById("gameDownload").value = "";
+        document.getElementById("gameRepair").value = "";
+        document.getElementById("gamePassword").value = "";
+
+        mostrarMensaje(
+            message,
+            "Juego añadido correctamente.",
+            true
+        );
+
+        await cargarJuegos();
+
+    } catch (error) {
+
+        console.error(error);
+
+        mostrarMensaje(
+            message,
+            "Error conectando con el servidor.",
+            false
+        );
+    }
+}
+
+// ======================================================
+// CARGAR JUEGOS
+// ======================================================
+
+async function cargarJuegos() {
+
+    if (!adminKeyValue) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "/api/admin/games",
+            {
+                method: "GET",
+
+                headers: {
+                    "x-admin-key": adminKeyValue
+                }
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+
+            alert(
+                data.message ||
+                "Error cargando juegos."
+            );
+
+            return;
+        }
+
+        todosLosJuegos = data.games || [];
+
+        mostrarJuegos(todosLosJuegos);
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "No se han podido cargar los juegos."
+        );
+    }
+}
+
+// ======================================================
+// MOSTRAR JUEGOS
+// ======================================================
+
+function mostrarJuegos(juegos) {
+
+    const container =
+        document.getElementById("gamesList");
+
+    container.innerHTML = "";
+
+    if (!juegos || !juegos.length) {
+
+        container.innerHTML = `
+            <div class="empty">
+                No hay juegos creados.
+            </div>
+        `;
+
+        return;
+    }
+
+    juegos.forEach(game => {
+
+        const card =
+            document.createElement("div");
+
+        card.className = "game-card";
+
+        card.innerHTML = `
+
+            <h3>
+                🎮 ${escapeHTML(game.name)}
+            </h3>
+
+            <div class="game-info">
+                ID: ${Number(game.id)}
+            </div>
+
+            <span class="game-status">
+                ACTIVO
+            </span>
+
+            <div style="margin-top:15px;">
+
+                <div style="color:#aaa;margin-bottom:6px;">
+                    DESCARGA
+                </div>
+
+                <div class="key-text">
+                    ${
+                        game.download
+                            ? escapeHTML(game.download)
+                            : "-"
+                    }
+                </div>
+
+            </div>
+
+            <div style="margin-top:15px;">
+
+                <div style="color:#aaa;margin-bottom:6px;">
+                    REPARACIÓN
+                </div>
+
+                <div class="key-text">
+                    ${
+                        game.repair
+                            ? escapeHTML(game.repair)
+                            : "-"
+                    }
+                </div>
+
+            </div>
+
+            <div style="margin-top:15px;">
+
+                <div style="color:#aaa;margin-bottom:6px;">
+                    PASSWORD
+                </div>
+
+                <div>
+                    ${
+                        game.password
+                            ? escapeHTML(game.password)
+                            : "-"
+                    }
+                </div>
+
+            </div>
+
+            <div style="margin-top:15px;">
+
+                <button
+                    class="edit"
+                    onclick="editarJuego(${Number(game.id)})">
+                    ✏️ EDITAR
+                </button>
+
+                <button
+                    class="danger"
+                    onclick="eliminarJuego(${Number(game.id)})">
+                    🗑️ BORRAR
+                </button>
+
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+// ======================================================
+// EDITAR JUEGO
+// ======================================================
+
+async function editarJuego(id) {
+
+    const juego =
+        todosLosJuegos.find(
+            game => Number(game.id) === Number(id)
+        );
+
+    if (!juego) {
+        alert("Juego no encontrado.");
+        return;
+    }
+
+    const name = prompt(
+        "Nombre del juego:",
+        juego.name || ""
+    );
+
+    if (name === null) {
+        return;
+    }
+
+    const download = prompt(
+        "Link de descarga:",
+        juego.download || ""
+    );
+
+    if (download === null) {
+        return;
+    }
+
+    const repair = prompt(
+        "Link de reparación:",
+        juego.repair || ""
+    );
+
+    if (repair === null) {
+        return;
+    }
+
+    const password = prompt(
+        "Password:",
+        juego.password || ""
+    );
+
+    if (password === null) {
+        return;
+    }
+
+    if (!name.trim()) {
+        alert("El nombre del juego no puede estar vacío.");
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "/api/admin/update-game",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-admin-key": adminKeyValue
+                },
+
+                body: JSON.stringify({
+                    id,
+                    name: name.trim(),
+                    download: download.trim(),
+                    repair: repair.trim(),
+                    password: password.trim()
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+
+            alert(
+                data.message ||
+                "No se pudo editar el juego."
+            );
+
+            return;
+        }
+
+        alert("Juego actualizado correctamente.");
+
+        await cargarJuegos();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Error conectando con el servidor."
+        );
+    }
+}
+
+// ======================================================
+// ELIMINAR JUEGO
+// ======================================================
+
+async function eliminarJuego(id) {
+
+    const juego =
+        todosLosJuegos.find(
+            game => Number(game.id) === Number(id)
+        );
+
+    const nombre =
+        juego
+            ? juego.name
+            : "este juego";
+
+    const confirmar =
+        confirm(
+            `⚠️ BORRAR JUEGO\n\n` +
+            `Vas a eliminar "${nombre}" definitivamente.\n\n` +
+            `¿Quieres continuar?`
+        );
+
+    if (!confirmar) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "/api/admin/delete-game",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-admin-key": adminKeyValue
+                },
+
+                body: JSON.stringify({
+                    id: id
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+
+            alert(
+                data.message ||
+                "No se pudo eliminar el juego."
+            );
+
+            return;
+        }
+
+        await cargarJuegos();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Error conectando con el servidor."
+        );
+    }
+}
+
+// ======================================================
+// BUSCAR JUEGOS
+// ======================================================
+
+function filtrarJuegos() {
+
+    const texto =
+        document
+            .getElementById("gameSearch")
+            .value
+            .toLowerCase()
+            .trim();
+
+    if (!texto) {
+
+        mostrarJuegos(todosLosJuegos);
+
+        return;
+    }
+
+    const filtrados =
+        todosLosJuegos.filter(game => {
+
+            return String(game.name)
+                .toLowerCase()
+                .includes(texto);
+        });
+
+    mostrarJuegos(filtrados);
+}
+
+// ======================================================
+// FECHAS
+// ======================================================
+
+function formatearFecha(fecha) {
+
+    if (!fecha) {
+        return "-";
+    }
+
+    const d = new Date(fecha);
+
+    if (Number.isNaN(d.getTime())) {
+        return "-";
+    }
+
+    return d.toLocaleString("es-ES");
+}
+
+// ======================================================
+// SEGURIDAD HTML
+// ======================================================
+
+function escapeHTML(texto) {
+
+    return String(texto)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function escapeJS(texto) {
+
+    return String(texto)
+        .replaceAll("\\", "\\\\")
+        .replaceAll("'", "\\'")
+        .replaceAll("\n", "\\n")
+        .replaceAll("\r", "");
+}
+
+// ======================================================
+// MENSAJES
+// ======================================================
+
+function mostrarMensaje(
+    elemento,
+    texto,
+    correcto
+) {
+
+    elemento.textContent = texto;
+
+    elemento.className =
+        "message " +
+        (
+            correcto
+                ? "success"
+                : "error"
+        );
+
+    elemento.style.display = "block";
+}
+
+// ======================================================
+// ENTER LOGIN
+// ======================================================
+
+document
+    .getElementById("adminKey")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (event.key === "Enter") {
+                entrarAdmin();
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+</html>
