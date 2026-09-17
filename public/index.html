@@ -22,7 +22,6 @@ body{min-height:100vh;background:var(--bg);color:#fff;overflow-x:hidden;--tracer
 @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(50px,-80px) scale(1.1)}66%{transform:translate(-50px,50px) scale(.9)}}
 .grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(139,92,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(139,92,255,.03) 1px,transparent 1px);background-size:50px 50px;pointer-events:none;z-index:1}
 #loginScreen,#clientScreen,.tool-overlay,.game-modal,.palette-overlay,.ctx-menu,.ach-toast{position:relative;z-index:2}
-/* MODAL MINIMALISTA */
 body.zen .orb,body.zen .grid-bg{opacity:0;visibility:hidden;transition:.4s}
 body.zen header .session-timer,body.zen header .status{opacity:0;visibility:hidden}
 body.zen footer{opacity:.3}
@@ -33,7 +32,6 @@ body.zen .filters:hover,body.zen .search-w:hover{opacity:1}
 body.zen .g-card{background:rgba(12,12,22,.95);border-color:rgba(139,92,255,.08)}
 body.zen #menuBtn{opacity:.4;transition:.4s}
 body.zen #menuBtn:hover{opacity:1;transform:scale(1.08)}
-/* LOGIN */
 #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .login-box{width:100%;max-width:440px;padding:45px 40px;border-radius:24px;background:linear-gradient(145deg,rgba(25,25,40,.85),rgba(10,10,20,.9));backdrop-filter:blur(20px);border:1px solid rgba(139,92,255,.25);box-shadow:0 30px 90px rgba(0,0,0,.6),0 0 80px rgba(139,92,255,.15);text-align:center;position:relative;animation:loginFade .6s ease}
 @keyframes loginFade{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -48,7 +46,6 @@ body.zen #menuBtn:hover{opacity:1;transform:scale(1.08)}
 .login-btn:disabled{opacity:.6;cursor:not-allowed}
 #loginMessage{min-height:20px;margin-top:15px;font-size:13px;color:#ff5c5c}
 .login-hint{margin-top:20px;font-size:11px;color:#555}
-/* CLIENT */
 #clientScreen{display:none;min-height:100vh}
 header{height:80px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;border-bottom:1px solid rgba(255,255,255,.06);background:var(--hud-bg);backdrop-filter:blur(20px);position:sticky;top:0;z-index:100}
 .logo{font-size:26px;font-weight:900;letter-spacing:2px}
@@ -64,6 +61,10 @@ main{max-width:1100px;margin:auto;padding:50px 25px}
 .hero{text-align:center;margin-bottom:25px}
 .hero h1{font-size:52px;font-weight:900;margin-bottom:12px;background:linear-gradient(90deg,#fff,#b99cff,#60a5fa,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:300% auto;animation:shine 5s linear infinite}
 .hero p{color:#888;font-size:15px}
+.view-switch{display:flex;gap:4px;justify-content:center;margin-bottom:18px;background:rgba(20,20,35,.5);padding:5px;border-radius:14px;width:fit-content;margin-left:auto;margin-right:auto;border:1px solid rgba(139,92,255,.15)}
+.view-switch button{background:transparent;border:none;color:#888;padding:8px 16px;border-radius:10px;cursor:pointer;font-size:12px;font-weight:700;transition:.2s;letter-spacing:.5px}
+.view-switch button.active{background:linear-gradient(135deg,#6d28d9,#2563eb);color:#fff;box-shadow:0 4px 15px rgba(109,40,217,.4)}
+.view-switch button:hover:not(.active){color:#fff}
 .filters{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
 .f-btn{padding:8px 18px;border-radius:20px;border:1px solid rgba(139,92,255,.2);background:rgba(20,20,35,.5);color:#aaa;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:6px}
 .f-btn:hover{border-color:rgba(139,92,255,.5);color:#fff}
@@ -74,10 +75,9 @@ main{max-width:1100px;margin:auto;padding:50px 25px}
 .search-input{width:100%;padding:18px 100px 18px 55px;border-radius:16px;border:1px solid rgba(139,92,255,.2);background:rgba(20,20,35,.6);color:#fff;outline:none;font-size:15px;transition:.3s}
 .search-input:focus{border-color:#8b5cff;box-shadow:0 0 30px rgba(139,92,255,.25)}
 .sc-key{position:absolute;right:18px;top:50%;transform:translateY(-50%);background:rgba(139,92,255,.15);border:1px solid rgba(139,92,255,.3);color:#b99cff;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;pointer-events:none}
-/* VIEWS */
 .games{display:grid;grid-template-columns:1fr;gap:16px;transition:.3s}
 .games.view-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
-.games.view-compact{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.games.view-compact{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
 .g-card{background:linear-gradient(145deg,rgba(25,25,40,.7),rgba(12,12,22,.85));backdrop-filter:blur(15px);border:1px solid rgba(139,92,255,.15);border-radius:18px;overflow:hidden;cursor:pointer;transition:.35s cubic-bezier(.4,0,.2,1);position:relative;opacity:0;transform:translateY(20px)}
 .g-card.vis{opacity:1;transform:translateY(0)}
 .g-card:hover{border-color:rgba(139,92,255,.5);transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,.4),0 0 40px rgba(139,92,255,.15)}
@@ -91,11 +91,15 @@ main{max-width:1100px;margin:auto;padding:50px 25px}
 .g-status::before{content:"";width:6px;height:6px;border-radius:50%;background:#00ff88;box-shadow:0 0 8px #00ff88}
 .g-arrow{font-size:22px;color:#8b5cff;opacity:.6;transition:.3s;flex-shrink:0}
 .g-card:hover .g-arrow{opacity:1;transform:translateX(5px)}
-.games.view-compact .g-header{padding:14px 16px}
-.games.view-compact .g-icon{width:42px;height:42px;font-size:20px;border-radius:10px}
-.games.view-compact .g-name{font-size:15px}
-.games.view-compact .g-status{font-size:11px}
-.games.view-compact .g-arrow{font-size:18px}
+.games.view-compact .g-header{padding:12px 14px}
+.games.view-compact .g-icon{width:38px;height:38px;font-size:18px;border-radius:9px}
+.games.view-compact .g-name{font-size:14px}
+.games.view-compact .g-status{font-size:10px}
+.games.view-compact .g-arrow{font-size:16px}
+.games.view-compact .fav-btn{width:26px;height:26px;font-size:13px;top:8px;right:8px}
+.games.view-grid .g-header{flex-direction:column;gap:12px;padding:24px 20px;text-align:center;align-items:center}
+.games.view-grid .g-left{flex-direction:column;gap:12px;text-align:center}
+.games.view-grid .g-arrow{display:none}
 .fav-btn{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);color:#666;font-size:15px;cursor:pointer;transition:.2s;z-index:2;display:flex;align-items:center;justify-content:center}
 .fav-btn:hover{transform:scale(1.15);color:#ffd700}
 .fav-btn.active{color:#ffd700;background:rgba(255,215,0,.15);border-color:rgba(255,215,0,.4)}
@@ -104,7 +108,6 @@ main{max-width:1100px;margin:auto;padding:50px 25px}
 .empty{padding:60px 40px;text-align:center;color:#666;border:2px dashed rgba(139,92,255,.15);border-radius:20px;background:rgba(20,20,35,.3);grid-column:1/-1}
 .empty-icon{font-size:50px;margin-bottom:15px;opacity:.5}
 footer{text-align:center;padding:40px;color:#444;font-size:12px}
-/* MODAL JUEGO */
 .game-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);z-index:1000;align-items:center;justify-content:center;padding:20px}
 .game-modal.open{display:flex}
 .gm-box{width:100%;max-width:520px;background:linear-gradient(160deg,rgba(28,28,45,.98),rgba(15,15,28,.98));border-radius:24px;overflow:hidden;position:relative;box-shadow:0 30px 100px rgba(0,0,0,.8),0 0 80px rgba(139,92,255,.25);border:1px solid rgba(139,92,255,.3);animation:pop .35s cubic-bezier(.34,1.56,.64,1)}
@@ -129,7 +132,6 @@ footer{text-align:center;padding:40px;color:#444;font-size:12px}
 .g-btn.download{background:linear-gradient(135deg,#6d28d9,#2563eb)}
 .g-btn.repair{background:linear-gradient(135deg,#0e7490,#0891b2)}
 .g-btn.password{background:linear-gradient(135deg,#7c3aed,#a855f7)}
-/* TOASTS */
 #toasts{position:fixed;bottom:25px;right:25px;z-index:2000;display:flex;flex-direction:column;gap:10px;pointer-events:none;max-width:calc(100vw - 50px)}
 .toast{padding:14px 20px;border-radius:12px;font-size:14px;font-weight:600;color:#fff;box-shadow:0 15px 40px rgba(0,0,0,.5);display:flex;align-items:center;gap:12px;min-width:260px;max-width:380px;opacity:0;transform:translateX(400px);transition:.45s cubic-bezier(.34,1.56,.64,1);pointer-events:auto;position:relative;overflow:hidden}
 .toast .toast-bar{position:absolute;bottom:0;left:0;height:3px;background:rgba(255,255,255,.6);animation:toastTimer 3s linear forwards}
@@ -146,7 +148,6 @@ footer{text-align:center;padding:40px;color:#444;font-size:12px}
 .toast-close{background:transparent;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:16px;width:20px;height:20px;border-radius:50%}
 .toast-close:hover{background:rgba(255,255,255,.2);color:#fff}
 .confetti{position:fixed;width:8px;height:8px;pointer-events:none;z-index:99999}
-/* MENU */
 #menuBtn{position:fixed;top:100px;right:25px;width:55px;height:55px;border-radius:50%;background:rgba(20,20,35,.5);backdrop-filter:blur(15px);border:1px solid rgba(139,92,255,.3);cursor:pointer;z-index:1500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:.3s;box-shadow:0 8px 30px rgba(0,0,0,.4),0 0 30px rgba(139,92,255,.15)}
 #menuBtn:hover{background:rgba(139,92,255,.2);transform:scale(1.08)}
 #menuBtn span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:.3s}
@@ -167,7 +168,6 @@ footer{text-align:center;padding:40px;color:#444;font-size:12px}
 .d-item.rank .d-icon{background:linear-gradient(135deg,#eab308,#f59e0b)}
 .d-item.ach .d-icon{background:linear-gradient(135deg,#06b6d4,#0891b2)}
 .d-item.zen .d-icon{background:linear-gradient(135deg,#64748b,#94a3b8)}
-/* TOOL OVERLAYS */
 .tool-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);z-index:1800;overflow:hidden}
 .tool-overlay.open{display:block;animation:fadeIn .3s ease}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -202,7 +202,6 @@ footer{text-align:center;padding:40px;color:#444;font-size:12px}
 @keyframes tspawn{from{transform:scale(0)}to{transform:scale(1)}}
 .aim-target.hit{animation:thit .3s ease forwards;pointer-events:none}
 @keyframes thit{0%{transform:scale(1)}50%{transform:scale(1.6);opacity:.6}100%{transform:scale(0)}}
-/* CALCULADORA */
 .calc-box{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:420px;background:linear-gradient(145deg,rgba(25,25,40,.98),rgba(12,12,22,.98));border:1px solid rgba(14,116,144,.4);border-radius:24px;padding:25px;box-shadow:0 30px 100px rgba(0,0,0,.7)}
 .calc-title{text-align:center;font-size:13px;letter-spacing:3px;color:#0891b2;font-weight:700;margin-bottom:15px}
 .calc-display{background:#08080e;border:1px solid #1e3a4a;border-radius:14px;padding:18px;text-align:right;font-size:30px;color:#67e8f9;margin-bottom:15px;word-break:break-all;min-height:65px}
@@ -220,7 +219,6 @@ footer{text-align:center;padding:40px;color:#444;font-size:12px}
 .calc-history{background:rgba(0,0,0,.3);border-radius:10px;padding:10px;margin-bottom:15px;max-height:80px;overflow-y:auto;font-size:12px;color:#888}
 .calc-history-line{padding:3px 0;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer}
 .calc-history-line:hover{color:#fff}
-/* CPS */
 .cps-box{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:520px;background:linear-gradient(145deg,rgba(25,25,40,.98),rgba(12,12,22,.98));border:1px solid rgba(22,163,74,.4);border-radius:24px;padding:32px;box-shadow:0 30px 100px rgba(0,0,0,.7);text-align:center}
 .cps-title{font-size:28px;font-weight:900;letter-spacing:3px;margin-bottom:8px;background:linear-gradient(90deg,#22c55e,#16a34a);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .cps-sub{color:#777;font-size:13px;margin-bottom:18px}
@@ -243,7 +241,6 @@ footer{text-align:center;padding:40px;color:#444;font-size:12px}
 .cps-record b{color:#22c55e;font-size:13px}
 .cps-reset{padding:10px 25px;border:none;border-radius:10px;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:#22c55e;font-weight:700;cursor:pointer;letter-spacing:1px}
 .cps-reset:hover{background:rgba(34,197,94,.3);color:#fff}
-/* IA */
 .ai-box{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:560px;height:82vh;max-height:680px;background:linear-gradient(145deg,rgba(25,25,40,.98),rgba(12,12,22,.98));border:1px solid rgba(168,85,247,.4);border-radius:24px;box-shadow:0 30px 100px rgba(0,0,0,.7);display:flex;flex-direction:column;overflow:hidden}
 .ai-head{padding:20px 25px;border-bottom:1px solid rgba(168,85,247,.2);display:flex;align-items:center;gap:12px}
 .ai-av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#a855f7,#ec4899);display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 0 20px rgba(168,85,247,.5)}
@@ -268,7 +265,6 @@ footer{text-align:center;padding:40px;color:#444;font-size:12px}
 .ai-input:focus{border-color:#a855f7}
 .ai-send{padding:12px 20px;border-radius:12px;border:none;background:linear-gradient(135deg,#a855f7,#ec4899);color:#fff;font-weight:700;cursor:pointer}
 .ai-send:hover{filter:brightness(1.15)}
-/* SETTINGS */
 .settings-box{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:580px;max-height:88vh;overflow-y:auto;background:linear-gradient(145deg,rgba(25,25,40,.98),rgba(12,12,22,.98));border:1px solid rgba(100,116,139,.4);border-radius:24px;padding:30px;box-shadow:0 30px 100px rgba(0,0,0,.7)}
 .settings-title{font-size:26px;font-weight:900;letter-spacing:3px;margin-bottom:8px;text-align:center;background:linear-gradient(90deg,#94a3b8,#cbd5e1);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .settings-sub{text-align:center;color:#777;font-size:13px;margin-bottom:22px}
@@ -290,7 +286,6 @@ footer{text-align:center;padding:40px;color:#444;font-size:12px}
 .s-btn:hover{background:rgba(100,116,139,.3)}
 .s-btn.primary{background:linear-gradient(135deg,#6d28d9,#2563eb);border-color:transparent}
 .s-btn.danger{background:linear-gradient(135deg,#ff1744,#a00025);border-color:transparent}
-/* GAMES GRID */
 .games-grid{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:20px;max-width:800px;width:92%}
 .game-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:22px 12px;border-radius:16px;border:1px solid rgba(139,92,255,.3);background:rgba(25,25,40,.85);backdrop-filter:blur(10px);color:#fff;cursor:pointer;transition:.3s;font-size:12px;font-weight:700;letter-spacing:.5px;text-align:center}
 .game-item:hover{transform:translateY(-5px) scale(1.03);border-color:#8b5cff;box-shadow:0 15px 40px rgba(139,92,255,.3)}
@@ -301,7 +296,6 @@ footer{text-align:center;padding:40px;color:#444;font-size:12px}
 .game-hud b{color:#b99cff;font-size:17px}
 .game-back{position:absolute;top:20px;left:20px;padding:10px 20px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;font-weight:700;font-size:13px}
 .game-back:hover{background:rgba(255,255,255,.15)}
-/* COMMAND PALETTE */
 .palette-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(12px);z-index:3000;align-items:flex-start;justify-content:center;padding-top:15vh}
 .palette-overlay.open{display:flex}
 .palette-box{width:90%;max-width:580px;background:linear-gradient(145deg,rgba(25,25,40,.98),rgba(15,15,25,.98));border:1px solid rgba(139,92,255,.3);border-radius:18px;box-shadow:0 30px 100px rgba(0,0,0,.8),0 0 60px rgba(139,92,255,.3);overflow:hidden;animation:pop .25s cubic-bezier(.34,1.56,.64,1)}
@@ -315,7 +309,6 @@ footer{text-align:center;padding:40px;color:#444;font-size:12px}
 .palette-item-text{flex:1;font-size:14px;font-weight:600}
 .palette-item-sub{font-size:11px;color:#888;font-weight:400}
 .palette-item-cat{font-size:10px;color:#666;text-transform:uppercase;letter-spacing:1px;padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.05)}
-/* RANKINGS */
 .rank-box{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:600px;max-height:88vh;overflow-y:auto;background:linear-gradient(145deg,rgba(25,25,40,.98),rgba(12,12,22,.98));border:1px solid rgba(234,179,8,.4);border-radius:24px;padding:30px}
 .rank-title{font-size:28px;font-weight:900;letter-spacing:3px;text-align:center;background:linear-gradient(90deg,#eab308,#f59e0b,#eab308);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200% auto;animation:shine 3s linear infinite;margin-bottom:8px}
 .rank-sub{text-align:center;color:#777;font-size:13px;margin-bottom:25px}
@@ -325,7 +318,6 @@ footer{text-align:center;padding:40px;color:#444;font-size:12px}
 .rank-row:nth-child(odd){background:rgba(255,255,255,.02)}
 .rank-row .rank-pos{color:#666;font-weight:700;min-width:30px}
 .rank-row .rank-val{color:#fbbf24;font-weight:700}
-/* LOGROS */
 .ach-box{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:650px;max-height:88vh;overflow-y:auto;background:linear-gradient(145deg,rgba(25,25,40,.98),rgba(12,12,22,.98));border:1px solid rgba(6,182,212,.4);border-radius:24px;padding:30px}
 .ach-title{font-size:28px;font-weight:900;letter-spacing:3px;text-align:center;background:linear-gradient(90deg,#06b6d4,#0891b2,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200% auto;animation:shine 3s linear infinite;margin-bottom:8px}
 .ach-sub{text-align:center;color:#777;font-size:13px;margin-bottom:25px}
@@ -341,7 +333,6 @@ footer{text-align:center;padding:40px;color:#444;font-size:12px}
 .ach-toast-icon{font-size:36px}
 .ach-toast-title{font-size:11px;letter-spacing:2px;color:#a5f3fc;text-transform:uppercase;font-weight:700;margin-bottom:3px}
 .ach-toast-name{font-size:15px;font-weight:900;color:#fff}
-/* CONTEXT MENU */
 .ctx-menu{display:none;position:fixed;background:rgba(25,25,40,.98);backdrop-filter:blur(15px);border:1px solid rgba(139,92,255,.3);border-radius:12px;padding:6px;z-index:5000;box-shadow:0 15px 50px rgba(0,0,0,.7);min-width:180px}
 .ctx-menu.open{display:block;animation:pop .15s ease}
 .ctx-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;cursor:pointer;color:#fff;font-size:13px;font-weight:600}
@@ -368,7 +359,6 @@ header{padding:0 20px;height:70px}.status{display:none}.session-timer{display:no
 <div id="loading"><div class="ld-logo">OMELES GAMES</div><div class="ld-bar"><div></div></div><div class="ld-text">Cargando...</div></div>
 <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="grid-bg"></div>
 
-<!-- LOGIN -->
 <div id="loginScreen">
     <div class="login-box">
         <div class="login-logo">OMELES <span>GAMES</span></div>
@@ -380,7 +370,6 @@ header{padding:0 20px;height:70px}.status{display:none}.session-timer{display:no
     </div>
 </div>
 
-<!-- CLIENT -->
 <div id="clientScreen">
     <header>
         <div class="logo">OMELES <span>GAMES</span></div>
@@ -395,6 +384,11 @@ header{padding:0 20px;height:70px}.status{display:none}.session-timer{display:no
             <h1>Tus juegos</h1>
             <p>Selecciona un juego para ver sus opciones · <b>Ctrl+K</b> menú rápido · <b>Z</b> modo minimalista</p>
         </section>
+        <div class="view-switch">
+            <button data-view="list" class="active" onclick="setView('list')">📋 Lista</button>
+            <button data-view="grid" onclick="setView('grid')">▦ Grid</button>
+            <button data-view="compact" onclick="setView('compact')">≡ Compacta</button>
+        </div>
         <div class="filters">
             <button class="f-btn active" data-filter="all" onclick="setFilter('all')">🎮 Todos <span class="f-count" id="cAll">0</span></button>
             <button class="f-btn" data-filter="favorites" onclick="setFilter('favorites')">⭐ Favoritos <span class="f-count" id="cFav">0</span></button>
@@ -409,7 +403,6 @@ header{padding:0 20px;height:70px}.status{display:none}.session-timer{display:no
     <footer>OMELES GAMES © 2026 · Hecho con 💜</footer>
 </div>
 
-<!-- MODAL JUEGO -->
 <div id="gameModal" class="game-modal">
     <div class="gm-box">
         <div class="gm-banner" id="gmBanner"><div class="banner-fb">🎮</div></div>
@@ -424,7 +417,6 @@ header{padding:0 20px;height:70px}.status{display:none}.session-timer{display:no
 <div id="toasts"></div>
 <div class="ach-toast" id="achToast"><span class="ach-toast-icon">🏆</span><div><div class="ach-toast-title">¡LOGRO DESBLOQUEADO!</div><div class="ach-toast-name" id="achToastName">Nombre</div></div></div>
 
-<!-- MENU -->
 <button id="menuBtn" onclick="toggleMenu()"><span></span><span></span><span></span></button>
 <div id="dropdown">
     <button class="d-item games" onclick="abrirJuegos()"><div class="d-icon">🎮</div> Juegos</button>
@@ -438,7 +430,6 @@ header{padding:0 20px;height:70px}.status{display:none}.session-timer{display:no
     <button class="d-item settings" onclick="abrirSettings()"><div class="d-icon">⚙️</div> Settings</button>
 </div>
 
-<!-- COMMAND PALETTE -->
 <div id="paletteOverlay" class="palette-overlay" onclick="if(event.target.id==='paletteOverlay')closePalette()">
     <div class="palette-box">
         <input id="paletteInput" class="palette-input" placeholder="Busca comandos, juegos, juegos internos..." oninput="filterPalette()" onkeydown="paletteKeydown(event)">
@@ -452,7 +443,6 @@ header{padding:0 20px;height:70px}.status{display:none}.session-timer{display:no
     </div>
 </div>
 
-<!-- GAMES OVERLAY -->
 <div id="gamesOverlay" class="tool-overlay">
     <button class="tool-close" onclick="cerrarJuegos()">✕</button>
     <div class="games-grid" id="gamesGrid">
@@ -476,7 +466,6 @@ header{padding:0 20px;height:70px}.status{display:none}.session-timer{display:no
     </div>
 </div>
 
-<!-- AIMLAB -->
 <div id="aimOverlay" class="tool-overlay">
     <button class="tool-close" onclick="cerrarAim()">✕</button>
     <div class="aim-config" id="aimConfig">
@@ -526,7 +515,6 @@ header{padding:0 20px;height:70px}.status{display:none}.session-timer{display:no
     </div>
 </div>
 
-<!-- CALCULADORA -->
 <div id="calcOverlay" class="tool-overlay">
     <button class="tool-close" onclick="cerrarCalc()">✕</button>
     <div class="calc-box">
@@ -571,7 +559,6 @@ header{padding:0 20px;height:70px}.status{display:none}.session-timer{display:no
     </div>
 </div>
 
-<!-- CPS -->
 <div id="cpsOverlay" class="tool-overlay">
     <button class="tool-close" onclick="cerrarCps()">✕</button>
     <div class="cps-box">
@@ -599,7 +586,6 @@ header{padding:0 20px;height:70px}.status{display:none}.session-timer{display:no
     </div>
 </div>
 
-<!-- IA -->
 <div id="aiOverlay" class="tool-overlay">
     <button class="tool-close" onclick="cerrarIa()">✕</button>
     <div class="ai-box">
@@ -635,7 +621,6 @@ Escribe abajo o usa una sugerencia 👇</div>
     </div>
 </div>
 
-<!-- RANKINGS -->
 <div id="rankOverlay" class="tool-overlay">
     <button class="tool-close" onclick="cerrarRankings()">✕</button>
     <div class="rank-box">
@@ -645,7 +630,6 @@ Escribe abajo o usa una sugerencia 👇</div>
     </div>
 </div>
 
-<!-- LOGROS -->
 <div id="achOverlay" class="tool-overlay">
     <button class="tool-close" onclick="cerrarLogros()">✕</button>
     <div class="ach-box">
@@ -655,7 +639,6 @@ Escribe abajo o usa una sugerencia 👇</div>
     </div>
 </div>
 
-<!-- SETTINGS -->
 <div id="settingsOverlay" class="tool-overlay">
     <button class="tool-close" onclick="cerrarSettings()">✕</button>
     <div class="settings-box">
@@ -706,7 +689,6 @@ Escribe abajo o usa una sugerencia 👇</div>
     </div>
 </div>
 
-<!-- CONTEXT MENU -->
 <div id="ctxMenu" class="ctx-menu"></div>
 
 <script src="/socket.io/socket.io.js"></script>
@@ -781,7 +763,8 @@ function aplicarPreset(n){
     toast(`Preset "${n}" aplicado`, "success");
 }
 function cargarValoresSettings(){
-    document.getElementById("sView").value = userSettings.view || "list";
+    const vSel = document.getElementById("sView");
+    if(vSel) vSel.value = userSettings.view || "list";
     document.getElementById("sTracerOn").value = userSettings.tracerOn;
     document.getElementById("sTracerColor").value = userSettings.tracerColor;
     document.getElementById("sTracerSize").value = userSettings.tracerSize;
@@ -923,10 +906,14 @@ function setView(v){
     vistaActual = v;
     userSettings.view = v;
     localStorage.setItem("omeles_settings", JSON.stringify(userSettings));
-    const g = document.getElementById("games");
-    g.className = "games" + (v==="list" ? "" : " view-"+v);
+    // Actualizar el switch del header
+    document.querySelectorAll(".view-switch button").forEach(b=>b.classList.toggle("active", b.dataset.view===v));
+    // Actualizar el select de Settings
     const sel = document.getElementById("sView");
     if(sel) sel.value = v;
+    // Aplicar clase al contenedor
+    const g = document.getElementById("games");
+    g.className = "games" + (v==="list" ? "" : " view-"+v);
     playClick();
 }
 function toggleZen(){
@@ -1179,15 +1166,24 @@ function cerrarJuegoActual(){
 }
 function detenerJuego(){
     if(gameLoop){
-        if(typeof gameLoop === "number" && gameLoop < 1000000) clearInterval(gameLoop);
-        else cancelAnimationFrame(gameLoop);
+        try{ clearInterval(gameLoop); }catch(e){}
+        try{ clearTimeout(gameLoop); }catch(e){}
+        try{ cancelAnimationFrame(gameLoop); }catch(e){}
         gameLoop = null;
     }
     limpiarListeners();
 }
-function limpiarListeners(){teclasListeners.forEach(l=>document.removeEventListener(l.tipo, l.fn));teclasListeners = [];}
-function addKey(fn){document.addEventListener("keydown", fn);teclasListeners.push({tipo:"keydown",fn});}
-function addClick(fn){canvas.addEventListener("mousedown", fn);teclasListeners.push({tipo:"mousedown",fn});}
+function limpiarListeners(){
+    teclasListeners.forEach(l=>{
+        if(l.el){ l.el.removeEventListener(l.tipo, l.fn); }
+        else { document.removeEventListener(l.tipo, l.fn); }
+    });
+    teclasListeners = [];
+}
+function addKey(fn){document.addEventListener("keydown", fn);teclasListeners.push({tipo:"keydown",fn,el:document});}
+function addCanvasClick(fn){canvas.addEventListener("mousedown", fn);teclasListeners.push({tipo:"mousedown",fn,el:canvas});}
+function addCanvasMove(fn){canvas.addEventListener("mousemove", fn);teclasListeners.push({tipo:"mousemove",fn,el:canvas});}
+function addCanvasCtx(fn){canvas.addEventListener("contextmenu", fn);teclasListeners.push({tipo:"contextmenu",fn,el:canvas});}
 
 /* --- SNAKE --- */
 function startSnake(){
@@ -1254,8 +1250,7 @@ function startPong(){
         const y = (e.clientY - rect.top) * (canvas.height / rect.height);
         player.y = Math.max(0, Math.min(canvas.height - player.h, y - player.h/2));
     };
-    document.addEventListener("mousemove", mousemove);
-    teclasListeners.push({tipo:"mousemove", fn:mousemove});
+    addCanvasMove(mousemove);
     function loop(){
         ball.x += ball.vx; ball.y += ball.vy;
         if(ball.y - ball.r < 0 || ball.y + ball.r > canvas.height) ball.vy *= -1;
@@ -1282,7 +1277,7 @@ function startMemory(){
     let cartas = [...emojis, ...emojis].sort(()=>Math.random()-0.5).map((e,i)=>({emoji:e, x:(i%4)*125, y:Math.floor(i/4)*125, girada:false, encontrada:false}));
     let seleccion = [], puntos = 0, bloqueado = false;
     document.getElementById("gameHud").innerHTML = `🧠 Memory · Parejas: <b id="memScore">0</b> / 8`;
-    addClick((e)=>{
+    addCanvasClick((e)=>{
         if(bloqueado || seleccion.length >= 2) return;
         const rect = canvas.getBoundingClientRect();
         const x = (e.clientX - rect.left) * (canvas.width/rect.width);
@@ -1340,7 +1335,7 @@ function startSimon(){
         ctx.fillStyle = colores[idx];
         ctx.beginPath(); ctx.roundRect(pos[0], pos[1], 180, 180, 20); ctx.fill();
     }
-    addClick((e)=>{
+    addCanvasClick((e)=>{
         if(juegoActivo!=="simon" || mostrando || terminado) return;
         const rect = canvas.getBoundingClientRect();
         const x = (e.clientX - rect.left) * (canvas.width/rect.width);
@@ -1385,7 +1380,7 @@ function startReaction(){
             ctx.fillText("¡CLICK YA!", canvas.width/2, canvas.height/2);
         }, 1500 + Math.random()*3000);
     }
-    addClick(()=>{
+    addCanvasClick(()=>{
         if(estado === "espera"){
             clearTimeout(timeoutId);
             ctx.fillStyle="#ff1744"; ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -1447,7 +1442,7 @@ function startTicTac(){
         tablero[eleccion] = "O"; turno = "X";
         document.getElementById("tictacTurno").textContent = "X"; draw();
     }
-    addClick((e)=>{
+    addCanvasClick((e)=>{
         if(terminado){ tablero = Array(9).fill(""); turno = "X"; terminado = false; document.getElementById("tictacTurno").textContent = "X"; draw(); return; }
         if(turno !== "X") return;
         const rect = canvas.getBoundingClientRect();
@@ -1469,7 +1464,7 @@ function startTetris(){
     canvas.width = 300; canvas.height = 600;
     const cols = 10, rows = 20, size = 30;
     let board = Array.from({length:rows}, ()=>Array(cols).fill(0));
-    let pieza = nuevaPieza(), puntos = 0, dropInterval = 500, lastDrop = 0;
+    let pieza = nuevaPieza(), puntos = 0, dropInterval = 500, lastDrop = performance.now();
     const formas = [[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[1,1,0],[0,1,1]],[[0,1,1],[1,1,0]]];
     const colores = ["#00f0f0","#f0f000","#a000f0","#0000f0","#f0a000","#00f000","#f00000"];
     document.getElementById("gameHud").innerHTML = `🧱 Tetris · Puntos: <b id="tetrisScore">0</b>`;
@@ -1508,19 +1503,20 @@ function startTetris(){
             ctx.fillText(`Puntos: ${puntos}`, canvas.width/2, canvas.height/2+30);
         }
     }
-    function loop(t){
+    function loop(){
+        const t = performance.now();
         if(t - lastDrop > dropInterval){
             if(!colision(pieza, 0, 1)) pieza.y++;
             else fijar();
             lastDrop = t;
         }
+        if(juegoActivo !== "tetris") return;
         ctx.fillStyle="#05050a"; ctx.fillRect(0,0,canvas.width,canvas.height);
         ctx.strokeStyle="rgba(139,92,255,.15)";
         for(let i=0;i<=cols;i++){ ctx.beginPath(); ctx.moveTo(i*size,0); ctx.lineTo(i*size,canvas.height); ctx.stroke(); }
         for(let i=0;i<=rows;i++){ ctx.beginPath(); ctx.moveTo(0,i*size); ctx.lineTo(canvas.width,i*size); ctx.stroke(); }
         board.forEach((row,y)=>row.forEach((c,x)=>{ if(c){ ctx.fillStyle=c; ctx.fillRect(x*size+1, y*size+1, size-2, size-2); } }));
         pieza.shape.forEach((row,y)=>row.forEach((v,x)=>{ if(v){ ctx.fillStyle=pieza.color; ctx.fillRect((pieza.x+x)*size+1, (pieza.y+y)*size+1, size-2, size-2); } }));
-        gameLoop = requestAnimationFrame(loop);
     }
     addKey((e)=>{
         if(juegoActivo!=="tetris") return;
@@ -1532,10 +1528,10 @@ function startTetris(){
             if(!colision(pieza,0,0,rotated)) pieza.shape = rotated;
         }
     });
-    gameLoop = requestAnimationFrame(loop);
+    gameLoop = setInterval(loop, 30);
 }
 
-/* --- 2048 --- */
+/* --- 2048 (rotación corregida) --- */
 function start2048(){
     canvas.width = 500; canvas.height = 500;
     const size = 4, tile = 115, gap = 12, offset = (canvas.width - (tile*size + gap*(size-1)))/2;
@@ -1571,8 +1567,6 @@ function start2048(){
             ctx.fillStyle="rgba(0,0,0,.75)"; ctx.fillRect(0,0,canvas.width,canvas.height);
             ctx.fillStyle="#ff4567"; ctx.font="bold 40px Arial"; ctx.textAlign="center";
             ctx.fillText("SIN MOVIMIENTOS", canvas.width/2, canvas.height/2);
-            ctx.font="20px Arial"; ctx.fillStyle="#aaa";
-            ctx.fillText(`Puntos: ${puntos}`, canvas.width/2, canvas.height/2+40);
         }
     }
     function combine(row){
@@ -1583,10 +1577,11 @@ function start2048(){
         while(arr.length < size) arr.push(0);
         return arr;
     }
+    // ⚠️ CORREGIDO: rotación ahora es antihoraria (CCW)
     function rotate(g){
         const n = g.length;
         const r = Array.from({length:n}, ()=>Array(n).fill(0));
-        for(let y=0;y<n;y++) for(let x=0;x<n;x++) r[x][n-1-y] = g[y][x];
+        for(let y=0;y<n;y++) for(let x=0;x<n;x++) r[n-1-x][y] = g[y][x];
         return r;
     }
     function move(dir){
@@ -1616,7 +1611,7 @@ function start2048(){
     gameLoop = setInterval(()=>{}, 1000);
 }
 
-/* --- BUSCAMINAS --- */
+/* --- BUSCAMINAS (right-click corregido) --- */
 function startMinesweeper(){
     canvas.width = 400; canvas.height = 400;
     const size = 8, tile = 50, minas = 10;
@@ -1632,7 +1627,7 @@ function startMinesweeper(){
             if(ny>=0 && ny<size && nx>=0 && nx<size && board[ny][nx] !== -1) board[ny][nx]++;
         }
     }
-    document.getElementById("gameHud").innerHTML = `💣 Buscaminas · Clic = descubrir · Clic derecho = marcar`;
+    document.getElementById("gameHud").innerHTML = `💣 Buscaminas · Clic izq. = descubrir · Clic derecho = marcar`;
     function reveal(x, y){
         if(x<0||x>=size||y<0||y>=size||visible[y][x]||marcadas[y][x]) return;
         visible[y][x] = true;
@@ -1667,7 +1662,7 @@ function startMinesweeper(){
             if(ganado){ guardarRecord("minesweeper", 1); desbloquearLogro("minesweeper_win"); }
         }
     }
-    addClick((e)=>{
+    addCanvasClick((e)=>{
         if(terminado || ganado) return;
         const rect = canvas.getBoundingClientRect();
         const x = Math.floor((e.clientX - rect.left) * (canvas.width/rect.width) / tile);
@@ -1681,13 +1676,17 @@ function startMinesweeper(){
             draw();
         }
     });
-    canvas.addEventListener("contextmenu", (e)=>{
+    // ⚠️ CORREGIDO: usa addCanvasCtx para limpieza automática
+    addCanvasCtx((e)=>{
         e.preventDefault();
         if(terminado || ganado) return;
         const rect = canvas.getBoundingClientRect();
         const x = Math.floor((e.clientX - rect.left) * (canvas.width/rect.width) / tile);
         const y = Math.floor((e.clientY - rect.top) * (canvas.height/rect.height) / tile);
-        if(x>=0 && x<size && y>=0 && y<size && !visible[y][x]){ marcadas[y][x] = !marcadas[y][x]; draw(); }
+        if(x>=0 && x<size && y>=0 && y<size && !visible[y][x]){
+            marcadas[y][x] = !marcadas[y][x];
+            draw();
+        }
     });
     draw();
     gameLoop = setInterval(()=>{}, 1000);
@@ -1701,14 +1700,12 @@ function startBreakout(){
     for(let r=0;r<4;r++) for(let c=0;c<8;c++) blocks.push({x: c*85+15, y: r*35+60, w: 80, h: 25, color: ["#ff1744","#ff8c00","#fbbf24","#22c55e"][r]});
     let puntos = 0, terminado = false;
     document.getElementById("gameHud").innerHTML = `🧨 Breakout · Puntos: <b id="brScore">0</b> · Mueve el ratón`;
-    const mousemove = (e)=>{
+    addCanvasMove((e)=>{
         if(juegoActivo!=="breakout") return;
         const rect = canvas.getBoundingClientRect();
         paddle.x = (e.clientX - rect.left) * (canvas.width/rect.width) - paddle.w/2;
         paddle.x = Math.max(0, Math.min(canvas.width - paddle.w, paddle.x));
-    };
-    document.addEventListener("mousemove", mousemove);
-    teclasListeners.push({tipo:"mousemove", fn:mousemove});
+    });
     function loop(){
         if(terminado) return;
         ball.x += ball.vx; ball.y += ball.vy;
@@ -1749,13 +1746,13 @@ function startBreakout(){
 function startWhack(){
     canvas.width = 500; canvas.height = 500;
     const cols = 3, rows = 3, size = 150;
-    let mole = null, puntos = 0, tiempo = 0;
+    let mole = null, puntos = 0, tiempo = 0, startTime = Date.now();
     document.getElementById("gameHud").innerHTML = `🔨 Whack-a-mole · Puntos: <b id="whScore">0</b> · Tiempo: <b id="whTime">0</b>s`;
     function spawnMole(){
         mole = {x: Math.floor(Math.random()*cols), y: Math.floor(Math.random()*rows), life: 1200, born: Date.now()};
     }
     function draw(){
-        tiempo = Math.floor((Date.now() - (draw.startTime || (draw.startTime = Date.now()))) / 1000);
+        tiempo = Math.floor((Date.now() - startTime) / 1000);
         document.getElementById("whTime").textContent = tiempo;
         ctx.fillStyle="#05050a"; ctx.fillRect(0,0,canvas.width,canvas.height);
         for(let y=0;y<rows;y++) for(let x=0;x<cols;x++){
@@ -1781,7 +1778,7 @@ function startWhack(){
             }
         }
     }
-    addClick((e)=>{
+    addCanvasClick((e)=>{
         if(!mole) return;
         const rect = canvas.getBoundingClientRect();
         const x = (e.clientX - rect.left) * (canvas.width/rect.width);
@@ -1849,7 +1846,7 @@ function startConnect4(){
         document.getElementById("c4Turno").textContent = ganador ? "Fin" : "Tú (🔴)";
         draw();
     }
-    addClick((e)=>{
+    addCanvasClick((e)=>{
         if(terminado){
             board = Array.from({length:rows}, ()=>Array(cols).fill(0));
             terminado = false; ganador = 0; turno = 1;
@@ -2015,7 +2012,7 @@ function cpsClick(){if(cpsState !== "running") return;cpsCount++;beep(1000+Math.
 document.getElementById("cpsArea").addEventListener("mousedown", cpsClick);
 document.addEventListener("keydown",(e)=>{if(e.key===" " && document.getElementById("cpsOverlay").classList.contains("open")){e.preventDefault();if(cpsState==="running") cpsClick();}});
 
-/* ========== OMELES IA (versión simple) ========== */
+/* ========== OMELES IA (CORREGIDA) ========== */
 function abrirIa(){
     if(!currentKey){toast("Introduce tu KEY primero","warning");return;}
     document.getElementById("dropdown").classList.remove("open"); document.getElementById("menuBtn").classList.remove("active");
@@ -2044,54 +2041,75 @@ function addMsg(t, tipo){
     d.className = "ai-msg "+tipo;
     d.textContent = t;
     m.appendChild(d); m.scrollTop = m.scrollHeight;
-    // Contar uso de IA
     let c = parseInt(localStorage.getItem("omeles_ai_count") || "0") + 1;
     localStorage.setItem("omeles_ai_count", c);
     if(c >= 10) desbloquearLogro("ai_master");
 }
+// ⚠️ CORREGIDA: solo matchea si el nombre del juego está contenido en la query
 function buscarJuegoIA(t){
-    t = t.toLowerCase();
-    return todosLosJuegos.find(g => {
+    t = t.toLowerCase().trim();
+    if(!t) return null;
+    // 1. Coincidencia exacta
+    let found = todosLosJuegos.find(g => String(g.name).toLowerCase() === t);
+    if(found) return found;
+    // 2. La query contiene el nombre completo del juego (mínimo 4 chars de nombre)
+    found = todosLosJuegos.find(g => {
         const n = String(g.name).toLowerCase();
-        return t.includes(n) || n.includes(n.split(" ")[0]);
+        return n.length >= 4 && t.includes(n);
     });
+    if(found) return found;
+    // 3. El nombre contiene la query (mínimo 4 chars de query)
+    if(t.length >= 4){
+        found = todosLosJuegos.find(g => String(g.name).toLowerCase().includes(t));
+    }
+    return found || null;
 }
 function respuestaIa(texto){
     const t = texto.toLowerCase().trim();
 
-    // CONTAR JUEGOS
-    if(t.includes("cuantos")||t.includes("cuántos")||t.includes("numero")||t.includes("número")||t.includes("total")){
-        if(t.includes("juego")){
-            return todosLosJuegos.length === 0
-                ? "Ahora mismo no hay juegos en el catálogo."
-                : `📊 Actualmente hay ${todosLosJuegos.length} juego${todosLosJuegos.length === 1 ? "" : "s"} en el catálogo.`;
-        }
+    // 1. Saludos y cortesía PRIMERO
+    if(t.includes("hola")||t.includes("hey")||t.includes("buenas")||t.includes("saludos"))
+        return "¡Hola! 👋 ¿En qué puedo ayudarte?";
+    if(t.includes("como estas")||t.includes("cómo estás")||t.includes("que tal")||t.includes("qué tal"))
+        return "¡Genial! ¿Y tú qué tal? 😊";
+    if(t.includes("gracias")||t.includes("thx")||t.includes("thanks"))
+        return "¡De nada! 😊";
+    if(t.includes("adios")||t.includes("adiós")||t.includes("chao")||t.includes("hasta luego")||t.includes("bye"))
+        return "¡Hasta luego! 👋";
+
+    // 2. Hora / fecha
+    if(t.includes("hora")||t.includes("qué hora")) return "Son las " + new Date().toLocaleTimeString('es-ES') + " ⏰";
+    if(t.includes("fecha")||t.includes("dia")||t.includes("día")) return "Hoy es " + new Date().toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) + " 📅";
+
+    // 3. Sobre el bot
+    if(t.includes("quien eres")||t.includes("quién eres")||t.includes("que eres")||t.includes("qué eres"))
+        return "Soy OMELES IA, el asistente virtual de OMELES GAMES 🤖";
+    if(t.includes("ayuda")||t.includes("help")||t.includes("socorro"))
+        return "Puedo ayudarte con:\n• \"cuántos juegos hay\"\n• \"lista de juegos\"\n• \"info de [nombre del juego]\"\n• Dudas sobre descargas o keys";
+
+    // 4. Herramientas
+    if(t.includes("aimlab")||t.includes("aim lab")) return "El AimLab está en el menú 🎯";
+    if(t.includes("cps")) return "El CPS Test está en el menú. ¡Mide tu velocidad de clic! ⚡";
+    if(t.includes("calculadora")) return "La calculadora está en el menú 🧮";
+
+    // 5. Chistes
+    if(t.includes("chiste")||t.includes("broma"))
+        return "¿Por qué los programadores prefieren el modo oscuro? Porque la luz atrae a los bugs 🐛😄";
+
+    // 6. Contar juegos
+    if((t.includes("cuantos")||t.includes("cuántos")||t.includes("numero")||t.includes("número")||t.includes("total")) && t.includes("juego")){
+        return todosLosJuegos.length === 0
+            ? "Ahora mismo no hay juegos en el catálogo."
+            : `📊 Actualmente hay ${todosLosJuegos.length} juego${todosLosJuegos.length === 1 ? "" : "s"} en el catálogo.`;
     }
 
-    // LISTA DE JUEGOS
+    // 7. Lista de juegos
     if(t.includes("lista")||t.includes("que juegos")||t.includes("qué juegos")||t.includes("muestra")||t.includes("ver juegos")||t.includes("cuales son")||t.includes("cuáles son")){
         if(todosLosJuegos.length === 0) return "No hay juegos disponibles ahora mismo.";
         return `📋 Lista de juegos (${todosLosJuegos.length}):\n${todosLosJuegos.map((g,i)=>`${i+1}. ${g.name}`).join("\n")}`;
     }
 
-    // INFO DE UN JUEGO
-    const j = buscarJuegoIA(t);
-    if(j){
-        let r = `🎮 ${j.name}\n\n`;
-        r += `⬇️ Descarga: ${j.download ? "✅ Disponible" : "❌ No"}\n`;
-        r += `🔧 Reparación: ${j.repair ? "✅ Disponible" : "❌ No"}\n`;
-        r += `🔑 Contraseña: ${j.password ? "✅ Disponible" : "❌ No"}`;
-        if(j.password) r += `\n\nContraseña: ${j.password}`;
-        return r;
-    }
-
-    // SALUDOS
-    if(t.includes("hola")||t.includes("hey")||t.includes("buenas")||t.includes("saludos"))
-        return "¡Hola! 👋 ¿En qué puedo ayudarte?";
-    if(t.includes("como estas")||t.includes("cómo estás")||t.includes("que tal")||t.includes("qué tal"))
-        return "¡Genial! ¿Y tú qué tal? 😊";
-
-    // AYUDA GENERAL
+    // 8. Dudas generales
     if(t.includes("key")||t.includes("clave")||t.includes("acceso"))
         return "Necesitas una KEY de acceso. Pídesela al administrador 🔑";
     if(t.includes("contraseña")||t.includes("password"))
@@ -2101,39 +2119,34 @@ function respuestaIa(texto){
     if(t.includes("reparar")||t.includes("reparacion")||t.includes("reparación")||t.includes("arreglar"))
         return "Si un juego no funciona, prueba con el botón REPARACIÓN 🔧";
 
-    // CORTESÍA
-    if(t.includes("gracias")||t.includes("thx")||t.includes("thanks"))
-        return "¡De nada! 😊";
-    if(t.includes("adios")||t.includes("adiós")||t.includes("chao")||t.includes("hasta luego")||t.includes("bye"))
-        return "¡Hasta luego! 👋";
+    // 9. Buscar juego SOLO si menciona "info", "sobre", "datos" o "de X" O si el nombre coincide bien
+    if(t.includes("info") || t.includes("informacion") || t.includes("información") || t.includes("datos") || t.includes("sobre")){
+        const limpio = t.replace(/info|informacion|información|datos|sobre|de|dime|dame|quiero|saber|el|la|los|las|un|una/g, "").trim();
+        const j = buscarJuegoIA(limpio);
+        if(j){
+            let r = `🎮 ${j.name}\n\n`;
+            r += `⬇️ Descarga: ${j.download ? "✅ Disponible" : "❌ No"}\n`;
+            r += `🔧 Reparación: ${j.repair ? "✅ Disponible" : "❌ No"}\n`;
+            r += `🔑 Contraseña: ${j.password ? "✅ Disponible" : "❌ No"}`;
+            if(j.password) r += `\n\nContraseña: ${j.password}`;
+            return r;
+        }
+    }
 
-    // SOBRE EL BOT
-    if(t.includes("quien eres")||t.includes("quién eres")||t.includes("que eres")||t.includes("qué eres"))
-        return "Soy OMELES IA, el asistente virtual de OMELES GAMES 🤖";
-    if(t.includes("ayuda")||t.includes("help")||t.includes("socorro"))
-        return "Puedo ayudarte con:\n• \"cuántos juegos hay\"\n• \"lista de juegos\"\n• \"info de [nombre del juego]\"\n• Dudas sobre descargas o keys";
+    // 10. Si la query es corta (probablemente un nombre de juego), buscar
+    if(t.length >= 3 && t.length <= 30 && !t.includes(" ") === false){
+        const j = buscarJuegoIA(t);
+        if(j){
+            let r = `🎮 ${j.name}\n\n`;
+            r += `⬇️ Descarga: ${j.download ? "✅ Disponible" : "❌ No"}\n`;
+            r += `🔧 Reparación: ${j.repair ? "✅ Disponible" : "❌ No"}\n`;
+            r += `🔑 Contraseña: ${j.password ? "✅ Disponible" : "❌ No"}`;
+            if(j.password) r += `\n\nContraseña: ${j.password}`;
+            return r;
+        }
+    }
 
-    // HERRAMIENTAS
-    if(t.includes("aimlab")||t.includes("aim lab"))
-        return "El AimLab está en el menú 🎯";
-    if(t.includes("cps"))
-        return "El CPS Test está en el menú. ¡Mide tu velocidad de clic! ⚡";
-    if(t.includes("calculadora"))
-        return "La calculadora está en el menú 🧮";
-    if(t.includes("juego")||t.includes("juegos")||t.includes("game"))
-        return "Tenemos varios juegos disponibles. Usa el buscador o pregunta por uno específico 🎮";
-
-    // EXTRAS
-    if(t.includes("amor")||t.includes("te quiero"))
-        return "¡Qué bonito! 💜";
-    if(t.includes("chiste")||t.includes("broma"))
-        return "¿Por qué los programadores prefieren el modo oscuro? Porque la luz atrae a los bugs 🐛😄";
-    if(t.includes("hora")||t.includes("qué hora"))
-        return "Son las " + new Date().toLocaleTimeString('es-ES') + " ⏰";
-    if(t.includes("fecha")||t.includes("dia")||t.includes("día"))
-        return "Hoy es " + new Date().toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) + " 📅";
-
-    // FALLBACK
+    // 11. Fallback
     if(t.includes("?"))
         return "Buena pregunta 🤔. Prueba a preguntar por un juego específico o escribe 'ayuda'.";
     if(t.split(" ").length <= 2)
