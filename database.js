@@ -1,11 +1,10 @@
+const Database = require("better-sqlite3");
 const path = require("path");
 const fs = require("fs");
 const { DatabaseSync } = require("node:sqlite");
 
-// Ruta configurable: en Railway es /data/omeles_games.db
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, "omeles_games.db");
 
-// Asegurar que el directorio existe
 const dir = path.dirname(DB_PATH);
 if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
@@ -41,10 +40,21 @@ db.prepare(`
         download TEXT,
         repair TEXT,
         password TEXT,
+        image TEXT DEFAULT '',
         active INTEGER DEFAULT 1,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP
     )
 `).run();
+
+// =========================
+// MIGRACIÓN: añadir columna image si la BD ya existía
+// =========================
+try {
+    db.prepare("ALTER TABLE games ADD COLUMN image TEXT DEFAULT ''").run();
+    console.log("✅ Columna 'image' añadida a games");
+} catch (e) {
+    // Ya existía, ignorar
+}
 
 console.log(`✅ Base de datos OMELES GAMES lista en: ${DB_PATH}`);
 module.exports = db;
