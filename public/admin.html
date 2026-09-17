@@ -6,14 +6,11 @@
     <title>OMELES GAMES - ADMIN</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
         margin: 0;
-        background:
-            radial-gradient(circle at top, #15152b 0%, #050509 55%);
+        background: radial-gradient(circle at top, #15152b 0%, #050509 55%);
         color: white;
         font-family: Arial, Helvetica, sans-serif;
         min-height: 100vh;
@@ -37,11 +34,7 @@
         -webkit-text-fill-color: transparent;
     }
 
-    .subtitle {
-        text-align: center;
-        color: #777;
-        margin-bottom: 30px;
-    }
+    .subtitle { text-align: center; color: #777; margin-bottom: 30px; }
 
     .panel {
         background: rgba(15, 15, 25, 0.95);
@@ -52,17 +45,10 @@
         box-shadow: 0 0 30px rgba(0,0,0,.4);
     }
 
-    h2 {
-        margin-top: 0;
-        color: #9d7cff;
-    }
+    h2 { margin-top: 0; color: #9d7cff; }
+    h3 { color: #00b7ff; }
 
-    h3 {
-        color: #00b7ff;
-    }
-
-    input,
-    textarea {
+    input, textarea {
         width: 100%;
         padding: 14px;
         border-radius: 10px;
@@ -75,8 +61,7 @@
         font-family: Arial, Helvetica, sans-serif;
     }
 
-    input:focus,
-    textarea:focus {
+    input:focus, textarea:focus {
         border-color: #7b2cff;
         box-shadow: 0 0 10px rgba(123,44,255,.25);
     }
@@ -93,28 +78,14 @@
         margin: 5px;
     }
 
-    button:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.15);
-    }
+    button:hover { transform: translateY(-2px); filter: brightness(1.15); }
 
-    .danger {
-        background: linear-gradient(135deg, #ff1744, #a00025);
-    }
-
-    .edit {
-        background: linear-gradient(135deg, #00a8ff, #0066ff);
-    }
-
-    .copy {
-        background: #171729;
-        border: 1px solid #343451;
-    }
-
-    .secondary {
-        background: #171729;
-        border: 1px solid #343451;
-    }
+    .danger { background: linear-gradient(135deg, #ff1744, #a00025); }
+    .edit { background: linear-gradient(135deg, #00a8ff, #0066ff); }
+    .copy { background: #171729; border: 1px solid #343451; }
+    .secondary { background: #171729; border: 1px solid #343451; }
+    .admin-btn { background: linear-gradient(135deg, #ff8c00, #ffb347); }
+    .admin-lifetime-btn { background: linear-gradient(135deg, #ff1744, #ff8c00); }
 
     .key-result {
         display: none;
@@ -134,57 +105,28 @@
         margin: 15px 0;
     }
 
-    .buttons {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
-    }
+    .buttons { display: flex; flex-wrap: wrap; gap: 5px; }
 
-    .search {
-        margin-bottom: 15px;
-    }
+    .search { margin-bottom: 15px; }
 
-    .table-wrapper {
-        overflow-x: auto;
-    }
+    .table-wrapper { overflow-x: auto; }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 1100px;
-    }
+    table { width: 100%; border-collapse: collapse; min-width: 1100px; }
 
-    th,
-    td {
+    th, td {
         padding: 13px;
         border-bottom: 1px solid #25253a;
         text-align: left;
         vertical-align: middle;
     }
 
-    th {
-        color: #9d7cff;
-        background: #0b0b13;
-    }
+    th { color: #9d7cff; background: #0b0b13; }
 
-    tr:hover td {
-        background: rgba(123,44,255,.04);
-    }
+    tr:hover td { background: rgba(123,44,255,.04); }
 
-    .active {
-        color: #00ff9d;
-        font-weight: bold;
-    }
-
-    .inactive {
-        color: #ff4567;
-        font-weight: bold;
-    }
-
-    .one-use {
-        color: #ffd166;
-        font-weight: bold;
-    }
+    .active { color: #00ff9d; font-weight: bold; }
+    .inactive { color: #ff4567; font-weight: bold; }
+    .one-use { color: #ffd166; font-weight: bold; }
 
     .message {
         margin-top: 15px;
@@ -205,14 +147,9 @@
         color: #ff5672;
     }
 
-    .hidden {
-        display: none !important;
-    }
+    .hidden { display: none !important; }
 
-    .login-box {
-        max-width: 500px;
-        margin: 80px auto;
-    }
+    .login-box { max-width: 500px; margin: 80px auto; }
 
     .form-grid {
         display: grid;
@@ -220,9 +157,7 @@
         gap: 15px;
     }
 
-    .form-grid .full {
-        grid-column: 1 / -1;
-    }
+    .form-grid .full { grid-column: 1 / -1; }
 
     .game-card {
         background: #08080e;
@@ -233,10 +168,7 @@
         overflow: hidden;
     }
 
-    .game-card h3 {
-        margin-top: 0;
-        margin-bottom: 8px;
-    }
+    .game-card h3 { margin-top: 0; margin-bottom: 8px; }
 
     .game-card-image {
         width: 80px;
@@ -249,11 +181,7 @@
         margin-bottom: 10px;
     }
 
-    .game-info {
-        color: #888;
-        font-size: 14px;
-        margin-bottom: 10px;
-    }
+    .game-info { color: #888; font-size: 14px; margin-bottom: 10px; }
 
     .game-status {
         display: inline-block;
@@ -265,34 +193,131 @@
         font-weight: bold;
     }
 
-    .nickname {
-        color: #00c8ff;
-        font-weight: bold;
+    .nickname { color: #00c8ff; font-weight: bold; }
+    .key-text { font-size: 13px; word-break: break-all; }
+
+    .empty { text-align: center; color: #666; padding: 30px; }
+
+    /* =========================
+       MODAL (EDITAR JUEGO / MOTE)
+    ========================= */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(6px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        overflow-y: auto;
     }
 
-    .key-text {
-        font-size: 13px;
-        word-break: break-all;
-    }
+    .modal-overlay.open { display: flex; }
 
-    .empty {
-        text-align: center;
-        color: #666;
+    .modal-box {
+        width: 100%;
+        max-width: 600px;
+        background: linear-gradient(145deg, rgba(25,25,35,0.98), rgba(12,12,18,0.98));
+        border: 1px solid #7b2cff;
+        border-radius: 18px;
         padding: 30px;
+        box-shadow: 0 25px 80px rgba(0,0,0,0.6), 0 0 60px rgba(123,44,255,0.2);
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: modalIn 0.2s ease;
     }
+
+    @keyframes modalIn {
+        from { opacity: 0; transform: translateY(20px) scale(0.97); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #25253a;
+    }
+
+    .modal-header h2 { margin: 0; font-size: 22px; }
+
+    .modal-close {
+        background: transparent !important;
+        border: none !important;
+        color: #888 !important;
+        font-size: 26px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 36px;
+        height: 36px;
+        line-height: 1;
+        border-radius: 8px !important;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .modal-close:hover {
+        background: rgba(255,255,255,0.08) !important;
+        color: white !important;
+        transform: none !important;
+    }
+
+    .modal-field { margin-bottom: 15px; }
+
+    .modal-field label {
+        display: block;
+        color: #9d7cff;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+    }
+
+    .modal-field input { margin-bottom: 0; }
+
+    .modal-preview {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        background: #08080e;
+        border: 1px solid #25253a;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        min-height: 60px;
+    }
+
+    .modal-preview img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #25253a;
+    }
+
+    .modal-preview span { color: #666; font-size: 13px; }
+
+    .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid #25253a;
+    }
+
+    .modal-actions button { margin: 0; }
 
     @media (max-width: 800px) {
-        .form-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .form-grid .full {
-            grid-column: auto;
-        }
-
-        .logo {
-            font-size: 28px;
-        }
+        .form-grid { grid-template-columns: 1fr; }
+        .form-grid .full { grid-column: auto; }
+        .logo { font-size: 28px; }
+        .modal-box { padding: 20px; }
     }
 </style>
 </head>
@@ -343,30 +368,29 @@
             <h2>🔑 Generador de Keys</h2>
 
             <p style="color:#777;">
-                Selecciona la duración de la key:
+                <strong style="color:#00c8ff;">👤 KEYS DE USUARIO</strong> — Para dar acceso al buscador de juegos
             </p>
 
             <div class="buttons">
 
-                <button onclick="crearKey('24H')">
-                    24 HORAS
-                </button>
+                <button onclick="crearKey('24H')">24 HORAS</button>
+                <button onclick="crearKey('7D')">7 DÍAS</button>
+                <button onclick="crearKey('30D')">30 DÍAS</button>
+                <button onclick="crearKey('LIFETIME')">LIFETIME</button>
+                <button onclick="crearKey('ONE_USE')">1 SOLO USO</button>
 
-                <button onclick="crearKey('7D')">
-                    7 DÍAS
-                </button>
+            </div>
 
-                <button onclick="crearKey('30D')">
-                    30 DÍAS
-                </button>
+            <p style="color:#777;margin-top:25px;">
+                <strong style="color:#ff8c00;">👑 KEYS DE ADMIN</strong> — Para dar acceso al panel de administración
+            </p>
 
-                <button onclick="crearKey('LIFETIME')">
-                    LIFETIME
-                </button>
+            <div class="buttons">
 
-                <button onclick="crearKey('ONE_USE')">
-                    1 SOLO USO
-                </button>
+                <button class="admin-btn" onclick="crearKey('ADMIN_24H')">👑 ADMIN 24H</button>
+                <button class="admin-btn" onclick="crearKey('ADMIN_7D')">👑 ADMIN 7D</button>
+                <button class="admin-btn" onclick="crearKey('ADMIN_30D')">👑 ADMIN 30D</button>
+                <button class="admin-lifetime-btn" onclick="crearKey('ADMIN_LIFETIME')">👑 ADMIN LIFETIME</button>
 
             </div>
 
@@ -519,11 +543,93 @@
 
 </div>
 
+<!-- =========================
+     MODAL EDITAR JUEGO
+========================= -->
+
+<div id="editModal" class="modal-overlay">
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <h2>✏️ Editar juego</h2>
+            <button class="modal-close" onclick="cerrarModalEditar()">✕</button>
+        </div>
+
+        <div class="modal-preview" id="modalPreview">
+            <span>Sin imagen</span>
+        </div>
+
+        <div class="modal-field">
+            <label>Nombre del juego</label>
+            <input id="editName" type="text" placeholder="Nombre del juego">
+        </div>
+
+        <div class="modal-field">
+            <label>Link de descarga</label>
+            <input id="editDownload" type="text" placeholder="https://...">
+        </div>
+
+        <div class="modal-field">
+            <label>Link de reparación</label>
+            <input id="editRepair" type="text" placeholder="https://...">
+        </div>
+
+        <div class="modal-field">
+            <label>Password del juego</label>
+            <input id="editPassword" type="text" placeholder="Contraseña">
+        </div>
+
+        <div class="modal-field">
+            <label>URL de imagen</label>
+            <input id="editImage" type="text" placeholder="https://i.imgur.com/abc.jpg" oninput="actualizarPreview()">
+        </div>
+
+        <div class="modal-actions">
+            <button class="secondary" onclick="cerrarModalEditar()">CANCELAR</button>
+            <button onclick="guardarEdicion()">💾 GUARDAR CAMBIOS</button>
+        </div>
+
+        <div id="modalMessage" class="message"></div>
+    </div>
+</div>
+
+<!-- =========================
+     MODAL EDITAR MOTE
+========================= -->
+
+<div id="nickModal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 450px;">
+
+        <div class="modal-header">
+            <h2>✏️ Editar mote</h2>
+            <button class="modal-close" onclick="cerrarModalMote()">✕</button>
+        </div>
+
+        <div class="modal-field">
+            <label>Mote (nombre para identificar la key)</label>
+            <input id="editNickname" type="text" placeholder="Ej: Juan, Amigo Pedro...">
+        </div>
+
+        <div class="modal-actions">
+            <button class="secondary" onclick="cerrarModalMote()">CANCELAR</button>
+            <button onclick="guardarMote()">💾 GUARDAR</button>
+        </div>
+
+        <div id="nickMessage" class="message"></div>
+    </div>
+</div>
+
 <script>
 
 let adminKeyValue = "";
 let todasLasKeys = [];
 let todosLosJuegos = [];
+let juegoEditandoId = null;
+let keyEditandoId = null;
+
+/* ======================================================
+   LOGIN ADMIN
+====================================================== */
 
 async function entrarAdmin() {
 
@@ -564,6 +670,10 @@ async function entrarAdmin() {
     }
 }
 
+/* ======================================================
+   CREAR KEY
+====================================================== */
+
 async function crearKey(type) {
 
     if (!adminKeyValue) {
@@ -600,13 +710,14 @@ async function crearKey(type) {
     }
 }
 
+/* ======================================================
+   COPIAR KEY
+====================================================== */
+
 async function copiarKey() {
 
     const key = document.getElementById("generatedKey").textContent;
-
-    if (!key) {
-        return;
-    }
+    if (!key) return;
 
     try {
         await navigator.clipboard.writeText(key);
@@ -615,6 +726,10 @@ async function copiarKey() {
         alert("No se ha podido copiar automáticamente.");
     }
 }
+
+/* ======================================================
+   CARGAR KEYS
+====================================================== */
 
 async function cargarKeys() {
 
@@ -642,6 +757,10 @@ async function cargarKeys() {
         alert("No se ha podido conectar con el servidor.");
     }
 }
+
+/* ======================================================
+   MOSTRAR KEYS
+====================================================== */
 
 function mostrarKeys(keys) {
 
@@ -681,9 +800,22 @@ function mostrarKeys(keys) {
             claseEstado = "active";
         }
 
-        const tipo = key.type === "ONE_USE"
-            ? `<span class="one-use">1 USO</span>`
-            : escapeHTML(key.type);
+        let tipo;
+        if (key.type === "ONE_USE") {
+            tipo = `<span class="one-use">1 USO</span>`;
+        } else if (key.type === "ADMIN") {
+            tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN</span>`;
+        } else if (key.type === "ADMIN_24H") {
+            tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN 24H</span>`;
+        } else if (key.type === "ADMIN_7D") {
+            tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN 7D</span>`;
+        } else if (key.type === "ADMIN_30D") {
+            tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN 30D</span>`;
+        } else if (key.type === "ADMIN_LIFETIME") {
+            tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN LIFETIME</span>`;
+        } else {
+            tipo = escapeHTML(key.type);
+        }
 
         tr.innerHTML = `
             <td>
@@ -702,7 +834,7 @@ function mostrarKeys(keys) {
             <td>${key.last_used_at ? formatearFecha(key.last_used_at) : "-"}</td>
             <td>${Number(key.use_count) || 0}</td>
             <td>
-                <button class="edit" onclick="editarMote(${Number(key.id)}, '${escapeJS(key.nickname || "")}')">
+                <button class="edit" onclick="abrirModalMote(${Number(key.id)})">
                     ✏️ MOTE
                 </button>
                 ${key.active ? `
@@ -720,12 +852,39 @@ function mostrarKeys(keys) {
     });
 }
 
-async function editarMote(id, actual) {
+/* ======================================================
+   MODAL EDITAR MOTE
+====================================================== */
 
-    const nickname = prompt("Introduce el mote de esta key:", actual);
-    if (nickname === null) return;
+function abrirModalMote(id) {
 
-    const nuevoMote = nickname.trim();
+    const key = todasLasKeys.find(k => Number(k.id) === Number(id));
+    if (!key) {
+        alert("Key no encontrada.");
+        return;
+    }
+
+    keyEditandoId = id;
+    document.getElementById("editNickname").value = key.nickname || "";
+
+    const msg = document.getElementById("nickMessage");
+    msg.style.display = "none";
+
+    document.getElementById("nickModal").classList.add("open");
+    setTimeout(() => document.getElementById("editNickname").focus(), 100);
+}
+
+function cerrarModalMote() {
+    document.getElementById("nickModal").classList.remove("open");
+    keyEditandoId = null;
+}
+
+async function guardarMote() {
+
+    if (!keyEditandoId) return;
+
+    const nickname = document.getElementById("editNickname").value.trim();
+    const message = document.getElementById("nickMessage");
 
     try {
 
@@ -735,23 +894,31 @@ async function editarMote(id, actual) {
                 "Content-Type": "application/json",
                 "x-admin-key": adminKeyValue
             },
-            body: JSON.stringify({ id: id, nickname: nuevoMote })
+            body: JSON.stringify({ id: keyEditandoId, nickname: nickname })
         });
 
         const data = await response.json();
 
         if (!response.ok || !data.success) {
-            alert(data.message || "No se pudo actualizar el mote.");
+            mostrarMensaje(message, data.message || "No se pudo actualizar el mote.", false);
             return;
         }
 
+        mostrarMensaje(message, "✅ Mote actualizado.", true);
+
         await cargarKeys();
+
+        setTimeout(() => cerrarModalMote(), 500);
 
     } catch (error) {
         console.error(error);
-        alert("Error conectando con el servidor.");
+        mostrarMensaje(message, "Error conectando con el servidor.", false);
     }
 }
+
+/* ======================================================
+   REVOCAR KEY
+====================================================== */
 
 async function revocarKey(id) {
 
@@ -783,6 +950,10 @@ async function revocarKey(id) {
     }
 }
 
+/* ======================================================
+   ELIMINAR KEY
+====================================================== */
+
 async function eliminarKey(id) {
 
     if (!confirm("⚠️ ELIMINAR KEY\n\nEsta acción eliminará la key definitivamente de la base de datos.\n\n¿Quieres continuar?")) return;
@@ -813,6 +984,10 @@ async function eliminarKey(id) {
     }
 }
 
+/* ======================================================
+   FILTRAR KEYS
+====================================================== */
+
 function filtrarKeys() {
 
     const texto = document.getElementById("search").value.toLowerCase().trim();
@@ -833,6 +1008,10 @@ function filtrarKeys() {
 
     mostrarKeys(filtradas);
 }
+
+/* ======================================================
+   CREAR JUEGO
+====================================================== */
 
 async function crearJuego() {
 
@@ -882,6 +1061,10 @@ async function crearJuego() {
     }
 }
 
+/* ======================================================
+   CARGAR JUEGOS
+====================================================== */
+
 async function cargarJuegos() {
 
     if (!adminKeyValue) return;
@@ -908,6 +1091,10 @@ async function cargarJuegos() {
         alert("No se han podido cargar los juegos.");
     }
 }
+
+/* ======================================================
+   MOSTRAR JUEGOS
+====================================================== */
 
 function mostrarJuegos(juegos) {
 
@@ -959,7 +1146,7 @@ function mostrarJuegos(juegos) {
             </div>
 
             <div style="margin-top:15px;clear:both;">
-                <button class="edit" onclick="editarJuego(${Number(game.id)})">
+                <button class="edit" onclick="abrirModalEditar(${Number(game.id)})">
                     ✏️ EDITAR
                 </button>
                 <button class="danger" onclick="eliminarJuego(${Number(game.id)})">
@@ -972,32 +1159,66 @@ function mostrarJuegos(juegos) {
     });
 }
 
-async function editarJuego(id) {
+/* ======================================================
+   MODAL EDITAR JUEGO
+====================================================== */
 
-    const juego = todosLosJuegos.find(game => Number(game.id) === Number(id));
+function abrirModalEditar(id) {
 
+    const juego = todosLosJuegos.find(g => Number(g.id) === Number(id));
     if (!juego) {
         alert("Juego no encontrado.");
         return;
     }
 
-    const name = prompt("Nombre del juego:", juego.name || "");
-    if (name === null) return;
+    juegoEditandoId = id;
 
-    const download = prompt("Link de descarga:", juego.download || "");
-    if (download === null) return;
+    document.getElementById("editName").value = juego.name || "";
+    document.getElementById("editDownload").value = juego.download || "";
+    document.getElementById("editRepair").value = juego.repair || "";
+    document.getElementById("editPassword").value = juego.password || "";
+    document.getElementById("editImage").value = juego.image || "";
 
-    const repair = prompt("Link de reparación:", juego.repair || "");
-    if (repair === null) return;
+    actualizarPreview();
 
-    const password = prompt("Password:", juego.password || "");
-    if (password === null) return;
+    const modalMessage = document.getElementById("modalMessage");
+    modalMessage.style.display = "none";
 
-    const image = prompt("URL de imagen (deja vacío para ninguna):", juego.image || "");
-    if (image === null) return;
+    document.getElementById("editModal").classList.add("open");
+}
 
-    if (!name.trim()) {
-        alert("El nombre del juego no puede estar vacío.");
+function cerrarModalEditar() {
+    document.getElementById("editModal").classList.remove("open");
+    juegoEditandoId = null;
+}
+
+function actualizarPreview() {
+    const url = document.getElementById("editImage").value.trim();
+    const preview = document.getElementById("modalPreview");
+
+    if (url) {
+        preview.innerHTML = `
+            <img src="${escapeHTML(url)}" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+            <span style="display:none;color:#ff5672;">⚠️ No se pudo cargar la imagen</span>
+        `;
+    } else {
+        preview.innerHTML = `<span>Sin imagen</span>`;
+    }
+}
+
+async function guardarEdicion() {
+
+    if (!juegoEditandoId) return;
+
+    const name = document.getElementById("editName").value.trim();
+    const download = document.getElementById("editDownload").value.trim();
+    const repair = document.getElementById("editRepair").value.trim();
+    const password = document.getElementById("editPassword").value.trim();
+    const image = document.getElementById("editImage").value.trim();
+    const message = document.getElementById("modalMessage");
+
+    if (!name) {
+        mostrarMensaje(message, "El nombre no puede estar vacío.", false);
         return;
     }
 
@@ -1010,30 +1231,51 @@ async function editarJuego(id) {
                 "x-admin-key": adminKeyValue
             },
             body: JSON.stringify({
-                id,
-                name: name.trim(),
-                download: download.trim(),
-                repair: repair.trim(),
-                password: password.trim(),
-                image: image.trim()
+                id: juegoEditandoId,
+                name,
+                download,
+                repair,
+                password,
+                image
             })
         });
 
         const data = await response.json();
 
         if (!response.ok || !data.success) {
-            alert(data.message || "No se pudo editar el juego.");
+            mostrarMensaje(message, data.message || "No se pudo guardar.", false);
             return;
         }
 
-        alert("Juego actualizado correctamente.");
+        mostrarMensaje(message, "✅ Juego actualizado correctamente.", true);
+
         await cargarJuegos();
+
+        setTimeout(() => cerrarModalEditar(), 700);
 
     } catch (error) {
         console.error(error);
-        alert("Error conectando con el servidor.");
+        mostrarMensaje(message, "Error conectando con el servidor.", false);
     }
 }
+
+/* Cerrar modales con ESC o clic fuera */
+document.getElementById("editModal").addEventListener("click", (e) => {
+    if (e.target.id === "editModal") cerrarModalEditar();
+});
+document.getElementById("nickModal").addEventListener("click", (e) => {
+    if (e.target.id === "nickModal") cerrarModalMote();
+});
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        if (document.getElementById("editModal").classList.contains("open")) cerrarModalEditar();
+        if (document.getElementById("nickModal").classList.contains("open")) cerrarModalMote();
+    }
+});
+
+/* ======================================================
+   ELIMINAR JUEGO
+====================================================== */
 
 async function eliminarJuego(id) {
 
@@ -1068,6 +1310,10 @@ async function eliminarJuego(id) {
     }
 }
 
+/* ======================================================
+   FILTRAR JUEGOS
+====================================================== */
+
 function filtrarJuegos() {
 
     const texto = document.getElementById("gameSearch").value.toLowerCase().trim();
@@ -1084,16 +1330,20 @@ function filtrarJuegos() {
     mostrarJuegos(filtrados);
 }
 
+/* ======================================================
+   FECHAS
+====================================================== */
+
 function formatearFecha(fecha) {
-
     if (!fecha) return "-";
-
     const d = new Date(fecha);
-
     if (Number.isNaN(d.getTime())) return "-";
-
     return d.toLocaleString("es-ES");
 }
+
+/* ======================================================
+   SEGURIDAD HTML
+====================================================== */
 
 function escapeHTML(texto) {
     return String(texto ?? "")
@@ -1112,17 +1362,27 @@ function escapeJS(texto) {
         .replaceAll("\r", "");
 }
 
+/* ======================================================
+   MENSAJES
+====================================================== */
+
 function mostrarMensaje(elemento, texto, correcto) {
     elemento.textContent = texto;
     elemento.className = "message " + (correcto ? "success" : "error");
     elemento.style.display = "block";
 }
 
+/* ======================================================
+   ENTER LOGIN
+====================================================== */
+
 document.getElementById("adminKey").addEventListener("keydown", function(event) {
-    if (event.key === "Enter") {
-        entrarAdmin();
-    }
+    if (event.key === "Enter") entrarAdmin();
 });
+
+/* ======================================================
+   SOCKET.IO - TIEMPO REAL
+====================================================== */
 
 const socket = io();
 socket.on("games-updated", () => {
@@ -1131,6 +1391,7 @@ socket.on("games-updated", () => {
         cargarKeys();
     }
 });
+
 </script>
 
 <script src="/socket.io/socket.io.js"></script>
