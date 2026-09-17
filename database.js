@@ -1,4 +1,3 @@
-const Database = require("better-sqlite3");
 const path = require("path");
 const fs = require("fs");
 const { DatabaseSync } = require("node:sqlite");
@@ -47,7 +46,7 @@ db.prepare(`
 `).run();
 
 // =========================
-// MIGRACIÓN: añadir columna image si la BD ya existía
+// MIGRACIÓN: añadir columna image si no existe
 // =========================
 try {
     db.prepare("ALTER TABLE games ADD COLUMN image TEXT DEFAULT ''").run();
