@@ -1,1387 +1,1368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OMELES GAMES</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
+:root{--purple:#8b5cff;--bg:#05050a;--hud-bg:rgba(10,10,20,0.6);--tracer:#ffffff;--tracer-size:6px;--explosion:#ffffff;--explosion-count:14}
+body{min-height:100vh;background:var(--bg);color:#fff;overflow-x:hidden}
+
+/* LOADING */
+#loading{position:fixed;inset:0;background:var(--bg);z-index:99998;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;transition:.5s}
+#loading.hide{opacity:0;visibility:hidden}
+#loading .ld-logo{font-size:38px;font-weight:900;letter-spacing:4px;background:linear-gradient(90deg,#fff,#b99cff,#60a5fa,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:300% auto;animation:shine 2s linear infinite}
+#loading .ld-bar{width:200px;height:3px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden}
+#loading .ld-bar>div{height:100%;background:linear-gradient(90deg,#6d28d9,#2563eb);animation:load 1.2s ease forwards}
+@keyframes load{to{width:100%}}
+
+/* FONDO */
+.orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:.5;pointer-events:none;z-index:0;animation:float 20s infinite ease-in-out}
+.o1{width:400px;height:400px;background:radial-gradient(circle,#8b5cff,transparent 70%);top:-100px;right:-100px}
+.o2{width:500px;height:500px;background:radial-gradient(circle,#2563eb,transparent 70%);bottom:-150px;left:-150px;animation-delay:-7s}
+.o3{width:350px;height:350px;background:radial-gradient(circle,#a855f7,transparent 70%);top:40%;left:45%;opacity:.25;animation-delay:-14s}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(50px,-80px) scale(1.1)}66%{transform:translate(-50px,50px) scale(.9)}}
+.grid{position:fixed;inset:0;background-image:linear-gradient(rgba(139,92,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(139,92,255,.03) 1px,transparent 1px);background-size:50px 50px;pointer-events:none;z-index:1}
+@keyframes shine{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+
+#loginScreen,#clientScreen,.tool-overlay,.game-modal{position:relative;z-index:2}
+
+/* LOGIN */
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{width:100%;max-width:440px;padding:45px 40px;border-radius:24px;background:linear-gradient(145deg,rgba(25,25,40,.85),rgba(10,10,20,.9));backdrop-filter:blur(20px);border:1px solid rgba(139,92,255,.25);box-shadow:0 30px 90px rgba(0,0,0,.6),0 0 80px rgba(139,92,255,.15);text-align:center}
+.login-logo{font-size:34px;font-weight:900;letter-spacing:3px;margin-bottom:10px;background:linear-gradient(90deg,#fff,#b99cff,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200% auto;animation:shine 3s linear infinite}
+.login-logo span{color:#8b5cff;-webkit-text-fill-color:#8b5cff}
+.login-sub{color:#888;font-size:14px;margin-bottom:35px}
+.key-input{width:100%;padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.4);color:#fff;outline:none;text-align:center;font-size:14px;letter-spacing:1.5px;margin-bottom:14px}
+.key-input:focus{border-color:#8b5cff;box-shadow:0 0 25px rgba(139,92,255,.3)}
+.login-btn{width:100%;padding:15px;border:none;border-radius:12px;background:linear-gradient(90deg,#6d28d9,#2563eb);color:#fff;font-weight:900;letter-spacing:2px;cursor:pointer;transition:.3s;box-shadow:0 8px 25px rgba(109,40,217,.4)}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(109,40,217,.6)}
+#loginMessage{min-height:20px;margin-top:15px;font-size:13px;color:#ff5c5c}
+
+/* CLIENTE */
+#clientScreen{display:none;min-height:100vh}
+header{height:80px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;border-bottom:1px solid rgba(255,255,255,.06);background:var(--hud-bg);backdrop-filter:blur(20px);position:sticky;top:0;z-index:100}
+.logo{font-size:26px;font-weight:900;letter-spacing:2px}
+.logo span{color:#8b5cff}
+.h-right{display:flex;align-items:center;gap:20px}
+.status{display:flex;align-items:center;gap:8px;font-size:13px;color:#aaa;padding:6px 12px;border-radius:20px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15)}
+.dot{width:8px;height:8px;border-radius:50%;background:#00ff88;box-shadow:0 0 10px #00ff88;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.logout{border:none;background:rgba(255,255,255,.05);color:#aaa;padding:8px 16px;border-radius:10px;cursor:pointer;font-size:12px;font-weight:700;letter-spacing:1px}
+.logout:hover{background:rgba(255,50,80,.15);color:#ff5672}
+main{max-width:950px;margin:auto;padding:60px 25px}
+.hero{text-align:center;margin-bottom:25px}
+.hero h1{font-size:52px;font-weight:900;margin-bottom:12px;background:linear-gradient(90deg,#fff,#b99cff,#60a5fa,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:300% auto;animation:shine 5s linear infinite}
+.hero p{color:#888;font-size:15px}
+
+/* FILTROS */
+.filters{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.f-btn{padding:8px 18px;border-radius:20px;border:1px solid rgba(139,92,255,.2);background:rgba(20,20,35,.5);color:#aaa;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:6px}
+.f-btn:hover{border-color:rgba(139,92,255,.5);color:#fff}
+.f-btn.active{background:linear-gradient(135deg,#6d28d9,#2563eb);border-color:transparent;color:#fff;box-shadow:0 5px 20px rgba(109,40,217,.4)}
+.f-count{background:rgba(0,0,0,.3);padding:1px 8px;border-radius:10px;font-size:11px}
+
+/* SEARCH */
+.search-w{margin-bottom:25px;position:relative}
+.search-w::before{content:"🔍";position:absolute;left:20px;top:50%;transform:translateY(-50%);font-size:18px;opacity:.5;pointer-events:none}
+.search-input{width:100%;padding:18px 55px 18px 55px;border-radius:16px;border:1px solid rgba(139,92,255,.2);background:rgba(20,20,35,.6);color:#fff;outline:none;font-size:15px}
+.search-input:focus{border-color:#8b5cff;box-shadow:0 0 30px rgba(139,92,255,.25)}
+.sc-key{position:absolute;right:18px;top:50%;transform:translateY(-50%);background:rgba(139,92,255,.15);border:1px solid rgba(139,92,255,.3);color:#b99cff;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;pointer-events:none}
+.sc-key.hide{display:none}
+
+/* TARJETAS */
+.games{display:flex;flex-direction:column;gap:16px}
+.g-card{background:linear-gradient(145deg,rgba(25,25,40,.7),rgba(12,12,22,.85));backdrop-filter:blur(15px);border:1px solid rgba(139,92,255,.15);border-radius:18px;overflow:hidden;cursor:pointer;transition:.35s cubic-bezier(.4,0,.2,1);position:relative;opacity:0;transform:translateY(20px)}
+.g-card.vis{opacity:1;transform:translateY(0)}
+.g-card:hover{border-color:rgba(139,92,255,.5);transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,.4),0 0 40px rgba(139,92,255,.15)}
+.g-header{width:100%;padding:22px 25px;display:flex;align-items:center;justify-content:space-between;background:transparent;color:#fff;border:none;cursor:pointer;text-align:left}
+.g-left{display:flex;align-items:center;gap:18px;flex:1;min-width:0}
+.g-icon{width:60px;height:60px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;background:linear-gradient(135deg,#6d28d9,#2563eb);box-shadow:0 0 25px rgba(109,40,217,.35);flex-shrink:0;overflow:hidden}
+.g-icon.has-img{background:none;box-shadow:0 0 20px rgba(109,40,217,.4);border:1px solid rgba(139,92,255,.35)}
+.g-icon img{width:100%;height:100%;object-fit:cover;display:block}
+.g-name{font-size:19px;font-weight:800}
+.g-status{font-size:12px;color:#7a7a99;margin-top:5px;display:flex;align-items:center;gap:5px}
+.g-status::before{content:"";width:6px;height:6px;border-radius:50%;background:#00ff88;box-shadow:0 0 8px #00ff88}
+.g-arrow{font-size:22px;color:#8b5cff;opacity:.6;transition:.3s;flex-shrink:0}
+.g-card:hover .g-arrow{opacity:1;transform:translateX(5px)}
+.fav-btn{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);color:#666;font-size:16px;cursor:pointer;transition:.2s;z-index:2;display:flex;align-items:center;justify-content:center}
+.fav-btn:hover{transform:scale(1.15);border-color:rgba(255,215,0,.5);color:#ffd700}
+.fav-btn.active{color:#ffd700;background:rgba(255,215,0,.15);border-color:rgba(255,215,0,.4)}
+.skeleton{height:100px;border-radius:18px;background:linear-gradient(90deg,rgba(25,25,40,.7) 25%,rgba(40,40,60,.9) 50%,rgba(25,25,40,.7) 75%);background-size:200% 100%;animation:skel 1.5s infinite}
+@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.empty{padding:60px 40px;text-align:center;color:#666;border:2px dashed rgba(139,92,255,.15);border-radius:20px;background:rgba(20,20,35,.3)}
+.empty-icon{font-size:50px;margin-bottom:15px;opacity:.5}
+footer{text-align:center;padding:40px;color:#444;font-size:12px}
+
+/* MODAL */
+.game-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.game-modal.open{display:flex}
+.gm-box{width:100%;max-width:520px;background:linear-gradient(160deg,rgba(28,28,45,.98),rgba(15,15,28,.98));border-radius:24px;overflow:hidden;position:relative;box-shadow:0 30px 100px rgba(0,0,0,.8),0 0 80px rgba(139,92,255,.25);border:1px solid rgba(139,92,255,.3);animation:pop .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{opacity:0;transform:translateY(40px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.gm-banner{width:100%;height:180px;background:linear-gradient(135deg,#6d28d9,#2563eb);position:relative;display:flex;align-items:center;justify-content:center}
+.gm-banner img{width:100%;height:100%;object-fit:cover;display:block}
+.gm-banner .banner-fb{font-size:70px}
+.gm-banner::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(15,15,28,.98) 100%);pointer-events:none}
+.gm-close{position:absolute;top:15px;right:15px;width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,.6);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:18px;cursor:pointer;z-index:3;display:flex;align-items:center;justify-content:center;transition:.2s}
+.gm-close:hover{background:rgba(255,50,80,.3);transform:rotate(90deg)}
+.gm-body{padding:25px 30px 30px;position:relative;z-index:2}
+.gm-title{font-size:26px;font-weight:900;margin-bottom:8px;background:linear-gradient(90deg,#fff,#b99cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.gm-info{color:#7a7a99;font-size:13px;margin-bottom:25px;display:flex;align-items:center;gap:6px}
+.gm-info::before{content:"";width:8px;height:8px;border-radius:50%;background:#00ff88}
+.gm-btns{display:flex;flex-direction:column;gap:12px}
+.g-btn{display:flex;align-items:center;gap:15px;padding:16px 20px;border-radius:14px;border:none;color:#fff;font-weight:700;font-size:15px;cursor:pointer;transition:.3s;text-decoration:none}
+.g-btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+.g-btn-icon{font-size:22px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(0,0,0,.25);flex-shrink:0}
+.g-btn-text{display:flex;flex-direction:column;gap:2px;text-align:left}
+.g-btn-t{font-size:15px;font-weight:800}
+.g-btn-s{font-size:11px;opacity:.7;font-weight:400}
+.g-btn.download{background:linear-gradient(135deg,#6d28d9,#2563eb)}
+.g-btn.repair{background:linear-gradient(135deg,#0e7490,#0891b2)}
+.g-btn.password{background:linear-gradient(135deg,#7c3aed,#a855f7)}
+
+/* TOASTS */
+#toasts{position:fixed;top:100px;right:25px;z-index:2000;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{padding:14px 22px;border-radius:12px;font-size:14px;font-weight:600;color:#fff;box-shadow:0 15px 40px rgba(0,0,0,.5);display:flex;align-items:center;gap:10px;min-width:200px;opacity:0;transform:translateX(400px);transition:.4s cubic-bezier(.34,1.56,.64,1);pointer-events:auto}
+.toast.show{opacity:1;transform:translateX(0)}
+.toast.success{background:linear-gradient(135deg,#16a34a,#22c55e)}
+.toast.error{background:linear-gradient(135deg,#ff1744,#a00025)}
+.toast.info{background:linear-gradient(135deg,#6d28d9,#2563eb)}
+
+/* CONFETTI */
+.confetti{position:fixed;width:8px;height:8px;pointer-events:none;z-index:99999}
+
+/* MENÚ */
+#menuBtn{position:fixed;top:100px;right:25px;width:55px;height:55px;border-radius:50%;background:rgba(20,20,35,.5);backdrop-filter:blur(15px);border:1px solid rgba(139,92,255,.3);cursor:pointer;z-index:1500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:.3s;box-shadow:0 8px 30px rgba(0,0,0,.4),0 0 30px rgba(139,92,255,.15)}
+#menuBtn:hover{background:rgba(139,92,255,.2);transform:scale(1.08)}
+#menuBtn span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:.3s}
+#menuBtn.active span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+#menuBtn.active span:nth-child(2){opacity:0}
+#menuBtn.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+#dropdown{position:fixed;top:165px;right:25px;width:240px;max-height:calc(100vh - 200px);overflow-y:auto;background:rgba(20,20,35,.85);backdrop-filter:blur(20px);border:1px solid rgba(139,92,255,.25);border-radius:18px;padding:10px;z-index:1499;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 50px rgba(139,92,255,.15);opacity:0;transform:translateY(-10px) scale(.95);pointer-events:none;transition:.3s cubic-bezier(.34,1.56,.64,1)}
+#dropdown.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+.d-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;cursor:pointer;transition:.2s;color:#fff;font-size:14px;font-weight:600;border:none;background:transparent;width:100%;text-align:left}
+.d-item:hover{background:rgba(139,92,255,.15);transform:translateX(3px)}
+.d-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;background:linear-gradient(135deg,#6d28d9,#2563eb);flex-shrink:0}
+.d-item.aim .d-icon{background:linear-gradient(135deg,#ff1744,#ff8c00)}
+.d-item.calc .d-icon{background:linear-gradient(135deg,#0e7490,#0891b2)}
+.d-item.cps .d-icon{background:linear-gradient(135deg,#16a34a,#22c55e)}
+.d-item.ai .d-icon{background:linear-gradient(135deg,#a855f7,#ec4899)}
+.d-item.settings .d-icon{background:linear-gradient(135deg,#64748b,#94a3b8)}
+
+/* TOOL OVERLAYS */
+.tool-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);z-index:1800;overflow:hidden}
+.tool-overlay.open{display:block}
+.tool-close{position:absolute;top:20px;right:20px;width:45px;height:45px;border-radius:50%;background:rgba(255,50,80,.15);border:1px solid rgba(255,50,80,.4);color:#ff5672;font-size:20px;cursor:pointer;z-index:100;transition:.2s}
+.tool-close:hover{background:rgba(255,50,80,.4);color:#fff;transform:rotate(90deg)}
+
+/* AIMLAB */
+.aim-config{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;z-index:10}
+.aim-box{width:100%;max-width:600px;background:linear-gradient(145deg,rgba(25,25,40,.95),rgba(12,12,22,.95));border:1px solid rgba(139,92,255,.3);border-radius:24px;padding:30px;box-shadow:0 30px 100px rgba(0,0,0,.7)}
+.aim-title{font-size:32px;font-weight:900;letter-spacing:3px;margin-bottom:8px;text-align:center;background:linear-gradient(90deg,#ff8c00,#ff1744,#ff8c00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200% auto;animation:shine 3s linear infinite}
+.aim-sub{text-align:center;color:#777;font-size:13px;margin-bottom:20px}
+.aim-sec{margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.06)}
+.aim-sec h3{font-size:11px;color:#8b5cff;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.aim-field{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:10px}
+.aim-field label{color:#aaa;font-size:13px;flex-shrink:0}
+.aim-field input[type="number"]{width:80px;padding:7px 10px;border-radius:8px;border:1px solid #30304a;background:#08080e;color:#fff;outline:none;text-align:center}
+.aim-field input[type="range"]{flex:1;accent-color:#8b5cff}
+.aim-field input[type="color"]{width:48px;height:32px;border:1px solid #30304a;border-radius:8px;background:#08080e;cursor:pointer}
+.aim-field select{padding:7px 10px;border-radius:8px;border:1px solid #30304a;background:#08080e;color:#fff;outline:none;cursor:pointer;min-width:130px}
+.aim-val{width:40px;text-align:center;color:#b99cff;font-weight:700;font-size:13px}
+.aim-start{width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,#ff1744,#ff8c00);color:#fff;font-size:16px;font-weight:900;letter-spacing:3px;cursor:pointer;transition:.3s;box-shadow:0 10px 30px rgba(255,23,68,.4);margin-top:10px}
+.aim-start:hover{transform:translateY(-2px)}
+.aim-hud{position:absolute;top:0;left:0;right:0;padding:20px 90px 20px 30px;display:flex;justify-content:space-between;align-items:center;z-index:10;pointer-events:none;background:linear-gradient(to bottom,rgba(0,0,0,.7),transparent)}
+.aim-stats{display:flex;gap:25px}
+.aim-stat{display:flex;flex-direction:column;align-items:center}
+.aim-stat-l{font-size:10px;letter-spacing:2px;color:#888;font-weight:700}
+.aim-stat-v{font-size:24px;font-weight:900;color:#fff}
+.aim-stat-v.green{color:#00ff88}
+.aim-stat-v.red{color:#ff4567}
+.aim-stat-v.yellow{color:#ffd166}
+.aim-area{position:absolute;inset:0;cursor:crosshair;overflow:hidden}
+.aim-target{position:absolute;border-radius:50%;cursor:crosshair;animation:tspawn .15s ease}
+@keyframes tspawn{from{transform:scale(0)}to{transform:scale(1)}}
+.aim-target.hit{animation:thit .3s ease forwards;pointer-events:none}
+@keyframes thit{0%{transform:scale(1)}50%{transform:scale(1.6);opacity:.6}100%{transform:scale(0)}}
+
+/* CALCULADORA */
+.calc-box{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:380px;background:linear-gradient(145deg,rgba(25,25,40,.98),rgba(12,12,22,.98));border:1px solid rgba(14,116,144,.4);border-radius:24px;padding:25px;box-shadow:0 30px 100px rgba(0,0,0,.7)}
+.calc-title{text-align:center;font-size:13px;letter-spacing:3px;color:#0891b2;font-weight:700;margin-bottom:15px}
+.calc-display{background:#08080e;border:1px solid #1e3a4a;border-radius:14px;padding:20px;text-align:right;font-size:32px;color:#67e8f9;margin-bottom:15px;word-break:break-all;min-height:70px;overflow:hidden}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.calc-btn{padding:16px;border-radius:14px;border:none;background:rgba(30,58,74,.4);color:#fff;font-size:18px;font-weight:600;cursor:pointer;transition:.15s}
+.calc-btn:hover{background:rgba(30,58,74,.7)}
+.calc-btn.op{background:linear-gradient(135deg,#0e7490,#0891b2)}
+.calc-btn.clear{background:linear-gradient(135deg,#ff1744,#a00025)}
+.calc-btn.equal{background:linear-gradient(135deg,#16a34a,#22c55e);grid-column:span 2}
+.calc-btn.zero{grid-column:span 2}
+
+/* CPS */
+.cps-box{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:500px;background:linear-gradient(145deg,rgba(25,25,40,.98),rgba(12,12,22,.98));border:1px solid rgba(22,163,74,.4);border-radius:24px;padding:32px;box-shadow:0 30px 100px rgba(0,0,0,.7);text-align:center}
+.cps-title{font-size:28px;font-weight:900;letter-spacing:3px;margin-bottom:8px;background:linear-gradient(90deg,#22c55e,#16a34a);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.cps-sub{color:#777;font-size:13px;margin-bottom:18px}
+.cps-config{display:flex;gap:10px;align-items:center;justify-content:center;margin-bottom:18px;flex-wrap:wrap}
+.cps-config label{color:#aaa;font-size:13px}
+.cps-config select,.cps-config input{padding:8px 12px;border-radius:8px;border:1px solid #30304a;background:#08080e;color:#fff;outline:none;cursor:pointer}
+.cps-config input[type="number"]{width:80px;text-align:center}
+.cps-area{width:100%;height:180px;background:linear-gradient(145deg,rgba(22,163,74,.1),rgba(34,197,94,.05));border:2px dashed rgba(34,197,94,.4);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;user-select:none;margin-bottom:18px;transition:.15s;font-size:20px;font-weight:800;color:#22c55e;letter-spacing:2px}
+.cps-area:hover{background:rgba(22,163,74,.15)}
+.cps-area:active{transform:scale(.98)}
+.cps-area-sub{font-size:11px;color:#666;letter-spacing:1px}
+.cps-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:15px}
+.cps-stat{background:rgba(30,30,45,.6);border:1px solid rgba(34,197,94,.2);border-radius:12px;padding:15px}
+.cps-stat-l{font-size:10px;color:#888;letter-spacing:1.5px;font-weight:700;margin-bottom:5px}
+.cps-stat-v{font-size:24px;font-weight:900;color:#22c55e}
+.cps-bar{width:100%;height:8px;background:rgba(30,30,45,.6);border-radius:4px;overflow:hidden;margin-bottom:15px}
+.cps-bar>div{height:100%;background:linear-gradient(90deg,#16a34a,#22c55e);width:100%}
+.cps-reset{padding:10px 25px;border:none;border-radius:10px;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:#22c55e;font-weight:700;cursor:pointer;letter-spacing:1px;transition:.2s}
+.cps-reset:hover{background:rgba(34,197,94,.3);color:#fff}
+
+/* IA */
+.ai-box{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:520px;height:80vh;max-height:640px;background:linear-gradient(145deg,rgba(25,25,40,.98),rgba(12,12,22,.98));border:1px solid rgba(168,85,247,.4);border-radius:24px;box-shadow:0 30px 100px rgba(0,0,0,.7);display:flex;flex-direction:column;overflow:hidden}
+.ai-head{padding:20px 25px;border-bottom:1px solid rgba(168,85,247,.2);display:flex;align-items:center;gap:12px}
+.ai-av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#a855f7,#ec4899);display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 0 20px rgba(168,85,247,.5)}
+.ai-title{font-size:16px;font-weight:800}
+.ai-sub{font-size:11px;color:#22c55e}
+.ai-sub::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#22c55e;margin-right:5px}
+.ai-msgs{flex:1;padding:20px 25px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.ai-msgs::-webkit-scrollbar{width:6px}
+.ai-msgs::-webkit-scrollbar-thumb{background:rgba(168,85,247,.3);border-radius:3px}
+.ai-msg{max-width:80%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.5;animation:mi .3s ease;word-wrap:break-word;white-space:pre-wrap}
+@keyframes mi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.ai-msg.bot{background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.25);align-self:flex-start;border-bottom-left-radius:4px}
+.ai-msg.user{background:linear-gradient(135deg,#a855f7,#ec4899);align-self:flex-end;border-bottom-right-radius:4px}
+.ai-typing{display:flex;gap:5px;padding:12px 18px;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.25);border-radius:16px;border-bottom-left-radius:4px;align-self:flex-start;width:fit-content}
+.ai-typing span{width:8px;height:8px;border-radius:50%;background:#a855f7;animation:typ 1.4s infinite}
+.ai-typing span:nth-child(2){animation-delay:.2s}
+.ai-typing span:nth-child(3){animation-delay:.4s}
+@keyframes typ{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-8px);opacity:1}}
+.ai-input-area{padding:15px 20px;border-top:1px solid rgba(168,85,247,.2);display:flex;gap:10px}
+.ai-input{flex:1;padding:12px 16px;border-radius:12px;border:1px solid rgba(168,85,247,.3);background:rgba(0,0,0,.4);color:#fff;outline:none;font-size:14px;font-family:inherit}
+.ai-input:focus{border-color:#a855f7}
+.ai-send{padding:12px 20px;border-radius:12px;border:none;background:linear-gradient(135deg,#a855f7,#ec4899);color:#fff;font-weight:700;cursor:pointer;transition:.2s}
+.ai-send:hover{filter:brightness(1.15)}
+
+/* SETTINGS */
+.settings-box{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:560px;max-height:88vh;overflow-y:auto;background:linear-gradient(145deg,rgba(25,25,40,.98),rgba(12,12,22,.98));border:1px solid rgba(100,116,139,.4);border-radius:24px;padding:30px;box-shadow:0 30px 100px rgba(0,0,0,.7)}
+.settings-box::-webkit-scrollbar{width:8px}
+.settings-box::-webkit-scrollbar-thumb{background:rgba(100,116,139,.4);border-radius:4px}
+.settings-title{font-size:26px;font-weight:900;letter-spacing:3px;margin-bottom:8px;text-align:center;background:linear-gradient(90deg,#94a3b8,#cbd5e1);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.settings-sub{text-align:center;color:#777;font-size:13px;margin-bottom:22px}
+.presets{display:grid;grid-template-columns:repeat(auto-fit,minmax(85px,1fr));gap:10px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.06)}
+.preset{padding:12px 6px;border-radius:12px;border:1px solid rgba(100,116,139,.3);background:rgba(100,116,139,.1);color:#fff;cursor:pointer;transition:.2s;text-align:center;font-size:11px;font-weight:700}
+.preset:hover{background:rgba(100,116,139,.25);transform:translateY(-2px)}
+.preset .p-ic{font-size:20px;display:block;margin-bottom:4px}
+.settings-sec{margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.06)}
+.settings-sec:last-child{border-bottom:none}
+.settings-sec h3{font-size:11px;color:#8b5cff;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.s-field{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:10px}
+.s-field label{color:#aaa;font-size:13px;flex-shrink:0}
+.s-field input[type="color"]{width:52px;height:36px;border:1px solid #30304a;border-radius:8px;background:#08080e;cursor:pointer}
+.s-field input[type="range"]{flex:1;accent-color:#8b5cff}
+.s-field select{padding:8px 12px;border-radius:8px;border:1px solid #30304a;background:#08080e;color:#fff;outline:none;cursor:pointer;min-width:120px}
+.s-val{width:50px;text-align:center;color:#b99cff;font-weight:700;font-size:13px}
+.s-btn-row{display:flex;gap:10px;margin-top:10px}
+.s-btn{flex:1;padding:13px;border-radius:12px;border:1px solid rgba(100,116,139,.3);background:rgba(100,116,139,.15);color:#fff;font-weight:700;cursor:pointer;transition:.2s;letter-spacing:1px}
+.s-btn:hover{background:rgba(100,116,139,.3)}
+.s-btn.primary{background:linear-gradient(135deg,#6d28d9,#2563eb);border-color:transparent}
+.s-btn.danger{background:linear-gradient(135deg,#ff1744,#a00025);border-color:transparent}
+
+@media(max-width:600px){
+    header{padding:0 20px}
+    .status{display:none}
+    .hero h1{font-size:34px}
+    main{padding:40px 18px}
+    .login-box{padding:32px 24px}
+    .g-icon{width:52px;height:52px;font-size:22px}
+    #menuBtn{top:90px;right:15px;width:48px;height:48px}
+    #dropdown{top:150px;right:15px;width:220px}
+    .aim-box{padding:20px}
+    .aim-title{font-size:24px}
+    .aim-stats{gap:12px}
+    .aim-stat-v{font-size:16px}
+    .calc-display{font-size:26px}
+    .settings-box{padding:22px}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading">
+    <div class="ld-logo">OMELES GAMES</div>
+    <div class="ld-bar"><div></div></div>
+</div>
+
+<!-- FONDO -->
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+<div class="orb o3"></div>
+<div class="grid"></div>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+    <div class="login-box">
+        <div class="login-logo">OMELES <span>GAMES</span></div>
+        <div class="login-sub">Introduce tu KEY para continuar</div>
+        <input id="keyInput" class="key-input" type="text" placeholder="OMELES-XXXXXX-XXXXXX" autocomplete="off">
+        <button class="login-btn" onclick="iniciarSesion()">ENTRAR</button>
+        <div id="loginMessage"></div>
+    </div>
+</div>
+
+<!-- CLIENTE -->
+<div id="clientScreen">
+    <header>
+        <div class="logo">OMELES <span>GAMES</span></div>
+        <div class="h-right">
+            <div class="status"><div class="dot"></div> ONLINE</div>
+            <button class="logout" onclick="cerrarSesion()">SALIR</button>
+        </div>
+    </header>
+    <main>
+        <section class="hero">
+            <h1>Tus juegos</h1>
+            <p>Selecciona un juego para ver sus opciones</p>
+        </section>
+        <div class="filters">
+            <button class="f-btn active" data-filter="all" onclick="setFilter('all')">🎮 Todos <span class="f-count" id="cAll">0</span></button>
+            <button class="f-btn" data-filter="favorites" onclick="setFilter('favorites')">⭐ Favoritos <span class="f-count" id="cFav">0</span></button>
+            <button class="f-btn" data-filter="recent" onclick="setFilter('recent')">🕒 Recientes <span class="f-count" id="cRec">0</span></button>
+        </div>
+        <div class="search-w">
+            <input id="searchInput" class="search-input" type="text" placeholder="Buscar juego..." autocomplete="off" oninput="onSearch()">
+            <span class="sc-key" id="scKey">Ctrl+K</span>
+        </div>
+        <section id="games" class="games"></section>
+    </main>
+    <footer>OMELES GAMES © 2026</footer>
+</div>
+
+<!-- MODAL JUEGO -->
+<div id="gameModal" class="game-modal">
+    <div class="gm-box">
+        <div class="gm-banner" id="gmBanner"><div class="banner-fb">🎮</div></div>
+        <div class="gm-body">
+            <h2 class="gm-title" id="gmTitle">Nombre</h2>
+            <div class="gm-info">Juego disponible</div>
+            <div class="gm-btns" id="gmBtns"></div>
+        </div>
+    </div>
+</div>
+
+<div id="toasts"></div>
+
+<!-- MENÚ -->
+<button id="menuBtn" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+</button>
+
+<div id="dropdown">
+    <button class="d-item aim" onclick="abrirAim()"><div class="d-icon">🎯</div> AimLab</button>
+    <button class="d-item calc" onclick="abrirCalc()"><div class="d-icon">🧮</div> Calculadora</button>
+    <button class="d-item cps" onclick="abrirCps()"><div class="d-icon">⚡</div> CPS Test</button>
+    <button class="d-item ai" onclick="abrirIa()"><div class="d-icon">🤖</div> IA Sencilla</button>
+    <button class="d-item settings" onclick="abrirSettings()"><div class="d-icon">⚙️</div> Settings</button>
+</div>
+
+<!-- AIMLAB -->
+<div id="aimOverlay" class="tool-overlay">
+    <button class="tool-close" onclick="cerrarAim()">✕</button>
+    <div class="aim-config" id="aimConfig">
+        <div class="aim-box">
+            <div class="aim-title">AIMLAB</div>
+            <div class="aim-sub">Configura tu entrenamiento</div>
+            <div class="aim-sec">
+                <h3>🎯 Targets</h3>
+                <div class="aim-field"><label>Cantidad</label><input type="range" id="cfgN" min="1" max="10" value="1" oninput="document.getElementById('cfgNV').textContent=this.value"><span class="aim-val" id="cfgNV">1</span></div>
+                <div class="aim-field"><label>Tamaño</label><input type="range" id="cfgS" min="8" max="80" value="16" oninput="document.getElementById('cfgSV').textContent=this.value"><span class="aim-val" id="cfgSV">16</span></div>
+                <div class="aim-field"><label>Movimiento</label><select id="cfgM"><option value="static">Estático</option><option value="slow">Lento</option><option value="medium">Medio</option><option value="fast">Rápido</option></select></div>
+            </div>
+            <div class="aim-sec">
+                <h3>⏱️ Modo</h3>
+                <div class="aim-field"><label>Modo</label><select id="cfgMode" onchange="toggleAimTime()"><option value="time">Tiempo límite</option><option value="infinite">Infinito</option></select></div>
+                <div class="aim-field" id="aimTimeField"><label>Segundos</label><input type="number" id="cfgT" value="30" min="5" max="600"></div>
+            </div>
+            <div class="aim-sec">
+                <h3>🎨 Colores</h3>
+                <div class="aim-field"><label>Color bolita</label><input type="color" id="cfgCT" value="#ff1744"></div>
+                <div class="aim-field"><label>Color fondo</label><input type="color" id="cfgCB" value="#05050a"></div>
+            </div>
+            <div class="aim-sec">
+                <h3>⚙️ Opciones</h3>
+                <div class="aim-field"><label>Sonidos</label><select id="cfgSnd"><option value="on">On</option><option value="off">Off</option></select></div>
+                <div class="aim-field"><label>Cruz central</label><select id="cfgCh"><option value="off">No</option><option value="on">Sí</option></select></div>
+            </div>
+            <button class="aim-start" onclick="startAim()">EMPEZAR</button>
+        </div>
+    </div>
+    <div class="aim-hud" id="aimHud" style="display:none">
+        <div class="aim-stats">
+            <div class="aim-stat"><div class="aim-stat-l">Score</div><div class="aim-stat-v" id="aimScore">0</div></div>
+            <div class="aim-stat"><div class="aim-stat-l">Time</div><div class="aim-stat-v yellow" id="aimTime">∞</div></div>
+            <div class="aim-stat"><div class="aim-stat-l">Hits</div><div class="aim-stat-v green" id="aimHits">0</div></div>
+            <div class="aim-stat"><div class="aim-stat-l">Miss</div><div class="aim-stat-v red" id="aimMiss">0</div></div>
+        </div>
+    </div>
+    <div class="aim-area" id="aimArea" style="display:none"></div>
+    <div class="aim-config" id="aimResult" style="display:none">
+        <div class="aim-box">
+            <div class="aim-title">FIN</div>
+            <div class="aim-sub">Resultados</div>
+            <div class="cps-stats" style="margin:20px 0">
+                <div class="cps-stat"><div class="cps-stat-l">SCORE</div><div class="cps-stat-v" id="rScore" style="color:#b99cff">0</div></div>
+                <div class="cps-stat"><div class="cps-stat-l">PRECISIÓN</div><div class="cps-stat-v" id="rAcc">0%</div></div>
+                <div class="cps-stat"><div class="cps-stat-l">HITS</div><div class="cps-stat-v" id="rHits">0</div></div>
+            </div>
+            <button class="aim-start" onclick="volverAim()" style="background:linear-gradient(135deg,#6d28d9,#2563eb)">VOLVER</button>
+        </div>
+    </div>
+</div>
+
+<!-- CALCULADORA -->
+<div id="calcOverlay" class="tool-overlay">
+    <button class="tool-close" onclick="cerrarCalc()">✕</button>
+    <div class="calc-box">
+        <div class="calc-title">CALCULADORA</div>
+        <div class="calc-display" id="calcDisplay">0</div>
+        <div class="calc-grid">
+            <button class="calc-btn clear" onclick="calcClear()">C</button>
+            <button class="calc-btn op" onclick="calcOp('(')">(</button>
+            <button class="calc-btn op" onclick="calcOp(')')">)</button>
+            <button class="calc-btn op" onclick="calcOp('/')">÷</button>
+            <button class="calc-btn" onclick="calcNum('7')">7</button>
+            <button class="calc-btn" onclick="calcNum('8')">8</button>
+            <button class="calc-btn" onclick="calcNum('9')">9</button>
+            <button class="calc-btn op" onclick="calcOp('*')">×</button>
+            <button class="calc-btn" onclick="calcNum('4')">4</button>
+            <button class="calc-btn" onclick="calcNum('5')">5</button>
+            <button class="calc-btn" onclick="calcNum('6')">6</button>
+            <button class="calc-btn op" onclick="calcOp('-')">−</button>
+            <button class="calc-btn" onclick="calcNum('1')">1</button>
+            <button class="calc-btn" onclick="calcNum('2')">2</button>
+            <button class="calc-btn" onclick="calcNum('3')">3</button>
+            <button class="calc-btn op" onclick="calcOp('+')">+</button>
+            <button class="calc-btn zero" onclick="calcNum('0')">0</button>
+            <button class="calc-btn" onclick="calcNum('.')">.</button>
+            <button class="calc-btn equal" onclick="calcEqual()">=</button>
+        </div>
+    </div>
+</div>
+
+<!-- CPS -->
+<div id="cpsOverlay" class="tool-overlay">
+    <button class="tool-close" onclick="cerrarCps()">✕</button>
+    <div class="cps-box">
+        <div class="cps-title">CPS TEST</div>
+        <div class="cps-sub">Mide tus clics por segundo</div>
+        <div class="cps-config">
+            <label>Duración:</label>
+            <select id="cpsPreset" onchange="cpsPresetChange()">
+                <option value="1">1 seg</option>
+                <option value="5" selected>5 seg</option>
+                <option value="10">10 seg</option>
+                <option value="15">15 seg</option>
+                <option value="30">30 seg</option>
+                <option value="60">60 seg</option>
+                <option value="custom">Personalizado...</option>
+            </select>
+            <input type="number" id="cpsCustom" placeholder="seg" min="1" max="999" style="display:none">
+        </div>
+        <div class="cps-bar"><div id="cpsBar"></div></div>
+        <div class="cps-area" id="cpsArea">
+            HAZ CLIC AQUÍ
+            <div class="cps-area-sub">o pulsa la barra espaciadora</div>
+        </div>
+        <div class="cps-stats">
+            <div class="cps-stat"><div class="cps-stat-l">CPS</div><div class="cps-stat-v" id="cpsValue">0</div></div>
+            <div class="cps-stat"><div class="cps-stat-l">CLICKS</div><div class="cps-stat-v" id="cpsClicks">0</div></div>
+            <div class="cps-stat"><div class="cps-stat-l">TIEMPO</div><div class="cps-stat-v" id="cpsTime">5s</div></div>
+        </div>
+        <button class="cps-reset" onclick="resetCps()">REINICIAR</button>
+    </div>
+</div>
+
+<!-- IA -->
+<div id="aiOverlay" class="tool-overlay">
+    <button class="tool-close" onclick="cerrarIa()">✕</button>
+    <div class="ai-box">
+        <div class="ai-head">
+            <div class="ai-av">🤖</div>
+            <div>
+                <div class="ai-title">Asistente Omeles</div>
+                <div class="ai-sub">En línea</div>
+            </div>
+        </div>
+        <div class="ai-msgs" id="aiMsgs">
+            <div class="ai-msg bot">¡Hola! 👋 Soy el asistente de OMELES GAMES.
+
+Puedo decirte:
+• Cuántos juegos hay
+• Info de cualquier juego
+• Ayuda general</div>
+        </div>
+        <div class="ai-input-area">
+            <input type="text" class="ai-input" id="aiInput" placeholder="Escribe un mensaje..." onkeydown="if(event.key==='Enter')enviarIa()">
+            <button class="ai-send" onclick="enviarIa()">Enviar</button>
+        </div>
+    </div>
+</div>
+
+<!-- SETTINGS -->
+<div id="settingsOverlay" class="tool-overlay">
+    <button class="tool-close" onclick="cerrarSettings()">✕</button>
+    <div class="settings-box">
+        <div class="settings-title">SETTINGS</div>
+        <div class="settings-sub">Personaliza tu experiencia</div>
+        <div class="presets">
+            <button class="preset" onclick="aplicarPreset('classic')"><span class="p-ic">🎨</span>Classic</button>
+            <button class="preset" onclick="aplicarPreset('neon')"><span class="p-ic">💜</span>Neon</button>
+            <button class="preset" onclick="aplicarPreset('cyber')"><span class="p-ic">🌆</span>Cyber</button>
+            <button class="preset" onclick="aplicarPreset('matrix')"><span class="p-ic">🟢</span>Matrix</button>
+            <button class="preset" onclick="aplicarPreset('minimal')"><span class="p-ic">◻️</span>Minimal</button>
+        </div>
+        <div class="settings-sec">
+            <h3>🖱️ Tracer</h3>
+            <div class="s-field"><label>Activado</label><select id="sTracerOn"><option value="on">Sí</option><option value="off">No</option></select></div>
+            <div class="s-field"><label>Color</label><input type="color" id="sTracerColor" value="#ffffff"></div>
+            <div class="s-field"><label>Tamaño</label><input type="range" id="sTracerSize" min="2" max="20" value="6" oninput="document.getElementById('sTracerSizeV').textContent=this.value+'px'"><span class="s-val" id="sTracerSizeV">6px</span></div>
+        </div>
+        <div class="settings-sec">
+            <h3>💥 Explosión</h3>
+            <div class="s-field"><label>Activada</label><select id="sExpOn"><option value="on">Sí</option><option value="off">No</option></select></div>
+            <div class="s-field"><label>Color</label><input type="color" id="sExpColor" value="#ffffff"></div>
+            <div class="s-field"><label>Nº partículas</label><input type="range" id="sExpCount" min="4" max="40" value="14" oninput="document.getElementById('sExpCountV').textContent=this.value"><span class="s-val" id="sExpCountV">14</span></div>
+        </div>
+        <div class="settings-sec">
+            <h3>🎨 HUD</h3>
+            <div class="s-field"><label>Color fondo</label><input type="color" id="sHudBg" value="#0a0a14"></div>
+            <div class="s-field"><label>Opacidad</label><input type="range" id="sHudOp" min="0" max="100" value="60" oninput="document.getElementById('sHudOpV').textContent=this.value+'%'"><span class="s-val" id="sHudOpV">60%</span></div>
+        </div>
+        <div class="settings-sec">
+            <h3>🌈 Fondo</h3>
+            <div class="s-field"><label>Color base</label><input type="color" id="sBgColor" value="#05050a"></div>
+        </div>
+        <div class="settings-sec">
+            <h3>🎮 Extras</h3>
+            <div class="s-field"><label>Sound FX</label><select id="sSound"><option value="on">Sí</option><option value="off">No</option></select></div>
+            <div class="s-field"><label>Confetti al copiar</label><select id="sConfetti"><option value="on">Sí</option><option value="off">No</option></select></div>
+        </div>
+        <div class="s-btn-row">
+            <button class="s-btn primary" onclick="guardarSettings()">💾 GUARDAR</button>
+            <button class="s-btn danger" onclick="resetSettings()">🔄 RESET</button>
+        </div>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
 <script>
 const SERVER_URL = window.location.origin;
-
 let todosLosJuegos = [];
 let socket = null;
 let currentKey = "";
-let juegoActual = null;
 let filtroActual = "all";
-let searchDebounceTimer = null;
+let searchTimer = null;
 
-/* ======================================================
-   SETTINGS
-====================================================== */
-
+/* ================= SETTINGS ================= */
 const DEFAULT_SETTINGS = {
-    tracerOn: "on",
-    tracerColor: "#ffffff",
-    tracerSize: 6,
-    explosionOn: "on",
-    explosionColor: "#ffffff",
-    explosionCount: 14,
-    hudBg: "#0a0a14",
-    hudOpacity: 60,
-    bgColor: "#05050a",
-    customCursor: "off",
-    soundFx: "on",
-    confetti: "on"
+    tracerOn:"on", tracerColor:"#ffffff", tracerSize:6,
+    explosionOn:"on", explosionColor:"#ffffff", explosionCount:14,
+    hudBg:"#0a0a14", hudOpacity:60, bgColor:"#05050a",
+    sound:"on", confetti:"on"
 };
-
 const PRESETS = {
-    classic: { ...DEFAULT_SETTINGS },
-    neon: {
-        tracerColor: "#ff00ff", tracerSize: 8, explosionColor: "#00ffff", explosionCount: 20,
-        hudBg: "#1a0033", hudOpacity: 70, bgColor: "#05050a"
-    },
-    cyberpunk: {
-        tracerColor: "#fcee0a", tracerSize: 7, explosionColor: "#ff003c", explosionCount: 25,
-        hudBg: "#0a0a1a", hudOpacity: 80, bgColor: "#0a0014"
-    },
-    matrix: {
-        tracerColor: "#00ff41", tracerSize: 5, explosionColor: "#00ff41", explosionCount: 18,
-        hudBg: "#001a00", hudOpacity: 65, bgColor: "#000a00"
-    },
-    minimal: {
-        tracerOn: "off", explosionOn: "off", hudBg: "#000000", hudOpacity: 90,
-        bgColor: "#000000", customCursor: "off"
-    }
+    classic: {...DEFAULT_SETTINGS},
+    neon: {tracerColor:"#ff00ff",tracerSize:8,explosionColor:"#00ffff",explosionCount:20,hudBg:"#1a0033",hudOpacity:70,bgColor:"#05050a",sound:"on",confetti:"on"},
+    cyber: {tracerColor:"#fcee0a",tracerSize:7,explosionColor:"#ff003c",explosionCount:25,hudBg:"#0a0a1a",hudOpacity:80,bgColor:"#0a0014",sound:"on",confetti:"on"},
+    matrix: {tracerColor:"#00ff41",tracerSize:5,explosionColor:"#00ff41",explosionCount:18,hudBg:"#001a00",hudOpacity:65,bgColor:"#000a00",sound:"on",confetti:"on"},
+    minimal: {tracerOn:"off",explosionOn:"off",hudBg:"#000000",hudOpacity:90,bgColor:"#000000",sound:"off",confetti:"off"}
 };
 
-let userSettings = { ...DEFAULT_SETTINGS };
+let userSettings = {...DEFAULT_SETTINGS};
 
-function cargarSettings() {
-    try {
-        const guardado = localStorage.getItem("omeles_settings");
-        if (guardado) userSettings = { ...DEFAULT_SETTINGS, ...JSON.parse(guardado) };
-    } catch {}
+function cargarSettings(){
+    try{
+        const s = localStorage.getItem("omeles_settings");
+        if(s) userSettings = {...DEFAULT_SETTINGS, ...JSON.parse(s)};
+    }catch{}
     aplicarSettings();
 }
 
-function aplicarSettings() {
-    document.documentElement.style.setProperty("--tracer-color", userSettings.tracerColor);
+function aplicarSettings(){
+    document.documentElement.style.setProperty("--tracer", userSettings.tracerColor);
     document.documentElement.style.setProperty("--tracer-size", userSettings.tracerSize + "px");
-    document.documentElement.style.setProperty("--explosion-color", userSettings.explosionColor);
-
-    const r = parseInt(userSettings.hudBg.slice(1, 3), 16);
-    const g = parseInt(userSettings.hudBg.slice(3, 5), 16);
-    const b = parseInt(userSettings.hudBg.slice(5, 7), 16);
-    const op = userSettings.hudOpacity / 100;
-    document.documentElement.style.setProperty("--hud-bg", `rgba(${r}, ${g}, ${b}, ${op})`);
+    document.documentElement.style.setProperty("--explosion", userSettings.explosionColor);
+    const r = parseInt(userSettings.hudBg.slice(1,3),16);
+    const g = parseInt(userSettings.hudBg.slice(3,5),16);
+    const b = parseInt(userSettings.hudBg.slice(5,7),16);
+    document.documentElement.style.setProperty("--hud-bg", `rgba(${r},${g},${b},${userSettings.hudOpacity/100})`);
     document.documentElement.style.setProperty("--bg", userSettings.bgColor);
     document.body.style.background = userSettings.bgColor;
-
-    if (userSettings.customCursor === "on") {
-        document.body.classList.add("custom-cursor");
-    } else {
-        document.body.classList.remove("custom-cursor");
-    }
 }
 
-function guardarSettings() {
-    userSettings.tracerOn = document.getElementById("setTracerOn").value;
-    userSettings.tracerColor = document.getElementById("setTracerColor").value;
-    userSettings.tracerSize = parseInt(document.getElementById("setTracerSize").value);
-    userSettings.explosionOn = document.getElementById("setExplosionOn").value;
-    userSettings.explosionColor = document.getElementById("setExplosionColor").value;
-    userSettings.explosionCount = parseInt(document.getElementById("setExplosionCount").value);
-    userSettings.hudBg = document.getElementById("setHudBg").value;
-    userSettings.hudOpacity = parseInt(document.getElementById("setHudOpacity").value);
-    userSettings.bgColor = document.getElementById("setBgColor").value;
-    userSettings.customCursor = document.getElementById("setCustomCursor").value;
-    userSettings.soundFx = document.getElementById("setSoundFx").value;
-    userSettings.confetti = document.getElementById("setConfetti").value;
-
+function guardarSettings(){
+    userSettings.tracerOn = document.getElementById("sTracerOn").value;
+    userSettings.tracerColor = document.getElementById("sTracerColor").value;
+    userSettings.tracerSize = parseInt(document.getElementById("sTracerSize").value);
+    userSettings.explosionOn = document.getElementById("sExpOn").value;
+    userSettings.explosionColor = document.getElementById("sExpColor").value;
+    userSettings.explosionCount = parseInt(document.getElementById("sExpCount").value);
+    userSettings.hudBg = document.getElementById("sHudBg").value;
+    userSettings.hudOpacity = parseInt(document.getElementById("sHudOp").value);
+    userSettings.bgColor = document.getElementById("sBgColor").value;
+    userSettings.sound = document.getElementById("sSound").value;
+    userSettings.confetti = document.getElementById("sConfetti").value;
     localStorage.setItem("omeles_settings", JSON.stringify(userSettings));
     aplicarSettings();
     cerrarSettings();
     toast("Settings guardados", "success");
 }
 
-function resetSettings() {
-    userSettings = { ...DEFAULT_SETTINGS };
+function resetSettings(){
+    userSettings = {...DEFAULT_SETTINGS};
     localStorage.setItem("omeles_settings", JSON.stringify(userSettings));
-    cargarSettings();
+    aplicarSettings();
     cargarValoresSettings();
     toast("Settings reseteados", "info");
 }
 
-function aplicarPreset(nombre) {
-    userSettings = { ...DEFAULT_SETTINGS, ...PRESETS[nombre] };
+function aplicarPreset(n){
+    userSettings = {...DEFAULT_SETTINGS, ...PRESETS[n]};
     localStorage.setItem("omeles_settings", JSON.stringify(userSettings));
     aplicarSettings();
     cargarValoresSettings();
-    toast(`Preset "${nombre}" aplicado`, "success");
+    toast(`Preset "${n}" aplicado`, "success");
 }
 
-function cargarValoresSettings() {
-    document.getElementById("setTracerOn").value = userSettings.tracerOn;
-    document.getElementById("setTracerColor").value = userSettings.tracerColor;
-    document.getElementById("setTracerSize").value = userSettings.tracerSize;
-    document.getElementById("setTracerSizeVal").textContent = userSettings.tracerSize + "px";
-    document.getElementById("setExplosionOn").value = userSettings.explosionOn;
-    document.getElementById("setExplosionColor").value = userSettings.explosionColor;
-    document.getElementById("setExplosionCount").value = userSettings.explosionCount;
-    document.getElementById("setExplosionCountVal").textContent = userSettings.explosionCount;
-    document.getElementById("setHudBg").value = userSettings.hudBg;
-    document.getElementById("setHudOpacity").value = userSettings.hudOpacity;
-    document.getElementById("setHudOpacityVal").textContent = userSettings.hudOpacity + "%";
-    document.getElementById("setBgColor").value = userSettings.bgColor;
-    document.getElementById("setCustomCursor").value = userSettings.customCursor;
-    document.getElementById("setSoundFx").value = userSettings.soundFx;
-    document.getElementById("setConfetti").value = userSettings.confetti;
+function cargarValoresSettings(){
+    document.getElementById("sTracerOn").value = userSettings.tracerOn;
+    document.getElementById("sTracerColor").value = userSettings.tracerColor;
+    document.getElementById("sTracerSize").value = userSettings.tracerSize;
+    document.getElementById("sTracerSizeV").textContent = userSettings.tracerSize + "px";
+    document.getElementById("sExpOn").value = userSettings.explosionOn;
+    document.getElementById("sExpColor").value = userSettings.explosionColor;
+    document.getElementById("sExpCount").value = userSettings.explosionCount;
+    document.getElementById("sExpCountV").textContent = userSettings.explosionCount;
+    document.getElementById("sHudBg").value = userSettings.hudBg;
+    document.getElementById("sHudOp").value = userSettings.hudOpacity;
+    document.getElementById("sHudOpV").textContent = userSettings.hudOpacity + "%";
+    document.getElementById("sBgColor").value = userSettings.bgColor;
+    document.getElementById("sSound").value = userSettings.sound;
+    document.getElementById("sConfetti").value = userSettings.confetti;
 }
 
-/* ======================================================
-   TOASTS
-====================================================== */
-
-function toast(texto, tipo = "info", duracion = 3000) {
-    const cont = document.getElementById("toastContainer");
+/* ================= TOASTS ================= */
+function toast(texto, tipo="info", dur=3000){
+    const c = document.getElementById("toasts");
     const el = document.createElement("div");
     el.className = "toast " + tipo;
-    const icons = { success: "✅", error: "❌", info: "ℹ️", warning: "⚠️" };
-    el.innerHTML = `<span>${icons[tipo] || "ℹ️"}</span> ${texto}`;
-    cont.appendChild(el);
-    requestAnimationFrame(() => el.classList.add("show"));
-    setTimeout(() => {
-        el.classList.remove("show");
-        setTimeout(() => el.remove(), 400);
-    }, duracion);
+    const icons = {success:"✅",error:"❌",info:"ℹ️"};
+    el.innerHTML = `<span>${icons[tipo]||"ℹ️"}</span> ${texto}`;
+    c.appendChild(el);
+    requestAnimationFrame(()=>el.classList.add("show"));
+    setTimeout(()=>{el.classList.remove("show");setTimeout(()=>el.remove(),400)}, dur);
 }
 
-/* ======================================================
-   SONIDOS
-====================================================== */
-
+/* ================= AUDIO ================= */
 let audioCtx = null;
-function beep(freq, duration, volume = 0.08) {
-    if (userSettings.soundFx !== "on") return;
-    try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.frequency.value = freq;
-        osc.type = "sine";
-        gain.gain.setValueAtTime(volume, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
-    } catch {}
+function beep(freq, dur, vol=0.08){
+    if(userSettings.sound !== "on") return;
+    try{
+        if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.frequency.value = freq; o.type = "sine";
+        g.gain.setValueAtTime(vol, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(); o.stop(audioCtx.currentTime + dur);
+    }catch{}
 }
 
-function playClick() { beep(600, 0.05, 0.05); }
-function playSuccess() { beep(880, 0.1); beep(1200, 0.1); }
-function playError() { beep(200, 0.15, 0.1); }
-
-/* ======================================================
-   CONFETTI
-====================================================== */
-
-function lanzarConfetti(x, y) {
-    if (userSettings.confetti !== "on") return;
-    const colores = ["#8b5cff", "#2563eb", "#a855f7", "#ec4899", "#22c55e", "#fbbf24", "#ff1744"];
-    for (let i = 0; i < 60; i++) {
+/* ================= CONFETTI ================= */
+function confetti(x, y){
+    if(userSettings.confetti !== "on") return;
+    const colores = ["#8b5cff","#2563eb","#a855f7","#ec4899","#22c55e","#fbbf24","#ff1744"];
+    for(let i=0;i<60;i++){
         const c = document.createElement("div");
         c.className = "confetti";
-        c.style.left = x + "px";
-        c.style.top = y + "px";
-        c.style.background = colores[Math.floor(Math.random() * colores.length)];
-        c.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+        c.style.left = x+"px"; c.style.top = y+"px";
+        c.style.background = colores[Math.floor(Math.random()*colores.length)];
+        c.style.borderRadius = Math.random()>0.5?"50%":"2px";
         document.body.appendChild(c);
-
-        const angle = Math.random() * Math.PI * 2;
-        const distance = 100 + Math.random() * 200;
-        const dx = Math.cos(angle) * distance;
-        const dy = Math.sin(angle) * distance - 100;
-
-        requestAnimationFrame(() => {
-            c.style.transition = "all 1.2s cubic-bezier(0.2, 0.8, 0.4, 1)";
-            c.style.transform = `translate(${dx}px, ${dy}px) rotate(${Math.random() * 720}deg)`;
+        const a = Math.random()*Math.PI*2, d = 100+Math.random()*200;
+        requestAnimationFrame(()=>{
+            c.style.transition = "all 1.2s cubic-bezier(.2,.8,.4,1)";
+            c.style.transform = `translate(${Math.cos(a)*d}px, ${Math.sin(a)*d-100}px) rotate(${Math.random()*720}deg)`;
             c.style.opacity = "0";
         });
-
-        setTimeout(() => c.remove(), 1300);
+        setTimeout(()=>c.remove(), 1300);
     }
 }
 
-/* ======================================================
-   RIPPLE EFFECT
-====================================================== */
-
-document.addEventListener("click", (e) => {
-    const btn = e.target.closest("button, .game-btn, .dropdown-item, .filter-btn");
-    if (!btn) return;
-    const rect = btn.getBoundingClientRect();
-    const ripple = document.createElement("span");
-    ripple.className = "ripple";
-    const size = Math.max(rect.width, rect.height);
-    ripple.style.width = ripple.style.height = size + "px";
-    ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
-    ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
-    if (getComputedStyle(btn).position === "static") btn.style.position = "relative";
-    btn.style.overflow = "hidden";
-    btn.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 600);
-});
-
-/* ======================================================
-   CURSOR PERSONALIZADO
-====================================================== */
-
-const customCursor = document.getElementById("customCursor");
-document.addEventListener("mousemove", (e) => {
-    customCursor.style.left = (e.clientX - 12) + "px";
-    customCursor.style.top = (e.clientY - 12) + "px";
-});
-
-/* ======================================================
-   OVERLAY DETECTION
-====================================================== */
-
-function hayOverlayAbierto() {
-    const ids = ["aimOverlay", "calcOverlay", "cpsOverlay", "aiOverlay", "settingsOverlay", "gameModal"];
-    return ids.some(id => document.getElementById(id)?.classList.contains("open"));
+/* ================= OVERLAY CHECK ================= */
+function overlayAbierto(){
+    return ["aimOverlay","calcOverlay","cpsOverlay","aiOverlay","settingsOverlay","gameModal"]
+        .some(id=>document.getElementById(id)?.classList.contains("open"));
 }
 
-/* ======================================================
-   PARTÍCULAS
-====================================================== */
-
-(function particulas() {
-    let lastDotTime = 0;
-    document.addEventListener("mousemove", (e) => {
-        if (userSettings.tracerOn !== "on") return;
-        if (hayOverlayAbierto() || !currentKey) return;
+/* ================= PARTÍCULAS ================= */
+(function(){
+    let lastDot = 0;
+    document.addEventListener("mousemove",(e)=>{
+        if(userSettings.tracerOn !== "on") return;
+        if(overlayAbierto() || !currentKey) return;
         const now = performance.now();
-        if (now - lastDotTime < 40) return;
-        lastDotTime = now;
-
-        const size = userSettings.tracerSize;
-        const color = userSettings.tracerColor;
-        const dot = document.createElement("div");
-        dot.style.cssText = `position:fixed;left:${e.clientX}px;top:${e.clientY}px;width:${size}px;height:${size}px;border-radius:50%;background:${color};box-shadow:0 0 ${size*2}px ${color},0 0 ${size*3}px ${color}80;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all 0.6s ease-out;`;
-        document.body.appendChild(dot);
-        requestAnimationFrame(() => {
-            dot.style.opacity = "0";
-            dot.style.transform = "translate(-50%,-50%) scale(0.3) translateY(20px)";
+        if(now - lastDot < 40) return;
+        lastDot = now;
+        const sz = userSettings.tracerSize, col = userSettings.tracerColor;
+        const d = document.createElement("div");
+        d.style.cssText = `position:fixed;left:${e.clientX}px;top:${e.clientY}px;width:${sz}px;height:${sz}px;border-radius:50%;background:${col};box-shadow:0 0 ${sz*2}px ${col};pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .6s ease-out;`;
+        document.body.appendChild(d);
+        requestAnimationFrame(()=>{
+            d.style.opacity = "0";
+            d.style.transform = "translate(-50%,-50%) scale(.3) translateY(20px)";
         });
-        setTimeout(() => dot.remove(), 650);
+        setTimeout(()=>d.remove(),650);
     });
-
-    document.addEventListener("mousedown", (e) => {
-        if (userSettings.explosionOn !== "on" || e.button !== 0) return;
-        if (hayOverlayAbierto() || !currentKey) return;
-        const total = userSettings.explosionCount;
-        const color = userSettings.explosionColor;
-        for (let i = 0; i < total; i++) {
-            const dot = document.createElement("div");
-            const angle = (Math.PI * 2 * i) / total;
-            const distance = 60 + Math.random() * 50;
-            const size = 3 + Math.random() * 4;
-            dot.style.cssText = `position:fixed;left:${e.clientX}px;top:${e.clientY}px;width:${size}px;height:${size}px;border-radius:50%;background:${color};box-shadow:0 0 ${size*3}px ${color},0 0 ${size*4}px ${color}99;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:all 0.55s cubic-bezier(0.2,0.8,0.3,1);`;
-            document.body.appendChild(dot);
-            requestAnimationFrame(() => {
-                dot.style.left = `${e.clientX + Math.cos(angle) * distance}px`;
-                dot.style.top = `${e.clientY + Math.sin(angle) * distance}px`;
-                dot.style.opacity = "0";
-                dot.style.transform = "translate(-50%,-50%) scale(0.2)";
+    document.addEventListener("mousedown",(e)=>{
+        if(userSettings.explosionOn !== "on" || e.button !== 0) return;
+        if(overlayAbierto() || !currentKey) return;
+        const tot = userSettings.explosionCount, col = userSettings.explosionColor;
+        for(let i=0;i<tot;i++){
+            const d = document.createElement("div");
+            const a = (Math.PI*2*i)/tot, dist = 60+Math.random()*50, sz = 3+Math.random()*4;
+            d.style.cssText = `position:fixed;left:${e.clientX}px;top:${e.clientY}px;width:${sz}px;height:${sz}px;border-radius:50%;background:${col};box-shadow:0 0 ${sz*3}px ${col};pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:all .55s cubic-bezier(.2,.8,.3,1);`;
+            document.body.appendChild(d);
+            requestAnimationFrame(()=>{
+                d.style.left = (e.clientX + Math.cos(a)*dist)+"px";
+                d.style.top = (e.clientY + Math.sin(a)*dist)+"px";
+                d.style.opacity = "0";
+                d.style.transform = "translate(-50%,-50%) scale(.2)";
             });
-            setTimeout(() => dot.remove(), 600);
+            setTimeout(()=>d.remove(),600);
         }
     });
 })();
 
-/* ======================================================
-   FAVORITOS Y RECIENTES
-====================================================== */
-
-function getFavoritos() {
-    try { return JSON.parse(localStorage.getItem("omeles_favs") || "[]"); } catch { return []; }
-}
-
-function setFavoritos(arr) {
-    localStorage.setItem("omeles_favs", JSON.stringify(arr));
-    actualizarContadores();
-}
-
-function esFavorito(nombre) { return getFavoritos().includes(nombre); }
-
-function toggleFavorito(nombre, ev) {
+/* ================= FAVORITOS ================= */
+function getFavs(){try{return JSON.parse(localStorage.getItem("omeles_favs")||"[]")}catch{return[]}}
+function setFavs(a){localStorage.setItem("omeles_favs",JSON.stringify(a));contadores()}
+function esFav(n){return getFavs().includes(n)}
+function toggleFav(n,ev){
     ev.stopPropagation();
-    let favs = getFavoritos();
-    if (favs.includes(nombre)) {
-        favs = favs.filter(n => n !== nombre);
-        toast("Eliminado de favoritos", "info", 1800);
-    } else {
-        favs.push(nombre);
-        toast("Añadido a favoritos ⭐", "success", 1800);
-    }
-    setFavoritos(favs);
-    filtrarJuegos();
+    let f = getFavs();
+    if(f.includes(n)){f = f.filter(x=>x!==n);toast("Quitado de favoritos","info",1500)}
+    else{f.push(n);toast("Añadido a favoritos ⭐","success",1500)}
+    setFavs(f);
+    filtrar();
 }
-
-function getRecientes() {
-    try { return JSON.parse(localStorage.getItem("omeles_recent") || "[]"); } catch { return []; }
+function getRec(){try{return JSON.parse(localStorage.getItem("omeles_rec")||"[]")}catch{return[]}}
+function addRec(n){
+    let r = getRec().filter(x=>x!==n);
+    r.unshift(n); if(r.length>10) r = r.slice(0,10);
+    localStorage.setItem("omeles_rec",JSON.stringify(r));
+    contadores();
 }
-
-function addReciente(nombre) {
-    let rec = getRecientes().filter(n => n !== nombre);
-    rec.unshift(nombre);
-    if (rec.length > 10) rec = rec.slice(0, 10);
-    localStorage.setItem("omeles_recent", JSON.stringify(rec));
-    actualizarContadores();
+function contadores(){
+    document.getElementById("cAll").textContent = todosLosJuegos.length;
+    document.getElementById("cFav").textContent = getFavs().length;
+    document.getElementById("cRec").textContent = getRec().length;
 }
-
-function actualizarContadores() {
-    const elAll = document.getElementById("countAll");
-    const elFav = document.getElementById("countFav");
-    const elRec = document.getElementById("countRecent");
-    if (elAll) elAll.textContent = todosLosJuegos.length;
-    if (elFav) elFav.textContent = getFavoritos().length;
-    if (elRec) elRec.textContent = getRecientes().length;
-}
-
-function setFilter(f) {
+function setFilter(f){
     filtroActual = f;
-    document.querySelectorAll(".filter-btn").forEach(b => {
-        b.classList.toggle("active", b.dataset.filter === f);
-    });
-    filtrarJuegos();
+    document.querySelectorAll(".f-btn").forEach(b=>b.classList.toggle("active", b.dataset.filter===f));
+    filtrar();
 }
 
-/* ======================================================
-   MENÚ
-====================================================== */
-
-function toggleMenu() {
+/* ================= MENÚ ================= */
+function toggleMenu(){
     document.getElementById("menuBtn").classList.toggle("active");
     document.getElementById("dropdown").classList.toggle("open");
-    playClick();
 }
-
-document.addEventListener("click", (e) => {
-    const menuBtn = document.getElementById("menuBtn");
-    const dropdown = document.getElementById("dropdown");
-    if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) {
-        menuBtn.classList.remove("active");
-        dropdown.classList.remove("open");
-    }
+document.addEventListener("click",(e)=>{
+    const b = document.getElementById("menuBtn"), d = document.getElementById("dropdown");
+    if(!b.contains(e.target) && !d.contains(e.target)){b.classList.remove("active");d.classList.remove("open");}
 });
 
-/* ======================================================
-   AIMLAB
-====================================================== */
+/* ================= AIMLAB ================= */
+let aimActive=false, aimTimeLeft=30, aimTimer=null, aimScore=0, aimHits=0, aimMiss=0, aimConfig={}, aimTargets=[], aimMoveInt=null;
 
-let aimActive = false;
-let aimTimeLeft = 30;
-let aimTimer = null;
-let aimScore = 0;
-let aimHits = 0;
-let aimMiss = 0;
-let aimConfig = {};
-let aimTargetsOnScreen = [];
-let aimMovementInterval = null;
-let aimModoSeleccionado = "flick";
-
-function setAimMode(modo) {
-    aimModoSeleccionado = modo;
-    document.querySelectorAll(".aim-mode-btn").forEach(b => {
-        b.classList.toggle("active", b.dataset.mode === modo);
-    });
-    // Ajustes por modo
-    const numEl = document.getElementById("cfgNumTargets");
-    const sizeEl = document.getElementById("cfgSize");
-    const movEl = document.getElementById("cfgMovement");
-    const timeEl = document.getElementById("cfgTime");
-
-    if (modo === "flick") { numEl.value = 1; sizeEl.value = 25; movEl.value = "static"; timeEl.value = 30; }
-    if (modo === "precision") { numEl.value = 1; sizeEl.value = 12; movEl.value = "static"; timeEl.value = 60; }
-    if (modo === "tracking") { numEl.value = 1; sizeEl.value = 30; movEl.value = "medium"; timeEl.value = 30; }
-    if (modo === "speed") { numEl.value = 3; sizeEl.value = 20; movEl.value = "fast"; timeEl.value = 30; }
-
-    document.getElementById("cfgNumTargetsVal").textContent = numEl.value;
-    document.getElementById("cfgSizeVal").textContent = sizeEl.value;
-    playClick();
+function toggleAimTime(){
+    document.getElementById("aimTimeField").style.display = document.getElementById("cfgMode").value==="infinite"?"none":"flex";
 }
-
-function toggleAimTimeField() {
-    const mode = document.getElementById("cfgMode").value;
-    document.getElementById("aimTimeField").style.display = mode === "infinite" ? "none" : "flex";
-}
-
-function actualizarEstadisticasAim() {
-    try {
-        const stats = JSON.parse(localStorage.getItem("omeles_aim_stats") || '{"total":0,"best":0,"sum":0,"sumAcc":0}');
-        document.getElementById("aimStatTotal").textContent = stats.total;
-        document.getElementById("aimStatBest").textContent = stats.best;
-        document.getElementById("aimStatAvg").textContent = stats.total > 0 ? Math.round(stats.sum / stats.total) : 0;
-        document.getElementById("aimStatAcc").textContent = stats.total > 0 ? Math.round(stats.sumAcc / stats.total) + "%" : "0%";
-    } catch {}
-}
-
-function guardarEstadisticaAim(score, acc) {
-    try {
-        const stats = JSON.parse(localStorage.getItem("omeles_aim_stats") || '{"total":0,"best":0,"sum":0,"sumAcc":0}');
-        stats.total++;
-        stats.sum += score;
-        stats.sumAcc += acc;
-        if (score > stats.best) stats.best = score;
-        localStorage.setItem("omeles_aim_stats", JSON.stringify(stats));
-        actualizarEstadisticasAim();
-    } catch {}
-}
-
-function abrirAimLab() {
+function abrirAim(){
     document.getElementById("dropdown").classList.remove("open");
     document.getElementById("menuBtn").classList.remove("active");
     document.getElementById("aimOverlay").classList.add("open");
     document.body.style.overflow = "hidden";
-    actualizarEstadisticasAim();
-    volverConfigAim();
+    volverAim();
 }
-
-function cerrarAimLab() {
+function cerrarAim(){
     document.getElementById("aimOverlay").classList.remove("open");
     document.body.style.overflow = "";
-    detenerAimGame();
-    limpiarTargets();
+    stopAim(); clearTargets();
 }
-
-function volverConfigAim() {
-    detenerAimGame();
-    limpiarTargets();
-    document.getElementById("aimConfigScreen").style.display = "flex";
-    document.getElementById("aimResultScreen").style.display = "none";
+function volverAim(){
+    stopAim(); clearTargets();
+    document.getElementById("aimConfig").style.display = "flex";
+    document.getElementById("aimResult").style.display = "none";
     document.getElementById("aimHud").style.display = "none";
-    document.getElementById("aimPlayArea").style.display = "none";
-    actualizarEstadisticasAim();
+    document.getElementById("aimArea").style.display = "none";
 }
-
-function iniciarAimGame() {
+function startAim(){
     aimConfig = {
-        numTargets: parseInt(document.getElementById("cfgNumTargets").value),
-        size: parseInt(document.getElementById("cfgSize").value),
-        shape: document.getElementById("cfgShape").value,
-        movement: document.getElementById("cfgMovement").value,
+        n: parseInt(document.getElementById("cfgN").value),
+        s: parseInt(document.getElementById("cfgS").value),
+        m: document.getElementById("cfgM").value,
         mode: document.getElementById("cfgMode").value,
-        time: parseInt(document.getElementById("cfgTime").value) || 30,
-        colorTarget: document.getElementById("cfgColorTarget").value,
-        colorBg: document.getElementById("cfgColorBg").value,
-        sound: document.getElementById("cfgSound").value,
-        crosshair: document.getElementById("cfgCrosshair").value === "on"
+        t: parseInt(document.getElementById("cfgT").value)||30,
+        cT: document.getElementById("cfgCT").value,
+        cB: document.getElementById("cfgCB").value,
+        snd: document.getElementById("cfgSnd").value,
+        ch: document.getElementById("cfgCh").value === "on"
     };
-
-    aimScore = 0; aimHits = 0; aimMiss = 0; aimTimeLeft = aimConfig.time;
-
-    document.getElementById("aimScore").textContent = "0";
-    document.getElementById("aimHits").textContent = "0";
-    document.getElementById("aimMiss").textContent = "0";
-    document.getElementById("aimAcc").textContent = "100%";
-
-    const timeEl = document.getElementById("aimTime");
-    if (aimConfig.mode === "infinite") timeEl.textContent = "∞";
-    else { timeEl.textContent = aimConfig.time; timeEl.classList.remove("red"); }
-
-    document.getElementById("aimConfigScreen").style.display = "none";
-    document.getElementById("aimResultScreen").style.display = "none";
-    document.getElementById("aimHud").style.display = "flex";
-    document.getElementById("aimPlayArea").style.display = "block";
-    document.getElementById("aimPlayArea").style.background = aimConfig.colorBg;
-
-    if (aimConfig.crosshair) {
-        const cross = document.createElement("div");
-        cross.id = "aimCrosshair";
-        cross.style.cssText = "position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:5;";
-        cross.innerHTML = `<div style="position:absolute;top:0;left:-10px;width:20px;height:2px;background:rgba(139,92,255,0.5);"></div><div style="position:absolute;top:-10px;left:0;width:2px;height:20px;background:rgba(139,92,255,0.5);"></div>`;
-        document.getElementById("aimPlayArea").appendChild(cross);
+    aimScore=0; aimHits=0; aimMiss=0; aimTimeLeft=aimConfig.t;
+    document.getElementById("aimScore").textContent="0";
+    document.getElementById("aimHits").textContent="0";
+    document.getElementById("aimMiss").textContent="0";
+    const tEl = document.getElementById("aimTime");
+    if(aimConfig.mode==="infinite") tEl.textContent="∞";
+    else{tEl.textContent=aimConfig.t;tEl.classList.remove("red")}
+    document.getElementById("aimConfig").style.display="none";
+    document.getElementById("aimResult").style.display="none";
+    document.getElementById("aimHud").style.display="flex";
+    const area = document.getElementById("aimArea");
+    area.style.display="block";
+    area.style.background = aimConfig.cB;
+    if(aimConfig.ch){
+        const c = document.createElement("div");
+        c.id="aimCross";
+        c.style.cssText="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:5";
+        c.innerHTML = `<div style="position:absolute;top:0;left:-10px;width:20px;height:2px;background:rgba(139,92,255,.5)"></div><div style="position:absolute;top:-10px;left:0;width:2px;height:20px;background:rgba(139,92,255,.5)"></div>`;
+        area.appendChild(c);
     }
-
     aimActive = true;
-    for (let i = 0; i < aimConfig.numTargets; i++) spawnTarget();
-
-    if (aimConfig.movement !== "static") {
-        const speed = { slow: 3000, medium: 1500, fast: 700 }[aimConfig.movement];
-        aimMovementInterval = setInterval(() => {
-            if (!aimActive) return;
-            aimTargetsOnScreen.forEach(t => moverTarget(t));
-        }, speed);
+    for(let i=0;i<aimConfig.n;i++) spawnT();
+    if(aimConfig.m!=="static"){
+        const sp = {slow:3000,medium:1500,fast:700}[aimConfig.m];
+        aimMoveInt = setInterval(()=>{if(aimActive) aimTargets.forEach(t=>moveT(t))}, sp);
     }
-
-    if (aimConfig.mode === "time") {
-        aimTimer = setInterval(() => {
+    if(aimConfig.mode==="time"){
+        aimTimer = setInterval(()=>{
             aimTimeLeft--;
-            timeEl.textContent = aimTimeLeft;
-            if (aimTimeLeft <= 5) timeEl.classList.add("red");
-            if (aimTimeLeft <= 0) terminarAimGame();
-        }, 1000);
+            tEl.textContent = aimTimeLeft;
+            if(aimTimeLeft<=5) tEl.classList.add("red");
+            if(aimTimeLeft<=0) finAim();
+        },1000);
     }
 }
-
-function crearFormaTarget(size, color) {
-    const baseStyle = `width:${size}px;height:${size}px;background:${color};box-shadow:0 0 25px ${color}cc;border:1px solid rgba(255,255,255,0.3);`;
-    if (aimConfig.shape === "circle") return `border-radius:50%;${baseStyle}`;
-    if (aimConfig.shape === "square") return `border-radius:8px;${baseStyle}`;
-    if (aimConfig.shape === "triangle") return `border-radius:4px;clip-path:polygon(50% 0%, 100% 100%, 0% 100%);${baseStyle}`;
-    if (aimConfig.shape === "cross") return `border-radius:4px;clip-path:polygon(35% 0%, 65% 0%, 65% 35%, 100% 35%, 100% 65%, 65% 65%, 65% 100%, 35% 100%, 35% 65%, 0% 65%, 0% 35%, 35% 35%);${baseStyle}`;
-    return `border-radius:50%;${baseStyle}`;
-}
-
-function spawnTarget() {
-    if (!aimActive) return;
-    const area = document.getElementById("aimPlayArea");
-    const rect = area.getBoundingClientRect();
-    const size = aimConfig.size;
-    const padding = size + 30;
-    const x = padding + Math.random() * (rect.width - padding * 2);
-    const y = 120 + Math.random() * (rect.height - 240);
-
-    const target = document.createElement("div");
-    target.className = "aim-target";
-    target.style.cssText = `position:absolute;left:${x - size / 2}px;top:${y - size / 2}px;cursor:crosshair;` + crearFormaTarget(size, aimConfig.colorTarget);
-
-    target.addEventListener("mousedown", (e) => {
+function spawnT(){
+    if(!aimActive) return;
+    const area = document.getElementById("aimArea"), rect = area.getBoundingClientRect();
+    const s = aimConfig.s, pad = s+30;
+    const x = pad + Math.random()*(rect.width-pad*2);
+    const y = 120 + Math.random()*(rect.height-240);
+    const t = document.createElement("div");
+    t.className="aim-target";
+    t.style.cssText = `position:absolute;width:${s}px;height:${s}px;left:${x-s/2}px;top:${y-s/2}px;background:radial-gradient(circle at 30% 30%, ${lighten(aimConfig.cT,40)}, ${aimConfig.cT});box-shadow:0 0 25px ${aimConfig.cT}cc;border:1px solid rgba(255,255,255,.3)`;
+    t.addEventListener("mousedown",(e)=>{
         e.stopPropagation();
-        if (!aimActive) return;
-        aciertoTarget(target);
+        if(!aimActive) return;
+        t.classList.add("hit"); aimHits++; aimScore+=100;
+        if(aimConfig.snd==="on") beep(880,.05);
+        document.getElementById("aimHits").textContent=aimHits;
+        document.getElementById("aimScore").textContent=aimScore;
+        const i = aimTargets.indexOf(t); if(i>-1) aimTargets.splice(i,1);
+        setTimeout(()=>{t.remove();if(aimActive) spawnT()},300);
     });
-
-    area.appendChild(target);
-    aimTargetsOnScreen.push(target);
+    area.appendChild(t);
+    aimTargets.push(t);
 }
-
-function moverTarget(target) {
-    const area = document.getElementById("aimPlayArea");
-    const rect = area.getBoundingClientRect();
-    const size = aimConfig.size;
-    const padding = size + 30;
-    const x = padding + Math.random() * (rect.width - padding * 2);
-    const y = 120 + Math.random() * (rect.height - 240);
-    target.style.transition = "left 0.5s ease, top 0.5s ease";
-    target.style.left = `${x - size / 2}px`;
-    target.style.top = `${y - size / 2}px`;
+function moveT(t){
+    const area = document.getElementById("aimArea"), rect = area.getBoundingClientRect();
+    const s = aimConfig.s, pad = s+30;
+    t.style.transition = "left .5s ease, top .5s ease";
+    t.style.left = (pad + Math.random()*(rect.width-pad*2)-s/2)+"px";
+    t.style.top = (120 + Math.random()*(rect.height-240)-s/2)+"px";
 }
-
-function aciertoTarget(target) {
-    target.classList.add("hit");
-    aimHits++;
-    aimScore += 100;
-    if (aimConfig.sound === "on") beep(880, 0.05);
-    document.getElementById("aimHits").textContent = aimHits;
-    document.getElementById("aimScore").textContent = aimScore;
-    actualizarPrecisionAim();
-    const idx = aimTargetsOnScreen.indexOf(target);
-    if (idx > -1) aimTargetsOnScreen.splice(idx, 1);
-    setTimeout(() => {
-        target.remove();
-        if (aimActive) spawnTarget();
-    }, 300);
-}
-
-function actualizarPrecisionAim() {
-    const total = aimHits + aimMiss;
-    const acc = total > 0 ? Math.round((aimHits / total) * 100) : 100;
-    document.getElementById("aimAcc").textContent = acc + "%";
-}
-
-document.getElementById("aimPlayArea").addEventListener("mousedown", (e) => {
-    if (!aimActive) return;
-    if (e.target.closest(".aim-target")) return;
-    aimMiss++;
-    aimScore = Math.max(0, aimScore - 25);
-    if (aimConfig.sound === "on") beep(220, 0.08);
-    document.getElementById("aimMiss").textContent = aimMiss;
-    document.getElementById("aimScore").textContent = aimScore;
-    actualizarPrecisionAim();
+document.getElementById("aimArea").addEventListener("mousedown",(e)=>{
+    if(!aimActive) return;
+    if(e.target.closest(".aim-target")) return;
+    aimMiss++; aimScore = Math.max(0, aimScore-25);
+    if(aimConfig.snd==="on") beep(220,.08);
+    document.getElementById("aimMiss").textContent=aimMiss;
+    document.getElementById("aimScore").textContent=aimScore;
 });
-
-function terminarAimGame() {
-    detenerAimGame();
-    limpiarTargets();
-    const total = aimHits + aimMiss;
-    const acc = total > 0 ? Math.round((aimHits / total) * 100) : 0;
-
-    document.getElementById("resultScore").textContent = aimScore;
-    document.getElementById("resultAcc").textContent = acc + "%";
-    document.getElementById("resultHits").textContent = aimHits;
-    document.getElementById("resultMiss").textContent = aimMiss;
-
-    guardarEstadisticaAim(aimScore, acc);
-
-    document.getElementById("aimHud").style.display = "none";
-    document.getElementById("aimPlayArea").style.display = "none";
-    document.getElementById("aimResultScreen").style.display = "flex";
+function finAim(){
+    stopAim(); clearTargets();
+    const tot = aimHits+aimMiss, acc = tot>0?Math.round((aimHits/tot)*100):0;
+    document.getElementById("rScore").textContent = aimScore;
+    document.getElementById("rAcc").textContent = acc+"%";
+    document.getElementById("rHits").textContent = aimHits;
+    document.getElementById("aimHud").style.display="none";
+    document.getElementById("aimArea").style.display="none";
+    document.getElementById("aimResult").style.display="flex";
+}
+function stopAim(){
+    aimActive=false;
+    if(aimTimer){clearInterval(aimTimer);aimTimer=null}
+    if(aimMoveInt){clearInterval(aimMoveInt);aimMoveInt=null}
+}
+function clearTargets(){
+    document.querySelectorAll(".aim-target").forEach(t=>t.remove());
+    aimTargets=[];
+    const c = document.getElementById("aimCross"); if(c) c.remove();
+}
+function lighten(hex,amt){
+    const n = parseInt(hex.replace("#",""),16);
+    const r = Math.min(255,(n>>16)+amt), g = Math.min(255,((n>>8)&0xFF)+amt), b = Math.min(255,(n&0xFF)+amt);
+    return "#"+(0x1000000+(r<<16)+(g<<8)+b).toString(16).slice(1);
 }
 
-function detenerAimGame() {
-    aimActive = false;
-    if (aimTimer) { clearInterval(aimTimer); aimTimer = null; }
-    if (aimMovementInterval) { clearInterval(aimMovementInterval); aimMovementInterval = null; }
-}
-
-function limpiarTargets() {
-    document.querySelectorAll(".aim-target").forEach(t => t.remove());
-    aimTargetsOnScreen = [];
-    const cross = document.getElementById("aimCrosshair");
-    if (cross) cross.remove();
-}
-
-/* ======================================================
-   CALCULADORA
-====================================================== */
-
-let calcCurrent = "";
-let calcResultShown = false;
-let calcScientific = false;
-let calcHistoryArr = [];
-
-function abrirCalculadora() {
+/* ================= CALCULADORA ================= */
+let calcCur="", calcShown=false;
+function abrirCalc(){
     document.getElementById("dropdown").classList.remove("open");
     document.getElementById("menuBtn").classList.remove("active");
     document.getElementById("calcOverlay").classList.add("open");
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow="hidden";
     calcClear();
-    renderCalcHistory();
 }
-
-function cerrarCalculadora() {
+function cerrarCalc(){
     document.getElementById("calcOverlay").classList.remove("open");
-    document.body.style.overflow = "";
+    document.body.style.overflow="";
+}
+function calcNum(n){
+    const d = document.getElementById("calcDisplay");
+    if(calcShown){calcCur="";calcShown=false}
+    calcCur+=n; d.textContent=calcCur;
+}
+function calcOp(o){
+    calcShown=false; calcCur+=o;
+    document.getElementById("calcDisplay").textContent=calcCur;
+}
+function calcClear(){calcCur="";calcShown=false;document.getElementById("calcDisplay").textContent="0"}
+function calcEqual(){
+    const d = document.getElementById("calcDisplay");
+    try{
+        if(!/^[0-9+\-*/().\s]+$/.test(calcCur)) throw 0;
+        const r = Function('"use strict";return('+calcCur+')')();
+        calcCur = String(r); d.textContent = calcCur; calcShown = true;
+    }catch{d.textContent="Error";calcCur="";calcShown=true}
 }
 
-function toggleCalcScientific() {
-    calcScientific = !calcScientific;
-    const grid = document.getElementById("calcGrid");
-    // Insertar fila científica
-    let sciRow = document.getElementById("calcSciRow");
-    if (calcScientific && !sciRow) {
-        sciRow = document.createElement("div");
-        sciRow.id = "calcSciRow";
-        sciRow.style.cssText = "display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px;";
-        sciRow.innerHTML = `
-            <button class="calc-btn sci" onclick="calcFunc('sqrt')">√</button>
-            <button class="calc-btn sci" onclick="calcFunc('sq')">x²</button>
-            <button class="calc-btn sci" onclick="calcFunc('pi')">π</button>
-            <button class="calc-btn sci" onclick="calcFunc('pct')">%</button>
-        `;
-        grid.parentNode.insertBefore(sciRow, grid);
-    } else if (!calcScientific && sciRow) {
-        sciRow.remove();
-    }
-}
-
-function calcNum(n) {
-    const display = document.getElementById("calcDisplay");
-    if (calcResultShown) { calcCurrent = ""; calcResultShown = false; }
-    calcCurrent += n;
-    display.textContent = calcCurrent;
-}
-
-function calcOp(op) {
-    calcResultShown = false;
-    calcCurrent += op;
-    document.getElementById("calcDisplay").textContent = calcCurrent;
-}
-
-function calcFunc(fn) {
-    try {
-        let v = Function('"use strict"; return (' + (calcCurrent || "0") + ')')();
-        if (fn === "sqrt") v = Math.sqrt(v);
-        if (fn === "sq") v = v * v;
-        if (fn === "pi") v = Math.PI;
-        if (fn === "pct") v = v / 100;
-        calcCurrent = String(v);
-        document.getElementById("calcDisplay").textContent = calcCurrent;
-        calcResultShown = true;
-    } catch {
-        document.getElementById("calcDisplay").textContent = "Error";
-    }
-}
-
-function calcClear() {
-    calcCurrent = "";
-    calcResultShown = false;
-    document.getElementById("calcDisplay").textContent = "0";
-}
-
-function calcEqual() {
-    const display = document.getElementById("calcDisplay");
-    const expr = calcCurrent;
-    try {
-        if (!/^[0-9+\-*/().\s]+$/.test(expr)) throw new Error();
-        const result = Function('"use strict"; return (' + expr + ')')();
-        calcHistoryArr.unshift(`${expr} = ${result}`);
-        if (calcHistoryArr.length > 10) calcHistoryArr = calcHistoryArr.slice(0, 10);
-        localStorage.setItem("omeles_calc_history", JSON.stringify(calcHistoryArr));
-        renderCalcHistory();
-        calcCurrent = String(result);
-        display.textContent = calcCurrent;
-        calcResultShown = true;
-    } catch {
-        display.textContent = "Error";
-        calcCurrent = "";
-        calcResultShown = true;
-    }
-}
-
-function renderCalcHistory() {
-    try { calcHistoryArr = JSON.parse(localStorage.getItem("omeles_calc_history") || "[]"); } catch {}
-    const el = document.getElementById("calcHistory");
-    if (calcHistoryArr.length === 0) { el.classList.remove("show"); return; }
-    el.classList.add("show");
-    el.innerHTML = calcHistoryArr.map(h => `<div class="calc-history-line">${h}</div>`).join("");
-}
-
-/* ======================================================
-   CPS
-====================================================== */
-
-let cpsActive = false;
-let cpsCount = 0;
-let cpsTimeLeft = 5;
-let cpsTimer = null;
-let cpsDuration = 5;
-let cpsHistory = [];
-
-function abrirCPS() {
+/* ================= CPS ================= */
+let cpsActive=false, cpsCount=0, cpsTimeLeft=5, cpsTimer=null, cpsDur=5;
+function abrirCps(){
     document.getElementById("dropdown").classList.remove("open");
     document.getElementById("menuBtn").classList.remove("active");
     document.getElementById("cpsOverlay").classList.add("open");
-    document.body.style.overflow = "hidden";
-    renderCpsHistory();
-    resetCPS();
+    document.body.style.overflow="hidden";
+    resetCps();
 }
-
-function cerrarCPS() {
+function cerrarCps(){
     document.getElementById("cpsOverlay").classList.remove("open");
-    document.body.style.overflow = "";
-    if (cpsTimer) { clearInterval(cpsTimer); cpsTimer = null; }
-    cpsActive = false;
+    document.body.style.overflow="";
+    if(cpsTimer){clearInterval(cpsTimer);cpsTimer=null}
+    cpsActive=false;
 }
-
-function cpsPresetChange() {
-    const val = document.getElementById("cpsPreset").value;
-    const custom = document.getElementById("cpsCustom");
-    if (val === "custom") {
-        custom.style.display = "block";
-        custom.value = cpsDuration;
-    } else {
-        custom.style.display = "none";
-        cpsDuration = parseInt(val);
-    }
-    resetCPS();
+function cpsPresetChange(){
+    const v = document.getElementById("cpsPreset").value, c = document.getElementById("cpsCustom");
+    if(v==="custom"){c.style.display="block";c.value=cpsDur}
+    else{c.style.display="none";cpsDur=parseInt(v)}
+    resetCps();
 }
-
-document.getElementById("cpsCustom")?.addEventListener("input", () => {
+document.getElementById("cpsCustom")?.addEventListener("input",()=>{
     const v = parseInt(document.getElementById("cpsCustom").value);
-    if (v >= 1 && v <= 999) { cpsDuration = v; resetCPS(); }
+    if(v>=1&&v<=999){cpsDur=v;resetCps()}
 });
-
-function resetCPS() {
-    if (cpsTimer) { clearInterval(cpsTimer); cpsTimer = null; }
-    cpsActive = false;
-    cpsCount = 0;
-    cpsTimeLeft = cpsDuration;
-    document.getElementById("cpsValue").textContent = "0";
-    document.getElementById("cpsClicks").textContent = "0";
-    document.getElementById("cpsTime").textContent = cpsDuration + "s";
-    document.getElementById("cpsTimerFill").style.width = "100%";
-    document.getElementById("cpsTimerFill").style.transition = "none";
-    document.getElementById("cpsClickArea").innerHTML = `HAZ CLIC AQUÍ<div class="cps-click-sub">o pulsa la barra espaciadora</div>`;
+function resetCps(){
+    if(cpsTimer){clearInterval(cpsTimer);cpsTimer=null}
+    cpsActive=false; cpsCount=0; cpsTimeLeft=cpsDur;
+    document.getElementById("cpsValue").textContent="0";
+    document.getElementById("cpsClicks").textContent="0";
+    document.getElementById("cpsTime").textContent=cpsDur+"s";
+    document.getElementById("cpsBar").style.width="100%";
+    document.getElementById("cpsBar").style.transition="none";
+    document.getElementById("cpsArea").innerHTML = `HAZ CLIC AQUÍ<div class="cps-area-sub">o pulsa la barra espaciadora</div>`;
 }
-
-function doCpsClick() {
-    if (!cpsActive) {
-        cpsActive = true;
-        cpsCount = 0;
-        cpsTimeLeft = cpsDuration;
-        document.getElementById("cpsClickArea").innerHTML = `¡CLICK RÁPIDO!<div class="cps-click-sub">¡Sigue así!</div>`;
-        document.getElementById("cpsTimerFill").style.transition = "width 0.1s linear";
-
-        cpsTimer = setInterval(() => {
+function cpsClick(){
+    if(!cpsActive){
+        cpsActive=true;cpsCount=0;cpsTimeLeft=cpsDur;
+        document.getElementById("cpsArea").innerHTML = `¡CLICK RÁPIDO!<div class="cps-area-sub">¡Sigue así!</div>`;
+        document.getElementById("cpsBar").style.transition="width .1s linear";
+        cpsTimer = setInterval(()=>{
             cpsTimeLeft--;
-            document.getElementById("cpsTime").textContent = cpsTimeLeft + "s";
-            document.getElementById("cpsTimerFill").style.width = (cpsTimeLeft / cpsDuration * 100) + "%";
-            if (cpsTimeLeft <= 0) {
-                clearInterval(cpsTimer);
-                cpsTimer = null;
-                cpsActive = false;
-                const elapsed = cpsDuration;
-                const finalCps = (cpsCount / elapsed).toFixed(2);
-                cpsHistory.unshift({ cps: finalCps, clicks: cpsCount, duration: cpsDuration, fecha: new Date().toLocaleTimeString() });
-                if (cpsHistory.length > 5) cpsHistory = cpsHistory.slice(0, 5);
-                localStorage.setItem("omeles_cps_history", JSON.stringify(cpsHistory));
-                renderCpsHistory();
-                document.getElementById("cpsClickArea").innerHTML = `TERMINADO ✓<div class="cps-click-sub">CPS: ${finalCps}</div>`;
-                toast(`¡${finalCps} CPS!`, "success");
+            document.getElementById("cpsTime").textContent = cpsTimeLeft+"s";
+            document.getElementById("cpsBar").style.width = (cpsTimeLeft/cpsDur*100)+"%";
+            if(cpsTimeLeft<=0){
+                clearInterval(cpsTimer);cpsTimer=null;cpsActive=false;
+                const final = (cpsCount/cpsDur).toFixed(2);
+                document.getElementById("cpsArea").innerHTML = `TERMINADO ✓<div class="cps-area-sub">CPS: ${final}</div>`;
+                toast(`¡${final} CPS!`,"success");
             }
-        }, 1000);
+        },1000);
     }
-
-    if (!cpsActive) return;
+    if(!cpsActive) return;
     cpsCount++;
-    beep(1000 + Math.random() * 200, 0.03, 0.03);
-    const elapsed = cpsDuration - cpsTimeLeft;
-    const cps = elapsed > 0 ? (cpsCount / elapsed).toFixed(2) : cpsCount.toFixed(2);
+    beep(1000+Math.random()*200,.03,.03);
+    const elapsed = cpsDur - cpsTimeLeft;
+    const cps = elapsed>0?(cpsCount/elapsed).toFixed(2):cpsCount.toFixed(2);
     document.getElementById("cpsClicks").textContent = cpsCount;
     document.getElementById("cpsValue").textContent = cps;
 }
-
-document.getElementById("cpsClickArea").addEventListener("mousedown", doCpsClick);
-
-// Soporte barra espaciadora dentro del overlay CPS
-document.addEventListener("keydown", (e) => {
-    if (e.key === " " && document.getElementById("cpsOverlay").classList.contains("open")) {
-        e.preventDefault();
-        doCpsClick();
+document.getElementById("cpsArea").addEventListener("mousedown", cpsClick);
+document.addEventListener("keydown",(e)=>{
+    if(e.key===" " && document.getElementById("cpsOverlay").classList.contains("open")){
+        e.preventDefault(); cpsClick();
     }
 });
 
-function renderCpsHistory() {
-    try { cpsHistory = JSON.parse(localStorage.getItem("omeles_cps_history") || "[]"); } catch {}
-    const el = document.getElementById("cpsHistoryList");
-    if (cpsHistory.length === 0) {
-        el.innerHTML = '<div style="color:#666;font-size:11px;">Sin partidas aún</div>';
-        return;
-    }
-    el.innerHTML = cpsHistory.map((h, i) => `<div style="padding:3px 0;">#${i + 1} · <b style="color:#22c55e">${h.cps} CPS</b> · ${h.clicks} clics · ${h.duration}s</div>`).join("");
-}
-
-/* ======================================================
-   IA
-====================================================== */
-
-const iaRespuestas = [
-    { triggers: ["hola", "hey", "buenas", "saludos"], respuesta: "¡Hola! 👋 ¿En qué puedo ayudarte?" },
-    { triggers: ["cómo estás", "como estas", "qué tal"], respuesta: "¡Genial! ¿Y tú qué tal? 😊" },
-    { triggers: ["cuántos juegos", "cuantos juegos", "número de juegos", "numero de juegos", "total de juegos"], respuesta: "GENERAR_CONTEO_JUEGOS" },
-    { triggers: ["lista de juegos", "listar juegos", "qué juegos", "que juegos", "muestra los juegos", "ver juegos"], respuesta: "GENERAR_LISTA_JUEGOS" },
-    { triggers: ["key", "clave", "acceso"], respuesta: "Necesitas una KEY de acceso. Pídesela al administrador 🔑" },
-    { triggers: ["contraseña", "password"], respuesta: "La contraseña aparece al hacer clic en un juego y pulsar el botón CONTRASEÑA 🔐" },
-    { triggers: ["descargar", "download", "descarga"], respuesta: "Pulsa en el juego que quieras y luego en DESCARGAR ⬇️" },
-    { triggers: ["reparación", "reparacion", "reparar"], respuesta: "Si un juego no funciona, prueba con el botón REPARACIÓN 🔧" },
-    { triggers: ["gracias", "thx", "thanks"], respuesta: "¡De nada! 😊" },
-    { triggers: ["adios", "adiós", "chao", "hasta luego", "bye"], respuesta: "¡Hasta luego! 👋" },
-    { triggers: ["quién eres", "quien eres", "qué eres"], respuesta: "Soy el asistente virtual de OMELES GAMES 🤖." },
-    { triggers: ["ayuda", "help"], respuesta: "Puedo ayudarte con:\n• \"cuántos juegos hay\"\n• \"lista de juegos\"\n• \"info de [nombre]\"\n• Cualquier duda de descargas o keys" },
-    { triggers: ["aimlab"], respuesta: "El AimLab está en el menú 🎯" },
-    { triggers: ["cps"], respuesta: "El CPS Test está en el menú ⚡" },
-    { triggers: ["calculadora"], respuesta: "La calculadora está en el menú 🧮" },
-    { triggers: ["amor", "te quiero"], respuesta: "¡Qué bonito! 💜" },
-    { triggers: ["chiste", "broma"], respuesta: "¿Por qué los programadores prefieren el modo oscuro? Porque la luz atrae a los bugs 🐛😄" },
-    { triggers: ["hora", "qué hora"], respuesta: "HORA_ACTUAL" },
-    { triggers: ["fecha", "día", "dia"], respuesta: "FECHA_ACTUAL" }
-];
-
-function abrirIA() {
+/* ================= IA ================= */
+function abrirIa(){
     document.getElementById("dropdown").classList.remove("open");
     document.getElementById("menuBtn").classList.remove("active");
     document.getElementById("aiOverlay").classList.add("open");
-    document.body.style.overflow = "hidden";
-    setTimeout(() => document.getElementById("aiInput").focus(), 300);
+    document.body.style.overflow="hidden";
+    setTimeout(()=>document.getElementById("aiInput").focus(),300);
 }
-
-function cerrarIA() {
+function cerrarIa(){
     document.getElementById("aiOverlay").classList.remove("open");
-    document.body.style.overflow = "";
+    document.body.style.overflow="";
 }
-
-function enviarSugerencia(texto) {
-    document.getElementById("aiInput").value = texto;
-    enviarIA();
+function enviarIa(){
+    const i = document.getElementById("aiInput"), txt = i.value.trim();
+    if(!txt) return;
+    addMsg(txt,"user"); i.value="";
+    const msgs = document.getElementById("aiMsgs");
+    const typ = document.createElement("div");
+    typ.className = "ai-typing"; typ.id = "aiTyp";
+    typ.innerHTML = "<span></span><span></span><span></span>";
+    msgs.appendChild(typ); msgs.scrollTop = msgs.scrollHeight;
+    setTimeout(()=>{
+        document.getElementById("aiTyp")?.remove();
+        addMsg(respuestaIa(txt), "bot");
+    }, 600);
 }
-
-function enviarIA() {
-    const input = document.getElementById("aiInput");
-    const texto = input.value.trim();
-    if (!texto) return;
-    agregarMensaje(texto, "user");
-    input.value = "";
-
-    // Mostrar typing indicator
-    const messages = document.getElementById("aiMessages");
-    const typing = document.createElement("div");
-    typing.className = "ai-typing";
-    typing.id = "aiTyping";
-    typing.innerHTML = `<div class="ai-typing-dot"></div><div class="ai-typing-dot"></div><div class="ai-typing-dot"></div>`;
-    messages.appendChild(typing);
-    messages.scrollTop = messages.scrollHeight;
-
-    setTimeout(() => {
-        const t = document.getElementById("aiTyping");
-        if (t) t.remove();
-        const respuesta = obtenerRespuestaIA(texto);
-        agregarMensaje(respuesta, "bot");
-    }, 600 + Math.random() * 400);
+function addMsg(t, tipo){
+    const m = document.getElementById("aiMsgs");
+    const d = document.createElement("div");
+    d.className = "ai-msg "+tipo;
+    d.textContent = t;
+    m.appendChild(d); m.scrollTop = m.scrollHeight;
 }
-
-function agregarMensaje(texto, tipo) {
-    const messages = document.getElementById("aiMessages");
-    const div = document.createElement("div");
-    div.className = "ai-msg " + tipo;
-    div.textContent = texto;
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
-}
-
-function buscarJuego(texto) {
-    const t = texto.toLowerCase();
-    return todosLosJuegos.find(g => {
+function buscarJuego(t){
+    t = t.toLowerCase();
+    return todosLosJuegos.find(g=>{
         const n = String(g.name).toLowerCase();
         return t.includes(n) || n.includes(t);
     });
 }
-
-function obtenerRespuestaIA(texto) {
+function respuestaIa(texto){
     const t = texto.toLowerCase().trim();
 
-    if (t.includes("cuantos juegos") || t.includes("cuántos juegos") || t.includes("numero de juegos") || t.includes("número de juegos") || t.includes("total de juegos")) {
-        return todosLosJuegos.length === 0 ? "No hay juegos aún." : `📊 Hay **${todosLosJuegos.length}** juego${todosLosJuegos.length === 1 ? '' : 's'} en el catálogo.`;
+    if(t.includes("cuantos")||t.includes("cuántos")||t.includes("numero")||t.includes("número")||t.includes("total")){
+        if(t.includes("juego")) return todosLosJuegos.length===0?"No hay juegos aún.":`📊 Hay ${todosLosJuegos.length} juegos en el catálogo.`;
     }
-
-    if (t.includes("lista de juegos") || t.includes("listar juegos") || t.includes("que juegos") || t.includes("qué juegos") || t.includes("muestra los juegos") || t.includes("ver juegos")) {
-        if (todosLosJuegos.length === 0) return "No hay juegos.";
-        return `📋 Juegos (${todosLosJuegos.length}):\n${todosLosJuegos.map((g, i) => `${i + 1}. ${g.name}`).join("\n")}`;
+    if(t.includes("lista")||t.includes("que juegos")||t.includes("qué juegos")||t.includes("muestra")||t.includes("ver juegos")){
+        if(todosLosJuegos.length===0) return "No hay juegos aún.";
+        return `📋 Juegos (${todosLosJuegos.length}):\n${todosLosJuegos.map((g,i)=>`${i+1}. ${g.name}`).join("\n")}`;
     }
-
-    const juegoEncontrado = buscarJuego(t);
-    if (juegoEncontrado) {
-        const j = juegoEncontrado;
-        let resp = `🎮 **${j.name}**\n\n⬇️ Descarga: ${j.download ? "✅" : "❌"}\n🔧 Reparación: ${j.repair ? "✅" : "❌"}\n🔑 Password: ${j.password ? "✅" : "❌"}`;
-        if (j.password) resp += `\n\nContraseña: ${j.password}`;
-        return resp;
+    const j = buscarJuego(t);
+    if(j){
+        let r = `🎮 ${j.name}\n\n⬇️ Descarga: ${j.download?"✅":"❌"}\n🔧 Reparación: ${j.repair?"✅":"❌"}\n🔑 Password: ${j.password?"✅":"❌"}`;
+        if(j.password) r += `\n\nContraseña: ${j.password}`;
+        return r;
     }
-
-    for (const item of iaRespuestas) {
-        for (const trigger of item.triggers) {
-            if (t.includes(trigger)) {
-                if (item.respuesta === "GENERAR_CONTEO_JUEGOS") return `Hay ${todosLosJuegos.length} juegos.`;
-                if (item.respuesta === "GENERAR_LISTA_JUEGOS") return todosLosJuegos.map(g => "• " + g.name).join("\n");
-                if (item.respuesta === "HORA_ACTUAL") return "Son las " + new Date().toLocaleTimeString('es-ES') + " ⏰";
-                if (item.respuesta === "FECHA_ACTUAL") return "Hoy es " + new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) + " 📅";
-                return item.respuesta;
-            }
-        }
-    }
-
-    if (t.includes("info") || t.includes("datos") || t.includes("hablame de") || t.includes("cuentame de")) {
-        const palabras = t.replace(/info|datos|de|hablame|cuentame|dime|sobre/g, "").trim();
-        if (palabras) {
-            const j = buscarJuego(palabras);
-            if (j) return `🎮 **${j.name}**\n\n⬇️ ${j.download ? "Disponible" : "No"}\n🔧 ${j.repair ? "Disponible" : "No"}\n🔑 ${j.password || "No"}`;
-        }
-    }
-
-    if (t.includes("?")) return "Prueba a preguntar por un juego específico o escribe 'ayuda' 🤔";
-    if (t.split(" ").length <= 2) return "Entiendo. ¿Puedes contarme más? 🤔";
+    if(t.includes("hola")||t.includes("hey")||t.includes("buenas")) return "¡Hola! 👋 ¿En qué puedo ayudarte?";
+    if(t.includes("key")||t.includes("clave")) return "Pídele una KEY al administrador 🔑";
+    if(t.includes("contraseña")||t.includes("password")) return "Aparece al pulsar CONTRASEÑA en un juego 🔐";
+    if(t.includes("descargar")||t.includes("descarga")) return "Pulsa en el juego y luego en DESCARGAR ⬇️";
+    if(t.includes("reparar")||t.includes("reparacion")||t.includes("reparación")) return "Usa el botón REPARACIÓN si el juego falla 🔧";
+    if(t.includes("gracias")) return "¡De nada! 😊";
+    if(t.includes("adios")||t.includes("adiós")||t.includes("bye")||t.includes("chao")) return "¡Hasta luego! 👋";
+    if(t.includes("quien eres")||t.includes("quién eres")||t.includes("que eres")) return "Soy el asistente de OMELES GAMES 🤖";
+    if(t.includes("ayuda")||t.includes("help")) return "Puedo decirte:\n• cuántos juegos hay\n• lista de juegos\n• info de [juego]\n• ayuda general";
+    if(t.includes("aimlab")) return "AimLab está en el menú 🎯";
+    if(t.includes("cps")) return "CPS Test está en el menú ⚡";
+    if(t.includes("calculadora")) return "La calculadora está en el menú 🧮";
+    if(t.includes("chiste")) return "¿Por qué los programadores prefieren el modo oscuro? La luz atrae bugs 🐛😄";
+    if(t.includes("hora")) return "Son las "+new Date().toLocaleTimeString('es-ES')+" ⏰";
+    if(t.includes("fecha")||t.includes("dia")||t.includes("día")) return "Hoy es "+new Date().toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'})+" 📅";
+    if(t.includes("?")) return "Prueba a preguntar por un juego específico o escribe 'ayuda' 🤔";
     return "No tengo esa info. Prueba con un juego específico o 'ayuda' 💬";
 }
 
-/* ======================================================
-   SETTINGS (UI)
-====================================================== */
-
-function abrirSettings() {
+/* ================= SETTINGS UI ================= */
+function abrirSettings(){
     document.getElementById("dropdown").classList.remove("open");
     document.getElementById("menuBtn").classList.remove("active");
     document.getElementById("settingsOverlay").classList.add("open");
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow="hidden";
     cargarValoresSettings();
 }
-
-function cerrarSettings() {
+function cerrarSettings(){
     document.getElementById("settingsOverlay").classList.remove("open");
-    document.body.style.overflow = "";
+    document.body.style.overflow="";
 }
 
-/* ======================================================
-   LOGIN
-====================================================== */
-
-async function iniciarSesion() {
-    const input = document.getElementById("keyInput");
-    const message = document.getElementById("loginMessage");
-    const key = input.value.trim();
-
-    if (!key) { message.textContent = "Introduce una KEY."; return; }
-
-    message.textContent = "Comprobando KEY...";
-
-    try {
-        const r = await fetch(`${SERVER_URL}/api/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ key })
+/* ================= LOGIN ================= */
+async function iniciarSesion(){
+    const inp = document.getElementById("keyInput"), msg = document.getElementById("loginMessage");
+    const key = inp.value.trim();
+    if(!key){msg.textContent="Introduce una KEY.";return}
+    msg.textContent = "Comprobando KEY...";
+    try{
+        const r = await fetch(`${SERVER_URL}/api/login`,{
+            method:"POST", headers:{"Content-Type":"application/json"},
+            body: JSON.stringify({key})
         });
         const d = await r.json();
-
-        if (!r.ok) {
-            message.textContent = d.message || d.error || "KEY incorrecta.";
-            playError();
-            return;
-        }
-
+        if(!r.ok){msg.textContent = d.message || d.error || "KEY incorrecta."; return}
         localStorage.setItem("omeles_key", key);
         currentKey = key;
-        playSuccess();
-        toast("¡Bienvenido!", "success");
+        toast("¡Bienvenido!","success");
         mostrarCliente();
         conectarSocket();
-
-    } catch (e) {
+    }catch(e){
         console.error(e);
-        message.textContent = "No se pudo conectar con el servidor.";
+        msg.textContent = "No se pudo conectar.";
     }
 }
 
-/* ======================================================
-   SOCKET
-====================================================== */
-
-function conectarSocket() {
-    if (socket) { socket.disconnect(); socket = null; }
-    socket = io({ auth: { key: currentKey } });
-
-    socket.on("key-revoked", (d) => {
-        if (d.key === currentKey) {
-            alert("⚠️ Tu KEY ha sido revocada.\n\nSerás expulsado.");
+/* ================= SOCKET ================= */
+function conectarSocket(){
+    if(socket){socket.disconnect();socket=null}
+    socket = io({auth:{key:currentKey}});
+    socket.on("key-revoked",(d)=>{
+        if(d.key===currentKey){
+            alert("⚠️ Tu KEY ha sido revocada.");
             cerrarSesion();
         }
     });
-
-    socket.on("games-updated", () => cargarJuegos());
+    socket.on("games-updated",()=>cargarJuegos());
 }
-
-function mostrarCliente() {
-    document.getElementById("loginScreen").style.display = "none";
-    document.getElementById("clientScreen").style.display = "block";
+function mostrarCliente(){
+    document.getElementById("loginScreen").style.display="none";
+    document.getElementById("clientScreen").style.display="block";
     cargarJuegos();
 }
-
-function cerrarSesion() {
+function cerrarSesion(){
     localStorage.removeItem("omeles_key");
-    currentKey = "";
-    if (socket) { socket.disconnect(); socket = null; }
-    document.getElementById("clientScreen").style.display = "none";
-    document.getElementById("loginScreen").style.display = "flex";
-    document.getElementById("keyInput").value = "";
-    document.getElementById("loginMessage").textContent = "";
+    currentKey="";
+    if(socket){socket.disconnect();socket=null}
+    document.getElementById("clientScreen").style.display="none";
+    document.getElementById("loginScreen").style.display="flex";
+    document.getElementById("keyInput").value="";
+    document.getElementById("loginMessage").textContent="";
 }
 
-/* ======================================================
-   ESCAPAR
-====================================================== */
-
-function escapeHTML(v) {
-    return String(v ?? "")
-        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+/* ================= ESCAPE ================= */
+function escapeHTML(v){
+    return String(v ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
 }
 
-/* ======================================================
-   CARGAR JUEGOS
-====================================================== */
-
-async function cargarJuegos() {
-    const contenedor = document.getElementById("games");
-    contenedor.innerHTML = `<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>`;
-
-    try {
+/* ================= CARGAR JUEGOS ================= */
+async function cargarJuegos(){
+    const c = document.getElementById("games");
+    c.innerHTML = `<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>`;
+    try{
         const r = await fetch(`${SERVER_URL}/api/games`);
-        if (!r.ok) throw new Error("Error");
+        if(!r.ok) throw new Error("Error");
         const d = await r.json();
-        if (!d.success) throw new Error(d.message || "Error");
-
+        if(!d.success) throw new Error(d.message||"Error");
         todosLosJuegos = Array.isArray(d.games) ? d.games : [];
-        actualizarContadores();
-        filtrarJuegos();
-
-    } catch (e) {
-        console.error("ERROR:", e);
-        contenedor.innerHTML = `<div class="empty"><div class="empty-icon">😢</div>No se pudieron cargar los juegos.</div>`;
+        contadores();
+        filtrar();
+    }catch(e){
+        console.error(e);
+        c.innerHTML = `<div class="empty"><div class="empty-icon">😢</div>No se pudieron cargar los juegos.</div>`;
     }
 }
-
-function onSearchInput() {
-    clearTimeout(searchDebounceTimer);
-    searchDebounceTimer = setTimeout(filtrarJuegos, 200);
+function onSearch(){
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(filtrar, 200);
 }
-
-function filtrarJuegos() {
+function filtrar(){
     const input = document.getElementById("searchInput");
-    const texto = input ? input.value.toLowerCase().trim() : "";
-
-    let filtrados = todosLosJuegos;
-
-    // Aplicar filtro
-    if (filtroActual === "favorites") {
-        const favs = getFavoritos();
-        filtrados = filtrados.filter(j => favs.includes(j.name));
-    } else if (filtroActual === "recent") {
-        const rec = getRecientes();
-        filtrados = filtrados.filter(j => rec.includes(j.name));
-        filtrados.sort((a, b) => rec.indexOf(a.name) - rec.indexOf(b.name));
+    const txt = input ? input.value.toLowerCase().trim() : "";
+    let arr = todosLosJuegos;
+    if(filtroActual==="favorites"){
+        const f = getFavs();
+        arr = arr.filter(j=>f.includes(j.name));
+    } else if(filtroActual==="recent"){
+        const r = getRec();
+        arr = arr.filter(j=>r.includes(j.name));
+        arr.sort((a,b)=>r.indexOf(a.name)-r.indexOf(b.name));
     }
-
-    // Aplicar búsqueda
-    if (texto) {
-        filtrados = filtrados.filter(j =>
-            String(j.name || "").toLowerCase().includes(texto)
-        );
-    }
-
-    renderJuegos(filtrados);
+    if(txt) arr = arr.filter(j=>String(j.name||"").toLowerCase().includes(txt));
+    render(arr);
 }
-
-function renderJuegos(juegos) {
-    const contenedor = document.getElementById("games");
-    contenedor.innerHTML = "";
-
-    if (!juegos || juegos.length === 0) {
-        const texto = document.getElementById("searchInput")?.value.trim();
-        let msg = "No hay juegos disponibles todavía.";
-        if (texto) msg = "No se encontraron juegos con ese nombre.";
-        else if (filtroActual === "favorites") msg = "No tienes favoritos todavía.";
-        else if (filtroActual === "recent") msg = "Aún no has abierto ningún juego.";
-        contenedor.innerHTML = `<div class="empty"><div class="empty-icon">${filtroActual === "favorites" ? "⭐" : filtroActual === "recent" ? "🕒" : "🎮"}</div>${msg}</div>`;
+function render(juegos){
+    const c = document.getElementById("games");
+    c.innerHTML = "";
+    if(!juegos || juegos.length===0){
+        const txt = document.getElementById("searchInput")?.value.trim();
+        let m = "No hay juegos disponibles todavía.";
+        if(txt) m = "No se encontraron juegos con ese nombre.";
+        else if(filtroActual==="favorites") m = "No tienes favoritos.";
+        else if(filtroActual==="recent") m = "No has abierto ningún juego aún.";
+        c.innerHTML = `<div class="empty"><div class="empty-icon">🎮</div>${m}</div>`;
         return;
     }
-
-    juegos.forEach((juego, i) => {
-        const tarjeta = document.createElement("div");
-        tarjeta.className = "game-card";
-        tarjeta.style.transitionDelay = (i * 30) + "ms";
-
-        const nombre = escapeHTML(juego.name);
-        const imagen = escapeHTML(juego.image || "");
-        const esFav = esFavorito(juego.name);
-
-        const iconoHTML = imagen
-            ? `<div class="game-icon has-image"><img src="${imagen}" alt="${nombre}" loading="lazy" onerror="this.parentElement.classList.remove('has-image'); this.parentElement.innerHTML='🎮';"></div>`
-            : `<div class="game-icon">🎮</div>`;
-
-        tarjeta.innerHTML = `
-            <button class="fav-btn ${esFav ? "active" : ""}" onclick="toggleFavorito('${nombre.replace(/'/g, "\\'")}', event)" title="Favorito">${esFav ? "★" : "☆"}</button>
-            <button class="game-header" type="button">
-                <div class="game-left">
-                    ${iconoHTML}
-                    <div style="min-width:0;">
-                        <div class="game-name">${nombre}</div>
-                        <div class="game-status">Juego disponible</div>
+    juegos.forEach((j,i)=>{
+        const card = document.createElement("div");
+        card.className = "g-card";
+        card.style.transitionDelay = (i*30)+"ms";
+        const n = escapeHTML(j.name);
+        const img = escapeHTML(j.image||"");
+        const fav = esFav(j.name);
+        const ico = img
+            ? `<div class="g-icon has-img"><img src="${img}" alt="${n}" loading="lazy" onerror="this.parentElement.classList.remove('has-img');this.parentElement.innerHTML='🎮'"></div>`
+            : `<div class="g-icon">🎮</div>`;
+        card.innerHTML = `
+            <button class="fav-btn ${fav?"active":""}" onclick="toggleFav('${n.replace(/'/g,"\\'")}',event)">${fav?"★":"☆"}</button>
+            <button class="g-header" type="button">
+                <div class="g-left">
+                    ${ico}
+                    <div style="min-width:0">
+                        <div class="g-name">${n}</div>
+                        <div class="g-status">Juego disponible</div>
                     </div>
                 </div>
-                <div class="game-arrow">›</div>
-            </button>
-        `;
-
-        tarjeta.addEventListener("click", () => abrirModal(juego));
-        contenedor.appendChild(tarjeta);
-
-        // Animación de aparición
-        requestAnimationFrame(() => {
-            setTimeout(() => tarjeta.classList.add("visible"), 30);
-        });
+                <div class="g-arrow">›</div>
+            </button>`;
+        card.addEventListener("click",()=>abrirModal(j));
+        c.appendChild(card);
+        requestAnimationFrame(()=>setTimeout(()=>card.classList.add("vis"),30));
     });
 }
 
-/* ======================================================
-   MODAL JUEGO
-====================================================== */
-
-function abrirModal(juego) {
-    juegoActual = juego;
-    addReciente(juego.name);
-
-    const box = document.querySelector(".game-modal-box");
-    const banner = document.getElementById("modalBanner");
-
-    box.querySelector(".game-modal-close")?.remove();
-
-    if (juego.image) {
-        banner.innerHTML = `<img src="${escapeHTML(juego.image)}" alt="" onerror="this.parentElement.innerHTML='<div class=\\'banner-fallback\\'>🎮</div>';"><button class="game-modal-close" onclick="cerrarModal()">✕</button>`;
-    } else {
-        banner.innerHTML = `<div class="banner-fallback">🎮</div>`;
+/* ================= MODAL ================= */
+function abrirModal(j){
+    addRec(j.name);
+    const box = document.querySelector(".gm-box");
+    const banner = document.getElementById("gmBanner");
+    box.querySelector(".gm-close")?.remove();
+    if(j.image){
+        banner.innerHTML = `<img src="${escapeHTML(j.image)}" alt="" onerror="this.parentElement.innerHTML='<div class=\\'banner-fb\\'>🎮</div>'"><button class="gm-close" onclick="cerrarModal()">✕</button>`;
+    }else{
+        banner.innerHTML = `<div class="banner-fb">🎮</div>`;
     }
-
-    if (!banner.querySelector(".game-modal-close")) {
-        box.insertAdjacentHTML("afterbegin", `<button class="game-modal-close" onclick="cerrarModal()">✕</button>`);
+    if(!banner.querySelector(".gm-close")){
+        box.insertAdjacentHTML("afterbegin",`<button class="gm-close" onclick="cerrarModal()">✕</button>`);
     }
-
-    document.getElementById("modalTitle").textContent = juego.name || "Juego";
-
-    const c = document.getElementById("modalButtons");
+    document.getElementById("gmTitle").textContent = j.name || "Juego";
+    const c = document.getElementById("gmBtns");
     c.innerHTML = "";
-
-    const download = juego.download ? String(juego.download).trim() : "";
-    const repair = juego.repair ? String(juego.repair).trim() : "";
-    const password = juego.password ? String(juego.password) : "";
-
-    if (download) {
+    const dl = j.download?String(j.download).trim():"";
+    const rp = j.repair?String(j.repair).trim():"";
+    const pw = j.password?String(j.password):"";
+    if(dl){
         const a = document.createElement("a");
-        a.href = download;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        a.className = "game-btn download";
-        a.innerHTML = `<div class="game-btn-icon">⬇️</div><div class="game-btn-text"><span class="game-btn-title">DESCARGAR</span><span class="game-btn-subtitle">Obtener el juego completo</span></div>`;
-        a.onclick = () => playClick();
+        a.href = dl; a.target = "_blank"; a.rel = "noopener noreferrer";
+        a.className = "g-btn download";
+        a.innerHTML = `<div class="g-btn-icon">⬇️</div><div class="g-btn-text"><span class="g-btn-t">DESCARGAR</span><span class="g-btn-s">Obtener el juego completo</span></div>`;
         c.appendChild(a);
     }
-
-    if (repair) {
+    if(rp){
         const a = document.createElement("a");
-        a.href = repair;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        a.className = "game-btn repair";
-        a.innerHTML = `<div class="game-btn-icon">🔧</div><div class="game-btn-text"><span class="game-btn-title">REPARACIÓN</span><span class="game-btn-subtitle">Solucionar errores</span></div>`;
-        a.onclick = () => playClick();
+        a.href = rp; a.target = "_blank"; a.rel = "noopener noreferrer";
+        a.className = "g-btn repair";
+        a.innerHTML = `<div class="g-btn-icon">🔧</div><div class="g-btn-text"><span class="g-btn-t">REPARACIÓN</span><span class="g-btn-s">Solucionar errores</span></div>`;
         c.appendChild(a);
     }
-
-    if (password) {
-        const btn = document.createElement("button");
-        btn.className = "game-btn password";
-        btn.innerHTML = `<div class="game-btn-icon">🔑</div><div class="game-btn-text"><span class="game-btn-title">CONTRASEÑA</span><span class="game-btn-subtitle">Copiar al portapapeles</span></div>`;
-        btn.addEventListener("click", (e) => copiarPassword(password, e));
-        c.appendChild(btn);
+    if(pw){
+        const b = document.createElement("button");
+        b.className = "g-btn password";
+        b.innerHTML = `<div class="g-btn-icon">🔑</div><div class="g-btn-text"><span class="g-btn-t">CONTRASEÑA</span><span class="g-btn-s">Copiar al portapapeles</span></div>`;
+        b.addEventListener("click",(e)=>copiarPass(pw,e));
+        c.appendChild(b);
     }
-
-    if (!download && !repair && !password) {
-        c.innerHTML = `<div style="text-align:center;color:#666;padding:20px;font-size:13px;">Este juego no tiene opciones disponibles todavía.</div>`;
+    if(!dl && !rp && !pw){
+        c.innerHTML = `<div style="text-align:center;color:#666;padding:20px;font-size:13px">Este juego no tiene opciones.</div>`;
     }
-
     document.getElementById("gameModal").classList.add("open");
     document.body.style.overflow = "hidden";
 }
-
-function cerrarModal() {
+function cerrarModal(){
     document.getElementById("gameModal").classList.remove("open");
     document.body.style.overflow = "";
-    juegoActual = null;
 }
-
-document.getElementById("gameModal").addEventListener("click", (e) => {
-    if (e.target.id === "gameModal") cerrarModal();
+document.getElementById("gameModal").addEventListener("click",(e)=>{
+    if(e.target.id==="gameModal") cerrarModal();
 });
-
-document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-        ["gameModal", "aimOverlay", "calcOverlay", "cpsOverlay", "aiOverlay", "settingsOverlay"].forEach(id => {
+document.addEventListener("keydown",(e)=>{
+    if(e.key==="Escape"){
+        ["gameModal","aimOverlay","calcOverlay","cpsOverlay","aiOverlay","settingsOverlay"].forEach(id=>{
             const el = document.getElementById(id);
-            if (el?.classList.contains("open")) {
-                if (id === "gameModal") cerrarModal();
-                if (id === "aimOverlay") cerrarAimLab();
-                if (id === "calcOverlay") cerrarCalculadora();
-                if (id === "cpsOverlay") cerrarCPS();
-                if (id === "aiOverlay") cerrarIA();
-                if (id === "settingsOverlay") cerrarSettings();
+            if(el?.classList.contains("open")){
+                if(id==="gameModal") cerrarModal();
+                if(id==="aimOverlay") cerrarAim();
+                if(id==="calcOverlay") cerrarCalc();
+                if(id==="cpsOverlay") cerrarCps();
+                if(id==="aiOverlay") cerrarIa();
+                if(id==="settingsOverlay") cerrarSettings();
             }
         });
         document.getElementById("dropdown").classList.remove("open");
         document.getElementById("menuBtn").classList.remove("active");
     }
-
-    // Ctrl+K → buscar
-    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+    if((e.ctrlKey||e.metaKey) && e.key==="k"){
         e.preventDefault();
         document.getElementById("searchInput")?.focus();
     }
-
-    // F → favoritos
-    if (e.key === "f" && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
-        if (!hayOverlayAbierto()) {
-            setFilter(filtroActual === "favorites" ? "all" : "favorites");
-        }
-    }
-
-    // / → focus search
-    if (e.key === "/" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
+    if(e.key==="/" && document.activeElement.tagName!=="INPUT" && document.activeElement.tagName!=="TEXTAREA"){
         e.preventDefault();
         document.getElementById("searchInput")?.focus();
     }
 });
+document.getElementById("searchInput")?.addEventListener("focus",()=>document.getElementById("scKey").classList.add("hide"));
+document.getElementById("searchInput")?.addEventListener("blur",()=>document.getElementById("scKey").classList.remove("hide"));
 
-// Ocultar shortcut cuando hay foco
-document.getElementById("searchInput")?.addEventListener("focus", () => {
-    document.getElementById("searchShortcut").classList.add("hidden");
-});
-document.getElementById("searchInput")?.addEventListener("blur", () => {
-    document.getElementById("searchShortcut").classList.remove("hidden");
-});
-
-/* ======================================================
-   COPIAR PASSWORD
-====================================================== */
-
-async function copiarPassword(password, ev) {
-    try {
-        await navigator.clipboard.writeText(password);
-    } catch {
+/* ================= COPIAR ================= */
+async function copiarPass(pass, ev){
+    try{
+        await navigator.clipboard.writeText(pass);
+    }catch{
         const ta = document.createElement("textarea");
-        ta.value = password;
+        ta.value = pass;
         document.body.appendChild(ta);
         ta.select();
         document.execCommand("copy");
-        document.body.removeChild(ta);
+        ta.remove();
     }
-
-    playSuccess();
-    toast("✅ Contraseña copiada", "success", 2000);
-
-    // Confetti
-    if (ev) {
-        lanzarConfetti(ev.clientX, ev.clientY);
-    } else {
-        lanzarConfetti(window.innerWidth / 2, window.innerHeight / 2);
-    }
+    beep(880,.1);
+    toast("Contraseña copiada","success",2000);
+    confetti(ev.clientX, ev.clientY);
 }
 
-/* ======================================================
-   ENTER LOGIN
-====================================================== */
-
-document.getElementById("keyInput").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") iniciarSesion();
+/* ================= ENTER LOGIN ================= */
+document.getElementById("keyInput").addEventListener("keydown",(e)=>{
+    if(e.key==="Enter") iniciarSesion();
 });
 
-/* ======================================================
-   INIT
-====================================================== */
-
-window.addEventListener("DOMContentLoaded", () => {
+/* ================= INIT ================= */
+window.addEventListener("DOMContentLoaded",()=>{
     cargarSettings();
-
-    // Ocultar loading screen
-    setTimeout(() => {
-        document.getElementById("loadingScreen").classList.add("hidden");
-    }, 1200);
-
-    const key = localStorage.getItem("omeles_key");
-    if (key) {
-        fetch("/api/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ key })
+    setTimeout(()=>document.getElementById("loading").classList.add("hide"), 1000);
+    const k = localStorage.getItem("omeles_key");
+    if(k){
+        fetch("/api/login",{
+            method:"POST", headers:{"Content-Type":"application/json"},
+            body: JSON.stringify({key:k})
         })
-        .then(async r => {
-            if (!r.ok) { localStorage.removeItem("omeles_key"); return; }
-            currentKey = key;
+        .then(async r=>{
+            if(!r.ok){localStorage.removeItem("omeles_key");return}
+            currentKey = k;
             mostrarCliente();
             conectarSocket();
         })
-        .catch(e => console.error(e));
+        .catch(e=>console.error(e));
     }
 });
-
-// Intersection Observer para animaciones
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-        if (e.isIntersecting) e.target.classList.add("visible");
-    });
-}, { threshold: 0.1 });
-
 </script>
-
 </body>
 </html>
