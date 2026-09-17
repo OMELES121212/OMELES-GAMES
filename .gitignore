@@ -1,6 +1,7 @@
 node_modules/
-.env
+omeles_games.db
 *.db
-*.db-shm
-*.db-wal
+*.db-journal
+.env
 dist/
+.DS_Store

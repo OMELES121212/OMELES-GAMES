@@ -1716,7 +1716,16 @@ document
         }
     );
 
+// Actualizar lista de juegos en tiempo real (por si otro admin edita)
+const socket = io();
+socket.on("games-updated", () => {
+    if (adminKeyValue) {
+        cargarJuegos();
+        cargarKeys();
+    }
+});
 </script>
 
+<script src="/socket.io/socket.io.js"></script>
 </body>
 </html>
