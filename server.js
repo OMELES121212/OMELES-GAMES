@@ -21,29 +21,51 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
+// ======================================================
+// HEALTH CHECK
+// ======================================================
 app.get("/health", (req, res) => {
     res.status(200).json({ status: "ok", connections: io.engine.clientsCount });
 });
 
+// ======================================================
+// RATE LIMITING
+// ======================================================
 const intentos = new Map();
 function rateLimit(req, res, next) {
     const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
     const ahora = Date.now();
     const datos = intentos.get(ip) || { count: 0, reset: ahora + 60000 };
-    if (ahora > datos.reset) { datos.count = 0; datos.reset = ahora + 60000; }
+    if (ahora > datos.reset) {
+        datos.count = 0;
+        datos.reset = ahora + 60000;
+    }
     datos.count++;
     intentos.set(ip, datos);
-    if (datos.count > 20) return res.status(429).json({ success: false, message: "Demasiados intentos." });
+    if (datos.count > 20) {
+        return res.status(429).json({ success: false, message: "Demasiados intentos." });
+    }
     next();
 }
 
-// Middleware admin - Acepta la ADMIN_KEY del entorno O cualquier key ADMIN_*
+// ======================================================
+// MIDDLEWARE ADMIN
+// Acepta:
+//   - La ADMIN_KEY del entorno (Railway Variables)
+//   - Cualquier key en BD con type que empiece por "ADMIN"
+// ======================================================
 function checkAdmin(req, res, next) {
     const key = req.headers["x-admin-key"];
 
-    if (key === ADMIN_KEY) return next();
+    // 1. ADMIN_KEY del entorno
+    if (key === ADMIN_KEY) {
+        return next();
+    }
 
-    const row = db.prepare("SELECT * FROM keys WHERE key = ? AND type LIKE 'ADMIN%'").get(key);
+    // 2. Keys ADMIN guardadas en la BD
+    const row = db.prepare(
+        "SELECT * FROM keys WHERE key = ? AND type LIKE 'ADMIN%'"
+    ).get(key);
 
     if (row && row.active) {
         if (row.expires_at && new Date(row.expires_at) <= new Date()) {
@@ -56,11 +78,16 @@ function checkAdmin(req, res, next) {
     return res.status(401).json({ success: false, message: "Admin Key incorrecta" });
 }
 
+// ======================================================
+// SOCKET.IO
+// ======================================================
 io.on("connection", (socket) => {
     console.log(`🔌 Cliente conectado: ${socket.id}`);
 });
 
+// ======================================================
 // LOGIN CLIENTE
+// ======================================================
 app.post("/api/login", rateLimit, (req, res) => {
     const { key } = req.body;
     if (!key) return res.status(400).json({ success: false, message: "Falta la key" });
@@ -76,7 +103,10 @@ app.post("/api/login", rateLimit, (req, res) => {
 
     const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "?";
     const uses = (row.use_count || 0) + 1;
-    const active = row.type === "ONE_USE" ? 0 : 1;
+
+    // Se desactiva tras el primer uso si es ONE_USE o ADMIN_ONE_USE
+    const esUnSoloUso = row.type === "ONE_USE" || row.type === "ADMIN_ONE_USE";
+    const active = esUnSoloUso ? 0 : 1;
 
     db.prepare(`UPDATE keys SET last_ip = ?, last_used_at = ?, use_count = ?, active = ? WHERE id = ?`)
       .run(ip, new Date().toISOString(), uses, active, row.id);
@@ -84,22 +114,29 @@ app.post("/api/login", rateLimit, (req, res) => {
     res.json({ success: true, type: row.type });
 });
 
+// ======================================================
+// JUEGOS (cliente)
+// ======================================================
 app.get("/api/games", (req, res) => {
     const games = db.prepare("SELECT * FROM games WHERE active = 1 ORDER BY id DESC").all();
     res.json({ success: true, games });
 });
 
+// ======================================================
+// KEYS (admin)
+// ======================================================
 app.get("/api/admin/keys", checkAdmin, (req, res) => {
     const keys = db.prepare("SELECT * FROM keys ORDER BY id DESC").all();
     res.json({ success: true, keys });
 });
 
-// CREAR KEY (acepta todos los tipos incluyendo ADMIN_*)
+// CREAR KEY
 app.post("/api/keys", checkAdmin, (req, res) => {
     const { type } = req.body;
+
     const validos = [
         "24H", "7D", "30D", "LIFETIME", "ONE_USE",
-        "ADMIN", "ADMIN_24H", "ADMIN_7D", "ADMIN_30D", "ADMIN_LIFETIME"
+        "ADMIN", "ADMIN_24H", "ADMIN_7D", "ADMIN_30D", "ADMIN_ONE_USE", "ADMIN_LIFETIME"
     ];
 
     if (!validos.includes(type)) {
@@ -127,27 +164,34 @@ app.post("/api/keys", checkAdmin, (req, res) => {
     res.json({ success: true, key: keyStr });
 });
 
+// EDITAR MOTE
 app.post("/api/admin/update-key-nickname", checkAdmin, (req, res) => {
     const { id, nickname } = req.body;
     db.prepare("UPDATE keys SET nickname = ? WHERE id = ?").run(nickname || "", id);
     res.json({ success: true });
 });
 
+// REVOCAR KEY
 app.post("/api/admin/revoke-key", checkAdmin, (req, res) => {
     db.prepare("UPDATE keys SET active = 0 WHERE id = ?").run(req.body.id);
     res.json({ success: true });
 });
 
+// ELIMINAR KEY
 app.post("/api/admin/delete-key", checkAdmin, (req, res) => {
     db.prepare("DELETE FROM keys WHERE id = ?").run(req.body.id);
     res.json({ success: true });
 });
 
+// ======================================================
+// JUEGOS (admin)
+// ======================================================
 app.get("/api/admin/games", checkAdmin, (req, res) => {
     const games = db.prepare("SELECT * FROM games ORDER BY id DESC").all();
     res.json({ success: true, games });
 });
 
+// CREAR JUEGO
 app.post("/api/games", checkAdmin, (req, res) => {
     const { name, download, repair, password, image } = req.body;
     if (!name) return res.status(400).json({ success: false, message: "Falta el nombre" });
@@ -159,6 +203,7 @@ app.post("/api/games", checkAdmin, (req, res) => {
     res.json({ success: true });
 });
 
+// EDITAR JUEGO
 app.post("/api/admin/update-game", checkAdmin, (req, res) => {
     const { id, name, download, repair, password, image } = req.body;
     db.prepare(`UPDATE games SET name = ?, download = ?, repair = ?, password = ?, image = ? WHERE id = ?`)
@@ -168,12 +213,16 @@ app.post("/api/admin/update-game", checkAdmin, (req, res) => {
     res.json({ success: true });
 });
 
+// ELIMINAR JUEGO
 app.post("/api/admin/delete-game", checkAdmin, (req, res) => {
     db.prepare("DELETE FROM games WHERE id = ?").run(req.body.id);
     io.emit("games-updated", { action: "delete" });
     res.json({ success: true });
 });
 
+// ======================================================
+// ARRANCAR
+// ======================================================
 server.listen(PORT, "0.0.0.0", () => {
     console.log(`\n✅ OMELES GAMES en puerto ${PORT}`);
     console.log(`🔑 Admin Key: ${ADMIN_KEY}\n`);
