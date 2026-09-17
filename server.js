@@ -50,39 +50,62 @@ function rateLimit(req, res, next) {
 
 // ======================================================
 // MIDDLEWARE ADMIN
-// Acepta:
-//   - La ADMIN_KEY del entorno (Railway Variables)
-//   - Cualquier key en BD con type que empiece por "ADMIN"
+// - Acepta ADMIN_KEY del entorno
+// - Acepta keys ADMIN_* de la BD (registrando uso)
 // ======================================================
 function checkAdmin(req, res, next) {
     const key = req.headers["x-admin-key"];
 
-    // 1. ADMIN_KEY del entorno
+    // 1. ADMIN_KEY maestra del entorno (no se registra uso)
     if (key === ADMIN_KEY) {
         return next();
     }
 
-    // 2. Keys ADMIN guardadas en la BD
+    // 2. Keys ADMIN guardadas en BD
     const row = db.prepare(
         "SELECT * FROM keys WHERE key = ? AND type LIKE 'ADMIN%'"
     ).get(key);
 
-    if (row && row.active) {
-        if (row.expires_at && new Date(row.expires_at) <= new Date()) {
-            db.prepare("UPDATE keys SET active = 0 WHERE id = ?").run(row.id);
-            return res.status(401).json({ success: false, message: "Admin Key expirada" });
-        }
-        return next();
+    if (!row) {
+        return res.status(401).json({ success: false, message: "Admin Key incorrecta" });
     }
 
-    return res.status(401).json({ success: false, message: "Admin Key incorrecta" });
+    // Comprobar expiración
+    if (row.expires_at && new Date(row.expires_at) <= new Date()) {
+        db.prepare("UPDATE keys SET active = 0 WHERE id = ?").run(row.id);
+        return res.status(401).json({ success: false, message: "Admin Key expirada" });
+    }
+
+    // Comprobar si sigue activa
+    if (!row.active) {
+        return res.status(401).json({ success: false, message: "Admin Key revocada" });
+    }
+
+    // 📌 REGISTRAR USO
+    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "?";
+    const uses = (row.use_count || 0) + 1;
+    db.prepare(`
+        UPDATE keys 
+        SET last_ip = ?, last_used_at = ?, use_count = ? 
+        WHERE id = ?
+    `).run(ip, new Date().toISOString(), uses, row.id);
+
+    return next();
 }
 
 // ======================================================
-// SOCKET.IO
+// SOCKET.IO - Autenticación con key
 // ======================================================
+io.use((socket, next) => {
+    const key = socket.handshake.auth.key;
+    if (key) {
+        socket.data.adminKey = key;
+    }
+    next();
+});
+
 io.on("connection", (socket) => {
-    console.log(`🔌 Cliente conectado: ${socket.id}`);
+    console.log(`🔌 Cliente conectado: ${socket.id} | AdminKey: ${socket.data.adminKey ? "sí" : "no"}`);
 });
 
 // ======================================================
@@ -103,8 +126,6 @@ app.post("/api/login", rateLimit, (req, res) => {
 
     const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "?";
     const uses = (row.use_count || 0) + 1;
-
-    // Se desactiva tras el primer uso si es ONE_USE o ADMIN_ONE_USE
     const esUnSoloUso = row.type === "ONE_USE" || row.type === "ADMIN_ONE_USE";
     const active = esUnSoloUso ? 0 : 1;
 
@@ -171,15 +192,36 @@ app.post("/api/admin/update-key-nickname", checkAdmin, (req, res) => {
     res.json({ success: true });
 });
 
-// REVOCAR KEY
+// REVOCAR KEY (con emisión en tiempo real)
 app.post("/api/admin/revoke-key", checkAdmin, (req, res) => {
-    db.prepare("UPDATE keys SET active = 0 WHERE id = ?").run(req.body.id);
+    const id = req.body.id;
+
+    // Obtener la key antes de revocarla para poder emitirla
+    const row = db.prepare("SELECT key FROM keys WHERE id = ?").get(id);
+
+    db.prepare("UPDATE keys SET active = 0 WHERE id = ?").run(id);
+
+    // 📌 EMITIR EVENTO a todos los clientes conectados
+    if (row) {
+        io.emit("admin-key-revoked", { key: row.key });
+        console.log(`🚫 Key revocada y emitida: ${row.key}`);
+    }
+
     res.json({ success: true });
 });
 
-// ELIMINAR KEY
+// ELIMINAR KEY (con emisión en tiempo real)
 app.post("/api/admin/delete-key", checkAdmin, (req, res) => {
-    db.prepare("DELETE FROM keys WHERE id = ?").run(req.body.id);
+    const id = req.body.id;
+
+    const row = db.prepare("SELECT key FROM keys WHERE id = ?").get(id);
+
+    db.prepare("DELETE FROM keys WHERE id = ?").run(id);
+
+    if (row) {
+        io.emit("admin-key-revoked", { key: row.key });
+    }
+
     res.json({ success: true });
 });
 
@@ -191,7 +233,6 @@ app.get("/api/admin/games", checkAdmin, (req, res) => {
     res.json({ success: true, games });
 });
 
-// CREAR JUEGO
 app.post("/api/games", checkAdmin, (req, res) => {
     const { name, download, repair, password, image } = req.body;
     if (!name) return res.status(400).json({ success: false, message: "Falta el nombre" });
@@ -203,7 +244,6 @@ app.post("/api/games", checkAdmin, (req, res) => {
     res.json({ success: true });
 });
 
-// EDITAR JUEGO
 app.post("/api/admin/update-game", checkAdmin, (req, res) => {
     const { id, name, download, repair, password, image } = req.body;
     db.prepare(`UPDATE games SET name = ?, download = ?, repair = ?, password = ?, image = ? WHERE id = ?`)
@@ -213,7 +253,6 @@ app.post("/api/admin/update-game", checkAdmin, (req, res) => {
     res.json({ success: true });
 });
 
-// ELIMINAR JUEGO
 app.post("/api/admin/delete-game", checkAdmin, (req, res) => {
     db.prepare("DELETE FROM games WHERE id = ?").run(req.body.id);
     io.emit("games-updated", { action: "delete" });
