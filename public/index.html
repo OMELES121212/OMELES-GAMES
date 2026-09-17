@@ -181,9 +181,7 @@
         font-size: 16px;
     }
 
-    .search-wrapper {
-        margin-bottom: 25px;
-    }
+    .search-wrapper { margin-bottom: 25px; }
 
     .search-input {
         width: 100%;
@@ -197,9 +195,7 @@
         transition: 0.2s;
     }
 
-    .search-input::placeholder {
-        color: #666;
-    }
+    .search-input::placeholder { color: #666; }
 
     .search-input:focus {
         border-color: #8b5cff;
@@ -324,6 +320,7 @@
         font-weight: bold;
         cursor: pointer;
         transition: 0.2s;
+        border: none;
     }
 
     .download {
@@ -342,9 +339,7 @@
         border: 1px solid rgba(255,255,255,0.1);
     }
 
-    .repair:hover {
-        background: rgba(255,255,255,0.13);
-    }
+    .repair:hover { background: rgba(255,255,255,0.13); }
 
     .password {
         background: rgba(139,92,255,0.08);
@@ -352,9 +347,7 @@
         border: 1px solid rgba(139,92,255,0.2);
     }
 
-    .password:hover {
-        background: rgba(139,92,255,0.15);
-    }
+    .password:hover { background: rgba(139,92,255,0.15); }
 
     .empty {
         padding: 50px;
@@ -432,10 +425,18 @@
     <footer>OMELES GAMES © 2026</footer>
 </div>
 
+<script src="/socket.io/socket.io.js"></script>
+
 <script>
 const SERVER_URL = window.location.origin;
 
 let todosLosJuegos = [];
+let socket = null;
+let currentKey = "";
+
+/* =========================
+   LOGIN
+========================= */
 
 async function iniciarSesion() {
     const input = document.getElementById("keyInput");
@@ -464,7 +465,9 @@ async function iniciarSesion() {
         }
 
         localStorage.setItem("omeles_key", key);
+        currentKey = key;
         mostrarCliente();
+        conectarSocket();
 
     } catch (error) {
         console.error(error);
@@ -472,18 +475,74 @@ async function iniciarSesion() {
     }
 }
 
+/* =========================
+   SOCKET.IO
+========================= */
+
+function conectarSocket() {
+    if (socket) {
+        socket.disconnect();
+        socket = null;
+    }
+
+    socket = io({
+        auth: {
+            key: currentKey
+        }
+    });
+
+    socket.on("connect", () => {
+        console.log("✅ Socket cliente conectado");
+    });
+
+    // 🔴 Kick instantáneo si revocan nuestra key
+    socket.on("key-revoked", (data) => {
+        console.log("🚫 Evento key-revoked:", data);
+
+        if (data.key === currentKey) {
+            alert("⚠️ Tu KEY ha sido revocada o eliminada.\n\nSerás expulsado.");
+            cerrarSesion();
+        }
+    });
+
+    // Actualización de catálogo en tiempo real
+    socket.on("games-updated", () => {
+        cargarJuegos();
+    });
+}
+
+/* =========================
+   MOSTRAR CLIENTE
+========================= */
+
 function mostrarCliente() {
     document.getElementById("loginScreen").style.display = "none";
     document.getElementById("clientScreen").style.display = "block";
     cargarJuegos();
 }
 
+/* =========================
+   CERRAR SESIÓN
+========================= */
+
 function cerrarSesion() {
     localStorage.removeItem("omeles_key");
+    currentKey = "";
+
+    if (socket) {
+        socket.disconnect();
+        socket = null;
+    }
+
     document.getElementById("clientScreen").style.display = "none";
     document.getElementById("loginScreen").style.display = "flex";
     document.getElementById("keyInput").value = "";
+    document.getElementById("loginMessage").textContent = "";
 }
+
+/* =========================
+   ESCAPAR HTML
+========================= */
 
 function escapeHTML(valor) {
     return String(valor ?? "")
@@ -493,6 +552,10 @@ function escapeHTML(valor) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
+
+/* =========================
+   CARGAR JUEGOS
+========================= */
 
 async function cargarJuegos() {
     const contenedor = document.getElementById("games");
@@ -512,7 +575,6 @@ async function cargarJuegos() {
         }
 
         todosLosJuegos = Array.isArray(datos.games) ? datos.games : [];
-
         filtrarJuegos();
 
     } catch (error) {
@@ -529,6 +591,10 @@ async function cargarJuegos() {
     }
 }
 
+/* =========================
+   FILTRAR JUEGOS
+========================= */
+
 function filtrarJuegos() {
     const input = document.getElementById("searchInput");
     const texto = input ? input.value.toLowerCase().trim() : "";
@@ -543,6 +609,10 @@ function filtrarJuegos() {
 
     renderJuegos(filtrados);
 }
+
+/* =========================
+   RENDER JUEGOS
+========================= */
 
 function renderJuegos(juegos) {
     const contenedor = document.getElementById("games");
@@ -635,15 +705,32 @@ function renderJuegos(juegos) {
     });
 }
 
-function mostrarPassword(password) {
-    alert("PASSWORD: " + password);
+/* =========================
+   PASSWORD
+========================= */
+
+async function mostrarPassword(password) {
+    try {
+        await navigator.clipboard.writeText(password);
+        alert("✅ Contraseña copiada:\n\n" + password);
+    } catch {
+        alert("PASSWORD: " + password);
+    }
 }
+
+/* =========================
+   ENTER LOGIN
+========================= */
 
 document.getElementById("keyInput").addEventListener("keydown", function(event) {
     if (event.key === "Enter") {
         iniciarSesion();
     }
 });
+
+/* =========================
+   RECUPERAR SESIÓN
+========================= */
 
 window.addEventListener("DOMContentLoaded", () => {
     const key = localStorage.getItem("omeles_key");
@@ -659,7 +746,9 @@ window.addEventListener("DOMContentLoaded", () => {
                 localStorage.removeItem("omeles_key");
                 return;
             }
+            currentKey = key;
             mostrarCliente();
+            conectarSocket();
         })
         .catch(error => {
             console.error("ERROR RECUPERANDO SESIÓN:", error);
