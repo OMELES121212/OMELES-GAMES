@@ -22,10 +22,6 @@
         color: white;
     }
 
-    /* =========================
-       LOGIN
-    ========================= */
-
     #loginScreen {
         min-height: 100vh;
         display: flex;
@@ -101,10 +97,6 @@
         font-size: 13px;
         color: #ff5c5c;
     }
-
-    /* =========================
-       CLIENTE
-    ========================= */
 
     #clientScreen {
         display: none;
@@ -189,10 +181,6 @@
         font-size: 16px;
     }
 
-    /* =========================
-       BUSCADOR (NUEVO)
-    ========================= */
-
     .search-wrapper {
         margin-bottom: 25px;
     }
@@ -224,10 +212,6 @@
         flex-direction: column;
         gap: 14px;
     }
-
-    /* =========================
-       JUEGOS
-    ========================= */
 
     .game-card {
         background: linear-gradient(145deg, rgba(25,25,35,0.95), rgba(12,12,18,0.95));
@@ -272,6 +256,21 @@
         font-size: 21px;
         background: linear-gradient(135deg, #6d28d9, #2563eb);
         box-shadow: 0 0 20px rgba(109,40,217,0.2);
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    .game-icon.has-image {
+        background: none;
+        box-shadow: 0 0 15px rgba(109,40,217,0.3);
+        border: 1px solid rgba(139,92,255,0.35);
+    }
+
+    .game-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
     }
 
     .game-name {
@@ -386,10 +385,6 @@
 
 <body>
 
-<!-- =========================
-     LOGIN
-========================= -->
-
 <div id="loginScreen">
     <div class="login-box">
         <div class="login-logo">OMELES <span>GAMES</span></div>
@@ -399,10 +394,6 @@
         <div id="loginMessage"></div>
     </div>
 </div>
-
-<!-- =========================
-     CLIENTE
-========================= -->
 
 <div id="clientScreen">
     <header>
@@ -422,9 +413,6 @@
             <p>Selecciona un juego para ver sus opciones.</p>
         </section>
 
-        <!-- =========================
-             BUSCADOR (NUEVO)
-        ========================= -->
         <div class="search-wrapper">
             <input
                 id="searchInput"
@@ -447,12 +435,7 @@
 <script>
 const SERVER_URL = window.location.origin;
 
-/* NUEVO: array con todos los juegos para poder filtrar */
 let todosLosJuegos = [];
-
-/* =========================
-   LOGIN
-========================= */
 
 async function iniciarSesion() {
     const input = document.getElementById("keyInput");
@@ -489,19 +472,11 @@ async function iniciarSesion() {
     }
 }
 
-/* =========================
-   MOSTRAR CLIENTE
-========================= */
-
 function mostrarCliente() {
     document.getElementById("loginScreen").style.display = "none";
     document.getElementById("clientScreen").style.display = "block";
     cargarJuegos();
 }
-
-/* =========================
-   CERRAR SESIÓN
-========================= */
 
 function cerrarSesion() {
     localStorage.removeItem("omeles_key");
@@ -509,10 +484,6 @@ function cerrarSesion() {
     document.getElementById("loginScreen").style.display = "flex";
     document.getElementById("keyInput").value = "";
 }
-
-/* =========================
-   ESCAPAR HTML
-========================= */
 
 function escapeHTML(valor) {
     return String(valor ?? "")
@@ -522,10 +493,6 @@ function escapeHTML(valor) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
-
-/* =========================
-   CARGAR JUEGOS
-========================= */
 
 async function cargarJuegos() {
     const contenedor = document.getElementById("games");
@@ -546,7 +513,6 @@ async function cargarJuegos() {
 
         todosLosJuegos = Array.isArray(datos.games) ? datos.games : [];
 
-        /* Aplicamos el filtro por si había texto escrito */
         filtrarJuegos();
 
     } catch (error) {
@@ -563,10 +529,6 @@ async function cargarJuegos() {
     }
 }
 
-/* =========================
-   FILTRAR JUEGOS (NUEVO)
-========================= */
-
 function filtrarJuegos() {
     const input = document.getElementById("searchInput");
     const texto = input ? input.value.toLowerCase().trim() : "";
@@ -581,10 +543,6 @@ function filtrarJuegos() {
 
     renderJuegos(filtrados);
 }
-
-/* =========================
-   RENDER JUEGOS
-========================= */
 
 function renderJuegos(juegos) {
     const contenedor = document.getElementById("games");
@@ -607,6 +565,7 @@ function renderJuegos(juegos) {
         const nombre = escapeHTML(juego.name);
         const download = escapeHTML(juego.download);
         const repair = escapeHTML(juego.repair);
+        const imagen = escapeHTML(juego.image || "");
 
         let botones = "";
 
@@ -648,10 +607,14 @@ function renderJuegos(juegos) {
             `;
         }
 
+        const iconoHTML = imagen
+            ? `<div class="game-icon has-image"><img src="${imagen}" alt="${nombre}" loading="lazy" onerror="this.parentElement.classList.remove('has-image'); this.parentElement.innerHTML='🎮';"></div>`
+            : `<div class="game-icon">🎮</div>`;
+
         tarjeta.innerHTML = `
             <button class="game-header" type="button">
                 <div class="game-left">
-                    <div class="game-icon">🎮</div>
+                    ${iconoHTML}
                     <div>
                         <div class="game-name">${nombre}</div>
                         <div class="game-status">Juego disponible</div>
@@ -672,27 +635,15 @@ function renderJuegos(juegos) {
     });
 }
 
-/* =========================
-   PASSWORD
-========================= */
-
 function mostrarPassword(password) {
     alert("PASSWORD: " + password);
 }
-
-/* =========================
-   ENTER PARA LOGIN
-========================= */
 
 document.getElementById("keyInput").addEventListener("keydown", function(event) {
     if (event.key === "Enter") {
         iniciarSesion();
     }
 });
-
-/* =========================
-   RECUPERAR SESIÓN
-========================= */
 
 window.addEventListener("DOMContentLoaded", () => {
     const key = localStorage.getItem("omeles_key");
