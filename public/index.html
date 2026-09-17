@@ -370,7 +370,7 @@ main{padding:40px 18px}
     <button class="d-item aim" onclick="abrirAim()"><div class="d-icon">🎯</div> AimLab</button>
     <button class="d-item calc" onclick="abrirCalc()"><div class="d-icon">🧮</div> Calculadora</button>
     <button class="d-item cps" onclick="abrirCps()"><div class="d-icon">⚡</div> CPS Test</button>
-    <button class="d-item ai" onclick="abrirIa()"><div class="d-icon">🤖</div> IA Gemini</button>
+    <button class="d-item ai" onclick="abrirIa()"><div class="d-icon">🤖</div> OMELES IA</button>
     <button class="d-item settings" onclick="abrirSettings()"><div class="d-icon">⚙️</div> Settings</button>
 </div>
 
@@ -513,19 +513,19 @@ main{padding:40px 18px}
         <div class="ai-head">
             <div class="ai-av">🤖</div>
             <div>
-                <div class="ai-title">IA Gemini</div>
-                <div class="ai-sub">Conectada y lista</div>
+                <div class="ai-title">OMELES IA</div>
+                <div class="ai-sub">En línea</div>
             </div>
         </div>
         <div class="ai-msgs" id="aiMsgs">
-            <div class="ai-msg bot">¡Hola! 👋 Soy la IA de OMELES GAMES impulsada por Gemini.
+            <div class="ai-msg bot">¡Hola! 👋 Soy OMELES IA, tu asistente.
 
 Puedo ayudarte con:
-• Info sobre cualquier juego del catálogo
-• Preguntas generales
-• Conversación natural
+• Cuántos juegos hay
+• Info de cualquier juego del catálogo
+• Ayuda general
 
-Escribe lo que quieras 🎮</div>
+Escribe abajo o usa una sugerencia 👇</div>
         </div>
         <div class="ai-chips" id="aiChips">
             <button class="ai-chip" onclick="enviarChip('¿Cuántos juegos hay?')">¿Cuántos juegos hay?</button>
@@ -597,7 +597,6 @@ let filtroActual = "all";
 let searchTimer = null;
 let sessionStartTime = null;
 let sessionTimerInterval = null;
-let aiHistorial = [];
 
 /* ========== SETTINGS ========== */
 const DEFAULT_SETTINGS = {tracerOn:"on",tracerColor:"#ffffff",tracerSize:6,explosionOn:"on",explosionColor:"#ffffff",explosionCount:14,hudBg:"#0a0a14",hudOpacity:60,bgColor:"#05050a",sound:"on",confetti:"on",notif:"on"};
@@ -1210,7 +1209,7 @@ function cpsClick(){if(cpsState !== "running") return;cpsCount++;beep(1000+Math.
 document.getElementById("cpsArea").addEventListener("mousedown", cpsClick);
 document.addEventListener("keydown",(e)=>{if(e.key===" " && document.getElementById("cpsOverlay").classList.contains("open")){e.preventDefault();if(cpsState==="running") cpsClick()}});
 
-/* ========== IA GEMINI (vía backend) ========== */
+/* ========== OMELES IA (local, sin Gemini) ========== */
 function abrirIa(){
     if(!currentKey){toast("Introduce tu KEY primero","warning");return}
     document.getElementById("dropdown").classList.remove("open"); document.getElementById("menuBtn").classList.remove("active");
@@ -1220,7 +1219,7 @@ function abrirIa(){
 function cerrarIa(){document.getElementById("aiOverlay").classList.remove("open");document.body.style.overflow=""}
 function enviarChip(txt){document.getElementById("aiInput").value = txt;enviarIa()}
 
-async function enviarIa(){
+function enviarIa(){
     const i = document.getElementById("aiInput"), txt = i.value.trim();
     if(!txt) return;
     addMsg(txt, "user"); i.value = "";
@@ -1231,31 +1230,119 @@ async function enviarIa(){
     typ.innerHTML = "<span></span><span></span><span></span>";
     msgs.appendChild(typ); msgs.scrollTop = msgs.scrollHeight;
 
-    try {
-        const r = await fetch(`${SERVER_URL}/api/ai/chat`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                mensaje: txt,
-                historial: aiHistorial.slice(-6)
-            })
-        });
-        const d = await r.json();
+    setTimeout(() => {
         document.getElementById("aiTyp")?.remove();
-
-        if (d.success) {
-            addMsg(d.respuesta, "bot");
-            aiHistorial.push({ tipo: "user", texto: txt });
-            aiHistorial.push({ tipo: "bot", texto: d.respuesta });
-            if (aiHistorial.length > 12) aiHistorial = aiHistorial.slice(-12);
-        } else {
-            addMsg("Lo siento, no pude responder: " + (d.message || "error"), "bot");
-        }
-    } catch(e) {
-        document.getElementById("aiTyp")?.remove();
-        addMsg("Error de conexión con la IA.", "bot");
-    }
+        addMsg(respuestaIa(txt), "bot");
+    }, 400 + Math.random() * 300);
 }
+
+function buscarJuegoIA(t){
+    t = t.toLowerCase();
+    return todosLosJuegos.find(g => {
+        const n = String(g.name).toLowerCase();
+        return t.includes(n) || n.includes(t);
+    });
+}
+
+function respuestaIa(texto){
+    const t = texto.toLowerCase().trim();
+
+    // Contar juegos
+    if(t.includes("cuantos")||t.includes("cuántos")||t.includes("numero")||t.includes("número")||t.includes("total")){
+        if(t.includes("juego")){
+            return todosLosJuegos.length === 0
+                ? "Ahora mismo no hay juegos en el catálogo."
+                : `📊 Actualmente hay ${todosLosJuegos.length} juego${todosLosJuegos.length === 1 ? "" : "s"} en el catálogo.`;
+        }
+    }
+
+    // Lista de juegos
+    if(t.includes("lista")||t.includes("que juegos")||t.includes("qué juegos")||t.includes("muestra")||t.includes("ver juegos")||t.includes("cuales son")||t.includes("cuáles son")){
+        if(todosLosJuegos.length === 0) return "No hay juegos disponibles ahora mismo.";
+        return `📋 Lista de juegos (${todosLosJuegos.length}):\n${todosLosJuegos.map((g,i)=>`${i+1}. ${g.name}`).join("\n")}`;
+    }
+
+    // Info de un juego específico
+    const j = buscarJuegoIA(t);
+    if(j){
+        let r = `🎮 ${j.name}\n\n`;
+        r += `⬇️ Descarga: ${j.download ? "✅ Disponible" : "❌ No"}\n`;
+        r += `🔧 Reparación: ${j.repair ? "✅ Disponible" : "❌ No"}\n`;
+        r += `🔑 Contraseña: ${j.password ? "✅ Disponible" : "❌ No"}`;
+        if(j.password) r += `\n\nContraseña: ${j.password}`;
+        return r;
+    }
+
+    // Saludos
+    if(t.includes("hola")||t.includes("hey")||t.includes("buenas")||t.includes("saludos"))
+        return "¡Hola! 👋 ¿En qué puedo ayudarte?";
+
+    if(t.includes("como estas")||t.includes("cómo estás")||t.includes("que tal")||t.includes("qué tal"))
+        return "¡Genial! ¿Y tú qué tal? 😊";
+
+    // Ayuda general
+    if(t.includes("key")||t.includes("clave")||t.includes("acceso"))
+        return "Necesitas una KEY de acceso. Pídesela al administrador 🔑";
+
+    if(t.includes("contraseña")||t.includes("password"))
+        return "La contraseña aparece al hacer clic en un juego y pulsar el botón CONTRASEÑA 🔐";
+
+    if(t.includes("descargar")||t.includes("download")||t.includes("descarga"))
+        return "Pulsa en el juego que quieras y luego en DESCARGAR ⬇️";
+
+    if(t.includes("reparar")||t.includes("reparacion")||t.includes("reparación")||t.includes("arreglar"))
+        return "Si un juego no funciona, prueba con el botón REPARACIÓN 🔧";
+
+    // Agradecimientos
+    if(t.includes("gracias")||t.includes("thx")||t.includes("thanks"))
+        return "¡De nada! 😊";
+
+    if(t.includes("adios")||t.includes("adiós")||t.includes("chao")||t.includes("hasta luego")||t.includes("bye"))
+        return "¡Hasta luego! 👋";
+
+    // Sobre el bot
+    if(t.includes("quien eres")||t.includes("quién eres")||t.includes("que eres")||t.includes("qué eres"))
+        return "Soy OMELES IA, el asistente virtual de OMELES GAMES 🤖";
+
+    if(t.includes("ayuda")||t.includes("help")||t.includes("socorro"))
+        return "Puedo ayudarte con:\n• \"cuántos juegos hay\"\n• \"lista de juegos\"\n• \"info de [nombre del juego]\"\n• Dudas sobre descargas o keys";
+
+    // Herramientas
+    if(t.includes("aimlab")||t.includes("aim lab"))
+        return "El AimLab está en el menú de arriba a la derecha 🎯";
+
+    if(t.includes("cps"))
+        return "El CPS Test está en el menú. ¡Mide tu velocidad de clic! ⚡";
+
+    if(t.includes("calculadora"))
+        return "La calculadora está en el menú desplegable 🧮";
+
+    if(t.includes("juego")||t.includes("juegos")||t.includes("game"))
+        return "Tenemos varios juegos disponibles. Usa el buscador o pregunta por uno específico 🎮";
+
+    // Otros
+    if(t.includes("amor")||t.includes("te quiero"))
+        return "¡Qué bonito! 💜";
+
+    if(t.includes("chiste")||t.includes("broma"))
+        return "¿Por qué los programadores prefieren el modo oscuro? Porque la luz atrae a los bugs 🐛😄";
+
+    if(t.includes("hora")||t.includes("qué hora"))
+        return "Son las " + new Date().toLocaleTimeString('es-ES') + " ⏰";
+
+    if(t.includes("fecha")||t.includes("dia")||t.includes("día"))
+        return "Hoy es " + new Date().toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) + " 📅";
+
+    // Fallback
+    if(t.includes("?"))
+        return "Buena pregunta 🤔. Prueba a preguntar por un juego específico o escribe 'ayuda'.";
+
+    if(t.split(" ").length <= 2)
+        return "Entiendo. ¿Puedes contarme un poco más? 🤔";
+
+    return "No tengo información sobre eso. Prueba a preguntar por un juego específico o escribe 'ayuda' 💬";
+}
+
 function addMsg(t, tipo){
     const m = document.getElementById("aiMsgs");
     const d = document.createElement("div");
