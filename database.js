@@ -1,17 +1,17 @@
-const Database = require("better-sqlite3");
 const path = require("path");
 const fs = require("fs");
+const { DatabaseSync } = require("node:sqlite");
 
-// Ruta configurable: en Railway será /data/omeles_games.db
+// Ruta configurable: en Railway es /data/omeles_games.db
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, "omeles_games.db");
 
-// Asegurar que el directorio existe (para el volumen /data en Railway)
+// Asegurar que el directorio existe
 const dir = path.dirname(DB_PATH);
 if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
 }
 
-const db = new Database(DB_PATH);
+const db = new DatabaseSync(DB_PATH);
 
 // =========================
 // TABLA KEYS
