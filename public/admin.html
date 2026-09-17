@@ -199,7 +199,7 @@
     .empty { text-align: center; color: #666; padding: 30px; }
 
     /* =========================
-       MODAL (EDITAR JUEGO / MOTE)
+       MODAL
     ========================= */
     .modal-overlay {
         display: none;
@@ -390,6 +390,7 @@
                 <button class="admin-btn" onclick="crearKey('ADMIN_24H')">👑 ADMIN 24H</button>
                 <button class="admin-btn" onclick="crearKey('ADMIN_7D')">👑 ADMIN 7D</button>
                 <button class="admin-btn" onclick="crearKey('ADMIN_30D')">👑 ADMIN 30D</button>
+                <button class="admin-btn" onclick="crearKey('ADMIN_ONE_USE')" title="Sirve 1 vez como cliente, indefinido como admin">👑 ADMIN 1 USO</button>
                 <button class="admin-lifetime-btn" onclick="crearKey('ADMIN_LIFETIME')">👑 ADMIN LIFETIME</button>
 
             </div>
@@ -786,7 +787,7 @@ function mostrarKeys(keys) {
         let claseEstado = "";
 
         if (!key.active) {
-            if (key.type === "ONE_USE" && Number(key.use_count) > 0) {
+            if ((key.type === "ONE_USE" || key.type === "ADMIN_ONE_USE") && Number(key.use_count) > 0) {
                 estado = "USADA";
             } else {
                 estado = "INACTIVA";
@@ -811,6 +812,8 @@ function mostrarKeys(keys) {
             tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN 7D</span>`;
         } else if (key.type === "ADMIN_30D") {
             tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN 30D</span>`;
+        } else if (key.type === "ADMIN_ONE_USE") {
+            tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN 1 USO</span>`;
         } else if (key.type === "ADMIN_LIFETIME") {
             tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN LIFETIME</span>`;
         } else {
