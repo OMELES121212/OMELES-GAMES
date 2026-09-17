@@ -1,19 +1,9 @@
 <!DOCTYPE html>
-
 <html lang="es">
-
 <head>
-
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OMELES GAMES</title>
-
 <style>
 
     * {
@@ -24,24 +14,11 @@
     }
 
     body {
-
         min-height: 100vh;
-
         background:
-            radial-gradient(
-                circle at top right,
-                rgba(104, 0, 255, 0.18),
-                transparent 35%
-            ),
-
-            radial-gradient(
-                circle at bottom left,
-                rgba(0, 132, 255, 0.12),
-                transparent 35%
-            ),
-
+            radial-gradient(circle at top right, rgba(104, 0, 255, 0.18), transparent 35%),
+            radial-gradient(circle at bottom left, rgba(0, 132, 255, 0.12), transparent 35%),
             #07070b;
-
         color: white;
     }
 
@@ -50,140 +27,78 @@
     ========================= */
 
     #loginScreen {
-
         min-height: 100vh;
-
         display: flex;
-
         align-items: center;
-
         justify-content: center;
-
         padding: 20px;
     }
 
     .login-box {
-
         width: 100%;
-
         max-width: 420px;
-
         padding: 40px;
-
         border-radius: 20px;
-
-        background:
-            linear-gradient(
-                145deg,
-                rgba(25,25,35,0.97),
-                rgba(10,10,16,0.97)
-            );
-
+        background: linear-gradient(145deg, rgba(25,25,35,0.97), rgba(10,10,16,0.97));
         border: 1px solid rgba(139,92,255,0.3);
-
-        box-shadow:
-            0 25px 80px rgba(0,0,0,0.5),
-            0 0 50px rgba(92,40,200,0.08);
-
+        box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 50px rgba(92,40,200,0.08);
         text-align: center;
     }
 
     .login-logo {
-
         font-size: 30px;
-
         font-weight: 900;
-
         letter-spacing: 2px;
-
         margin-bottom: 8px;
     }
 
-    .login-logo span {
-        color: #8b5cff;
-    }
+    .login-logo span { color: #8b5cff; }
 
     .login-subtitle {
-
         color: #777;
-
         font-size: 14px;
-
         margin-bottom: 35px;
     }
 
     .key-input {
-
         width: 100%;
-
         padding: 15px;
-
         border-radius: 10px;
-
         border: 1px solid rgba(255,255,255,0.1);
-
         background: rgba(0,0,0,0.35);
-
         color: white;
-
         outline: none;
-
         text-align: center;
-
         font-size: 14px;
-
         margin-bottom: 12px;
     }
 
     .key-input:focus {
-
         border-color: #8b5cff;
-
-        box-shadow:
-            0 0 15px rgba(139,92,255,0.15);
+        box-shadow: 0 0 15px rgba(139,92,255,0.15);
     }
 
     .login-button {
-
         width: 100%;
-
         padding: 14px;
-
         border: none;
-
         border-radius: 10px;
-
-        background:
-            linear-gradient(
-                90deg,
-                #6d28d9,
-                #2563eb
-            );
-
+        background: linear-gradient(90deg, #6d28d9, #2563eb);
         color: white;
-
         font-weight: 900;
-
         cursor: pointer;
-
         transition: 0.2s;
     }
 
     .login-button:hover {
-
         filter: brightness(1.2);
-
         transform: translateY(-1px);
     }
 
     #loginMessage {
-
         min-height: 20px;
-
         margin-top: 15px;
-
         font-size: 13px;
-
         color: #ff5c5c;
     }
 
@@ -192,144 +107,121 @@
     ========================= */
 
     #clientScreen {
-
         display: none;
-
         min-height: 100vh;
     }
 
     header {
-
         height: 80px;
-
         display: flex;
-
         align-items: center;
-
         justify-content: space-between;
-
         padding: 0 40px;
-
-        border-bottom:
-            1px solid rgba(255,255,255,0.08);
-
-        background:
-            rgba(10,10,16,0.8);
-
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        background: rgba(10,10,16,0.8);
         backdrop-filter: blur(12px);
     }
 
     .logo {
-
         font-size: 26px;
-
         font-weight: 900;
-
         letter-spacing: 2px;
     }
 
-    .logo span {
-        color: #8b5cff;
-    }
+    .logo span { color: #8b5cff; }
 
     .header-right {
-
         display: flex;
-
         align-items: center;
-
         gap: 20px;
     }
 
     .status {
-
         display: flex;
-
         align-items: center;
-
         gap: 8px;
-
         font-size: 13px;
-
         color: #aaa;
     }
 
     .dot {
-
         width: 9px;
-
         height: 9px;
-
         border-radius: 50%;
-
         background: #00ff88;
-
-        box-shadow:
-            0 0 12px #00ff88;
+        box-shadow: 0 0 12px #00ff88;
     }
 
     .logout {
-
         border: none;
-
         background: rgba(255,255,255,0.06);
-
         color: #aaa;
-
         padding: 8px 12px;
-
         border-radius: 8px;
-
         cursor: pointer;
     }
 
     .logout:hover {
-
         color: white;
-
         background: rgba(255,255,255,0.1);
     }
 
     main {
-
         max-width: 900px;
-
         margin: auto;
-
         padding: 50px 25px;
     }
 
     .hero {
-
         margin-bottom: 35px;
     }
 
     .hero h1 {
-
         font-size: 42px;
-
         font-weight: 900;
-
         margin-bottom: 10px;
     }
 
-    .hero h1 span {
-        color: #8b5cff;
-    }
+    .hero h1 span { color: #8b5cff; }
 
     .hero p {
-
         color: #999;
-
         font-size: 16px;
     }
 
+    /* =========================
+       BUSCADOR (NUEVO)
+    ========================= */
+
+    .search-wrapper {
+        margin-bottom: 25px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 15px 20px;
+        border-radius: 12px;
+        border: 1px solid rgba(139,92,255,0.25);
+        background: rgba(0,0,0,0.4);
+        color: white;
+        outline: none;
+        font-size: 15px;
+        transition: 0.2s;
+    }
+
+    .search-input::placeholder {
+        color: #666;
+    }
+
+    .search-input:focus {
+        border-color: #8b5cff;
+        box-shadow: 0 0 20px rgba(139,92,255,0.2);
+        background: rgba(0,0,0,0.5);
+    }
+
     .games {
-
         display: flex;
-
         flex-direction: column;
-
         gap: 14px;
     }
 
@@ -338,289 +230,158 @@
     ========================= */
 
     .game-card {
-
-        background:
-            linear-gradient(
-                145deg,
-                rgba(25,25,35,0.95),
-                rgba(12,12,18,0.95)
-            );
-
-        border:
-            1px solid rgba(139,92,255,0.2);
-
+        background: linear-gradient(145deg, rgba(25,25,35,0.95), rgba(12,12,18,0.95));
+        border: 1px solid rgba(139,92,255,0.2);
         border-radius: 15px;
-
         overflow: hidden;
-
         transition: 0.25s;
     }
 
     .game-card:hover {
-
-        border-color:
-            rgba(139,92,255,0.5);
-
+        border-color: rgba(139,92,255,0.5);
         transform: translateY(-1px);
-
-        box-shadow:
-            0 10px 30px rgba(0,0,0,0.25);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
     }
 
     .game-header {
-
         width: 100%;
-
         padding: 20px 23px;
-
         display: flex;
-
         align-items: center;
-
         justify-content: space-between;
-
         background: transparent;
-
         color: white;
-
         border: none;
-
         cursor: pointer;
-
         text-align: left;
     }
 
     .game-left {
-
         display: flex;
-
         align-items: center;
-
         gap: 15px;
     }
 
     .game-icon {
-
         width: 45px;
-
         height: 45px;
-
         border-radius: 12px;
-
         display: flex;
-
         align-items: center;
-
         justify-content: center;
-
         font-size: 21px;
-
-        background:
-            linear-gradient(
-                135deg,
-                #6d28d9,
-                #2563eb
-            );
-
-        box-shadow:
-            0 0 20px rgba(109,40,217,0.2);
+        background: linear-gradient(135deg, #6d28d9, #2563eb);
+        box-shadow: 0 0 20px rgba(109,40,217,0.2);
     }
 
     .game-name {
-
         font-size: 18px;
-
         font-weight: 800;
     }
 
     .game-status {
-
         font-size: 11px;
-
         color: #777;
-
         margin-top: 4px;
     }
 
     .arrow {
-
         font-size: 20px;
-
         color: #8b5cff;
-
-        transition:
-            transform 0.25s;
+        transition: transform 0.25s;
     }
 
     .game-content {
-
         max-height: 0;
-
         overflow: hidden;
-
-        transition:
-            max-height 0.3s ease,
-            padding 0.3s ease;
-
+        transition: max-height 0.3s ease, padding 0.3s ease;
         padding: 0 23px;
     }
 
     .game-card.open .game-content {
-
         max-height: 300px;
-
         padding: 0 23px 22px;
     }
 
     .game-card.open .arrow {
-
         transform: rotate(180deg);
     }
 
     .buttons {
-
         display: grid;
-
         gap: 9px;
-
         padding-top: 5px;
-
-        border-top:
-            1px solid rgba(255,255,255,0.06);
+        border-top: 1px solid rgba(255,255,255,0.06);
     }
 
     .btn {
-
         display: block;
-
         width: 100%;
-
         padding: 12px;
-
         border-radius: 9px;
-
         text-align: center;
-
         text-decoration: none;
-
         font-size: 13px;
-
         font-weight: bold;
-
         cursor: pointer;
-
         transition: 0.2s;
     }
 
     .download {
-
-        background:
-            linear-gradient(
-                90deg,
-                #6d28d9,
-                #2563eb
-            );
-
+        background: linear-gradient(90deg, #6d28d9, #2563eb);
         color: white;
     }
 
     .download:hover {
-
         filter: brightness(1.2);
-
         transform: translateY(-1px);
     }
 
     .repair {
-
-        background:
-            rgba(255,255,255,0.07);
-
+        background: rgba(255,255,255,0.07);
         color: white;
-
-        border:
-            1px solid rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.1);
     }
 
     .repair:hover {
-
-        background:
-            rgba(255,255,255,0.13);
+        background: rgba(255,255,255,0.13);
     }
 
     .password {
-
-        background:
-            rgba(139,92,255,0.08);
-
+        background: rgba(139,92,255,0.08);
         color: #b99cff;
-
-        border:
-            1px solid rgba(139,92,255,0.2);
+        border: 1px solid rgba(139,92,255,0.2);
     }
 
     .password:hover {
-
-        background:
-            rgba(139,92,255,0.15);
+        background: rgba(139,92,255,0.15);
     }
 
     .empty {
-
         padding: 50px;
-
         text-align: center;
-
         color: #777;
-
-        border:
-            1px dashed rgba(255,255,255,0.12);
-
+        border: 1px dashed rgba(255,255,255,0.12);
         border-radius: 18px;
     }
 
     footer {
-
         text-align: center;
-
         padding: 35px;
-
         color: #555;
-
         font-size: 12px;
     }
 
     @media (max-width: 600px) {
-
-        header {
-            padding: 0 20px;
-        }
-
-        .header-right {
-            gap: 10px;
-        }
-
-        .status {
-            display: none;
-        }
-
-        .hero h1 {
-            font-size: 32px;
-        }
-
-        main {
-            padding: 35px 18px;
-        }
-
-        .login-box {
-            padding: 30px 22px;
-        }
-
+        header { padding: 0 20px; }
+        .header-right { gap: 10px; }
+        .status { display: none; }
+        .hero h1 { font-size: 32px; }
+        main { padding: 35px 18px; }
+        .login-box { padding: 30px 22px; }
     }
 
 </style>
-
-
 </head>
 
 <body>
@@ -630,38 +391,13 @@
 ========================= -->
 
 <div id="loginScreen">
-
-
-<div class="login-box">
-
-    <div class="login-logo">
-        OMELES <span>GAMES</span>
+    <div class="login-box">
+        <div class="login-logo">OMELES <span>GAMES</span></div>
+        <div class="login-subtitle">Introduce tu KEY para continuar</div>
+        <input id="keyInput" class="key-input" type="text" placeholder="OMELES-XXXXXX-XXXXXX" autocomplete="off">
+        <button class="login-button" onclick="iniciarSesion()">ENTRAR</button>
+        <div id="loginMessage"></div>
     </div>
-
-    <div class="login-subtitle">
-        Introduce tu KEY para continuar
-    </div>
-
-    <input
-        id="keyInput"
-        class="key-input"
-        type="text"
-        placeholder="OMELES-XXXXXX-XXXXXX"
-        autocomplete="off"
-    >
-
-    <button
-        class="login-button"
-        onclick="iniciarSesion()"
-    >
-        ENTRAR
-    </button>
-
-    <div id="loginMessage"></div>
-
-</div>
-
-
 </div>
 
 <!-- =========================
@@ -669,142 +405,88 @@
 ========================= -->
 
 <div id="clientScreen">
+    <header>
+        <div class="logo">OMELES <span>GAMES</span></div>
+        <div class="header-right">
+            <div class="status">
+                <div class="dot"></div>
+                ONLINE
+            </div>
+            <button class="logout" onclick="cerrarSesion()">SALIR</button>
+        </div>
+    </header>
 
+    <main>
+        <section class="hero">
+            <h1>Tus <span>juegos</span></h1>
+            <p>Selecciona un juego para ver sus opciones.</p>
+        </section>
 
-<header>
-
-    <div class="logo">
-        OMELES <span>GAMES</span>
-    </div>
-
-    <div class="header-right">
-
-        <div class="status">
-
-            <div class="dot"></div>
-
-            ONLINE
-
+        <!-- =========================
+             BUSCADOR (NUEVO)
+        ========================= -->
+        <div class="search-wrapper">
+            <input
+                id="searchInput"
+                class="search-input"
+                type="text"
+                placeholder="🔍 Buscar juego..."
+                autocomplete="off"
+                oninput="filtrarJuegos()"
+            >
         </div>
 
-        <button
-            class="logout"
-            onclick="cerrarSesion()"
-        >
-            SALIR
-        </button>
+        <section id="games" class="games">
+            <div class="empty">Cargando juegos...</div>
+        </section>
+    </main>
 
-    </div>
-
-</header>
-
-<main>
-
-    <section class="hero">
-
-        <h1>
-            Tus <span>juegos</span>
-        </h1>
-
-        <p>
-            Selecciona un juego para ver sus opciones.
-        </p>
-
-    </section>
-
-    <section
-        id="games"
-        class="games"
-    >
-
-        <div class="empty">
-            Cargando juegos...
-        </div>
-
-    </section>
-
-</main>
-
-<footer>
-    OMELES GAMES © 2026
-</footer>
-
-
+    <footer>OMELES GAMES © 2026</footer>
 </div>
 
 <script>
 const SERVER_URL = window.location.origin;
+
+/* NUEVO: array con todos los juegos para poder filtrar */
+let todosLosJuegos = [];
+
 /* =========================
    LOGIN
 ========================= */
 
 async function iniciarSesion() {
-
-    const input =
-        document.getElementById("keyInput");
-
-    const message =
-        document.getElementById("loginMessage");
-
-    const key =
-        input.value.trim();
+    const input = document.getElementById("keyInput");
+    const message = document.getElementById("loginMessage");
+    const key = input.value.trim();
 
     if (!key) {
-
-        message.textContent =
-            "Introduce una KEY.";
-
+        message.textContent = "Introduce una KEY.";
         return;
     }
 
-    message.textContent =
-        "Comprobando KEY...";
+    message.textContent = "Comprobando KEY...";
 
     try {
+        const respuesta = await fetch(`${SERVER_URL}/api/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ key: key })
+        });
 
-        const respuesta =
-            await fetch(`${SERVER_URL}/api/login`, {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    key: key
-                })
-
-            });
-
-        const datos =
-            await respuesta.json();
+        const datos = await respuesta.json();
 
         if (!respuesta.ok) {
-
-            message.textContent =
-                datos.message ||
-                datos.error ||
-                "KEY incorrecta.";
-
+            message.textContent = datos.message || datos.error || "KEY incorrecta.";
             return;
         }
 
-        localStorage.setItem(
-            "omeles_key",
-            key
-        );
-
+        localStorage.setItem("omeles_key", key);
         mostrarCliente();
 
     } catch (error) {
-
         console.error(error);
-
-        message.textContent =
-            "No se pudo conectar con el servidor.";
+        message.textContent = "No se pudo conectar con el servidor.";
     }
-
 }
 
 /* =========================
@@ -812,17 +494,9 @@ async function iniciarSesion() {
 ========================= */
 
 function mostrarCliente() {
-
-    document.getElementById(
-        "loginScreen"
-    ).style.display = "none";
-
-    document.getElementById(
-        "clientScreen"
-    ).style.display = "block";
-
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("clientScreen").style.display = "block";
     cargarJuegos();
-
 }
 
 /* =========================
@@ -830,23 +504,10 @@ function mostrarCliente() {
 ========================= */
 
 function cerrarSesion() {
-
-    localStorage.removeItem(
-        "omeles_key"
-    );
-
-    document.getElementById(
-        "clientScreen"
-    ).style.display = "none";
-
-    document.getElementById(
-        "loginScreen"
-    ).style.display = "flex";
-
-    document.getElementById(
-        "keyInput"
-    ).value = "";
-
+    localStorage.removeItem("omeles_key");
+    document.getElementById("clientScreen").style.display = "none";
+    document.getElementById("loginScreen").style.display = "flex";
+    document.getElementById("keyInput").value = "";
 }
 
 /* =========================
@@ -854,14 +515,12 @@ function cerrarSesion() {
 ========================= */
 
 function escapeHTML(valor) {
-
     return String(valor ?? "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
-
 }
 
 /* =========================
@@ -869,260 +528,148 @@ function escapeHTML(valor) {
 ========================= */
 
 async function cargarJuegos() {
-
-    const contenedor =
-        document.getElementById("games");
-
-    contenedor.innerHTML = `
-        <div class="empty">
-            Cargando juegos...
-        </div>
-    `;
+    const contenedor = document.getElementById("games");
+    contenedor.innerHTML = `<div class="empty">Cargando juegos...</div>`;
 
     try {
-
-        const respuesta =
-            await fetch(`${SERVER_URL}/api/games`);
+        const respuesta = await fetch(`${SERVER_URL}/api/games`);
 
         if (!respuesta.ok) {
-
-            throw new Error(
-                "Error al cargar juegos"
-            );
-
+            throw new Error("Error al cargar juegos");
         }
 
-        /*
-         * IMPORTANTE:
-         *
-         * El servidor devuelve:
-         *
-         * {
-         *     success: true,
-         *     games: [...]
-         * }
-         *
-         * Por eso no podemos usar directamente
-         * respuesta.json() como si fuera un array.
-         */
-
-        const datos =
-            await respuesta.json();
+        const datos = await respuesta.json();
 
         if (!datos.success) {
-
-            throw new Error(
-                datos.message ||
-                "Error obteniendo los juegos"
-            );
-
+            throw new Error(datos.message || "Error obteniendo los juegos");
         }
 
-        const juegos =
-            Array.isArray(datos.games)
-                ? datos.games
-                : [];
+        todosLosJuegos = Array.isArray(datos.games) ? datos.games : [];
 
-        if (juegos.length === 0) {
-
-            contenedor.innerHTML = `
-                <div class="empty">
-                    No hay juegos disponibles todavía.
-                </div>
-            `;
-
-            return;
-
-        }
-
-        contenedor.innerHTML = "";
-
-        juegos.forEach(juego => {
-
-            const tarjeta =
-                document.createElement("div");
-
-            tarjeta.className =
-                "game-card";
-
-            const nombre =
-                escapeHTML(juego.name);
-
-            const download =
-                escapeHTML(juego.download);
-
-            const repair =
-                escapeHTML(juego.repair);
-
-            const password =
-                escapeHTML(juego.password);
-
-            let botones = "";
-
-            if (download) {
-
-                botones += `
-                    <a
-                        class="btn download"
-                        href="${download}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        DESCARGAR
-                    </a>
-                `;
-
-            }
-
-            if (repair) {
-
-                botones += `
-                    <a
-                        class="btn repair"
-                        href="${repair}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        REPARACIÓN
-                    </a>
-                `;
-
-            }
-
-            if (password) {
-
-                const passwordJS =
-                    String(juego.password ?? "")
-                        .replace(/\\/g, "\\\\")
-                        .replace(/'/g, "\\'")
-                        .replace(/\r/g, "\\r")
-                        .replace(/\n/g, "\\n");
-
-                botones += `
-                    <button
-                        class="btn password"
-                        onclick="mostrarPassword('${passwordJS}')"
-                    >
-                        PASSWORD
-                    </button>
-                `;
-
-            }
-
-            if (!botones) {
-
-                botones = `
-                    <div
-                        style="
-                            color:#777;
-                            text-align:center;
-                            padding:10px;
-                            font-size:13px;
-                        "
-                    >
-                        Este juego no tiene opciones disponibles.
-                    </div>
-                `;
-
-            }
-
-            tarjeta.innerHTML = `
-
-                <button
-                    class="game-header"
-                    type="button"
-                >
-
-                    <div class="game-left">
-
-                        <div class="game-icon">
-                            🎮
-                        </div>
-
-                        <div>
-
-                            <div class="game-name">
-                                ${nombre}
-                            </div>
-
-                            <div class="game-status">
-                                Juego disponible
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="arrow">
-                        ▼
-                    </div>
-
-                </button>
-
-                <div class="game-content">
-
-                    <div class="buttons">
-
-                        ${botones}
-
-                    </div>
-
-                </div>
-
-            `;
-
-            const header =
-                tarjeta.querySelector(
-                    ".game-header"
-                );
-
-            header.addEventListener(
-                "click",
-                () => {
-
-                    tarjeta.classList.toggle(
-                        "open"
-                    );
-
-                }
-            );
-
-            contenedor.appendChild(
-                tarjeta
-            );
-
-        });
+        /* Aplicamos el filtro por si había texto escrito */
+        filtrarJuegos();
 
     } catch (error) {
-
-        console.error(
-            "ERROR CARGANDO JUEGOS:",
-            error
-        );
-
+        console.error("ERROR CARGANDO JUEGOS:", error);
         contenedor.innerHTML = `
-
             <div class="empty">
-
                 No se pudieron cargar los juegos.
-
                 <br><br>
-
-                <span
-                    style="
-                        font-size:11px;
-                        color:#555;
-                    "
-                >
+                <span style="font-size:11px;color:#555;">
                     ${escapeHTML(error.message)}
                 </span>
-
             </div>
-
         `;
+    }
+}
 
+/* =========================
+   FILTRAR JUEGOS (NUEVO)
+========================= */
+
+function filtrarJuegos() {
+    const input = document.getElementById("searchInput");
+    const texto = input ? input.value.toLowerCase().trim() : "";
+
+    let filtrados = todosLosJuegos;
+
+    if (texto) {
+        filtrados = todosLosJuegos.filter(juego =>
+            String(juego.name || "").toLowerCase().includes(texto)
+        );
     }
 
+    renderJuegos(filtrados);
+}
+
+/* =========================
+   RENDER JUEGOS
+========================= */
+
+function renderJuegos(juegos) {
+    const contenedor = document.getElementById("games");
+    contenedor.innerHTML = "";
+
+    if (!juegos || juegos.length === 0) {
+        const texto = document.getElementById("searchInput")?.value.trim();
+        contenedor.innerHTML = `
+            <div class="empty">
+                ${texto ? "No se encontraron juegos con ese nombre." : "No hay juegos disponibles todavía."}
+            </div>
+        `;
+        return;
+    }
+
+    juegos.forEach(juego => {
+        const tarjeta = document.createElement("div");
+        tarjeta.className = "game-card";
+
+        const nombre = escapeHTML(juego.name);
+        const download = escapeHTML(juego.download);
+        const repair = escapeHTML(juego.repair);
+
+        let botones = "";
+
+        if (download) {
+            botones += `
+                <a class="btn download" href="${download}" target="_blank" rel="noopener noreferrer">
+                    DESCARGAR
+                </a>
+            `;
+        }
+
+        if (repair) {
+            botones += `
+                <a class="btn repair" href="${repair}" target="_blank" rel="noopener noreferrer">
+                    REPARACIÓN
+                </a>
+            `;
+        }
+
+        if (juego.password) {
+            const passwordJS = String(juego.password ?? "")
+                .replace(/\\/g, "\\\\")
+                .replace(/'/g, "\\'")
+                .replace(/\r/g, "\\r")
+                .replace(/\n/g, "\\n");
+
+            botones += `
+                <button class="btn password" onclick="mostrarPassword('${passwordJS}')">
+                    PASSWORD
+                </button>
+            `;
+        }
+
+        if (!botones) {
+            botones = `
+                <div style="color:#777;text-align:center;padding:10px;font-size:13px;">
+                    Este juego no tiene opciones disponibles.
+                </div>
+            `;
+        }
+
+        tarjeta.innerHTML = `
+            <button class="game-header" type="button">
+                <div class="game-left">
+                    <div class="game-icon">🎮</div>
+                    <div>
+                        <div class="game-name">${nombre}</div>
+                        <div class="game-status">Juego disponible</div>
+                    </div>
+                </div>
+                <div class="arrow">▼</div>
+            </button>
+            <div class="game-content">
+                <div class="buttons">${botones}</div>
+            </div>
+        `;
+
+        tarjeta.querySelector(".game-header").addEventListener("click", () => {
+            tarjeta.classList.toggle("open");
+        });
+
+        contenedor.appendChild(tarjeta);
+    });
 }
 
 /* =========================
@@ -1130,96 +677,46 @@ async function cargarJuegos() {
 ========================= */
 
 function mostrarPassword(password) {
-
-    alert(
-        "PASSWORD: " + password
-    );
-
+    alert("PASSWORD: " + password);
 }
 
 /* =========================
    ENTER PARA LOGIN
 ========================= */
 
-document
-    .getElementById("keyInput")
-    .addEventListener(
-        "keydown",
-        function(event) {
-
-            if (event.key === "Enter") {
-
-                iniciarSesion();
-
-            }
-
-        }
-    );
+document.getElementById("keyInput").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        iniciarSesion();
+    }
+});
 
 /* =========================
    RECUPERAR SESIÓN
 ========================= */
 
-window.addEventListener(
-    "DOMContentLoaded",
-    () => {
+window.addEventListener("DOMContentLoaded", () => {
+    const key = localStorage.getItem("omeles_key");
 
-        const key =
-            localStorage.getItem(
-                "omeles_key"
-            );
-
-        if (key) {
-
-            /*
-             * Comprobamos la key de nuevo
-             * antes de mostrar el cliente.
-             */
-
-            fetch("/api/login", {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    key: key
-                })
-
-            })
-            .then(async respuesta => {
-
-                if (!respuesta.ok) {
-
-                    localStorage.removeItem(
-                        "omeles_key"
-                    );
-
-                    return;
-
-                }
-
-                mostrarCliente();
-
-            })
-            .catch(error => {
-
-                console.error(
-                    "ERROR RECUPERANDO SESIÓN:",
-                    error
-                );
-
-            });
-
-        }
-
+    if (key) {
+        fetch("/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ key: key })
+        })
+        .then(async respuesta => {
+            if (!respuesta.ok) {
+                localStorage.removeItem("omeles_key");
+                return;
+            }
+            mostrarCliente();
+        })
+        .catch(error => {
+            console.error("ERROR RECUPERANDO SESIÓN:", error);
+        });
     }
-);
+});
 
 </script>
 
 </body>
-
 </html>
