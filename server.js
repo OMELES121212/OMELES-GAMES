@@ -50,18 +50,16 @@ function rateLimit(req, res, next) {
 
 // ======================================================
 // MIDDLEWARE ADMIN
-// - Acepta ADMIN_KEY del entorno
-// - Acepta keys ADMIN_* de la BD (registrando uso)
 // ======================================================
 function checkAdmin(req, res, next) {
     const key = req.headers["x-admin-key"];
 
-    // 1. ADMIN_KEY maestra del entorno
+    // ADMIN_KEY del entorno
     if (key === ADMIN_KEY) {
         return next();
     }
 
-    // 2. Keys ADMIN guardadas en BD
+    // Keys ADMIN en BD
     const row = db.prepare(
         "SELECT * FROM keys WHERE key = ? AND type LIKE 'ADMIN%'"
     ).get(key);
@@ -79,7 +77,7 @@ function checkAdmin(req, res, next) {
         return res.status(401).json({ success: false, message: "Admin Key revocada" });
     }
 
-    // 📌 REGISTRAR USO
+    // REGISTRAR USO
     const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "?";
     const uses = (row.use_count || 0) + 1;
     db.prepare(`
@@ -97,13 +95,13 @@ function checkAdmin(req, res, next) {
 io.use((socket, next) => {
     const key = socket.handshake.auth.key;
     if (key) {
-        socket.data.adminKey = key;
+        socket.data.key = key;
     }
     next();
 });
 
 io.on("connection", (socket) => {
-    console.log(`🔌 Cliente conectado: ${socket.id} | AdminKey: ${socket.data.adminKey ? "sí" : "no"}`);
+    console.log(`🔌 Cliente conectado: ${socket.id} | Key: ${socket.data.key ? "sí" : "no"}`);
 });
 
 // ======================================================
@@ -188,32 +186,33 @@ app.post("/api/admin/update-key-nickname", checkAdmin, (req, res) => {
     res.json({ success: true });
 });
 
-// REVOCAR KEY (con kick en tiempo real)
+// REVOCAR KEY (emite a TODOS los sockets: admin y cliente)
 app.post("/api/admin/revoke-key", checkAdmin, (req, res) => {
     const id = req.body.id;
 
-    const row = db.prepare("SELECT key FROM keys WHERE id = ?").get(id);
+    const row = db.prepare("SELECT key, type FROM keys WHERE id = ?").get(id);
 
     db.prepare("UPDATE keys SET active = 0 WHERE id = ?").run(id);
 
     if (row) {
-        io.emit("admin-key-revoked", { key: row.key });
-        console.log(`🚫 Key revocada y emitida: ${row.key}`);
+        io.emit("key-revoked", { key: row.key, type: row.type });
+        console.log(`🚫 Key revocada y emitida: ${row.key} (tipo ${row.type})`);
     }
 
     res.json({ success: true });
 });
 
-// ELIMINAR KEY (con kick en tiempo real)
+// ELIMINAR KEY (también emite)
 app.post("/api/admin/delete-key", checkAdmin, (req, res) => {
     const id = req.body.id;
 
-    const row = db.prepare("SELECT key FROM keys WHERE id = ?").get(id);
+    const row = db.prepare("SELECT key, type FROM keys WHERE id = ?").get(id);
 
     db.prepare("DELETE FROM keys WHERE id = ?").run(id);
 
     if (row) {
-        io.emit("admin-key-revoked", { key: row.key });
+        io.emit("key-revoked", { key: row.key, type: row.type });
+        console.log(`🗑️ Key eliminada y emitida: ${row.key}`);
     }
 
     res.json({ success: true });
