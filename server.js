@@ -139,20 +139,20 @@ app.get("/api/admin/games", checkAdmin, (req, res) => {
 });
 
 app.post("/api/games", checkAdmin, (req, res) => {
-    const { name, download, repair, password } = req.body;
+    const { name, download, repair, password, image } = req.body;
     if (!name) return res.status(400).json({ success: false, message: "Falta el nombre" });
 
-    db.prepare(`INSERT INTO games (name, download, repair, password, active) VALUES (?, ?, ?, ?, 1)`)
-      .run(name, download || "", repair || "", password || "");
+    db.prepare(`INSERT INTO games (name, download, repair, password, image, active) VALUES (?, ?, ?, ?, ?, 1)`)
+      .run(name, download || "", repair || "", password || "", image || "");
 
     io.emit("games-updated", { action: "create", name });
     res.json({ success: true });
 });
 
 app.post("/api/admin/update-game", checkAdmin, (req, res) => {
-    const { id, name, download, repair, password } = req.body;
-    db.prepare(`UPDATE games SET name = ?, download = ?, repair = ?, password = ? WHERE id = ?`)
-      .run(name, download, repair, password, id);
+    const { id, name, download, repair, password, image } = req.body;
+    db.prepare(`UPDATE games SET name = ?, download = ?, repair = ?, password = ?, image = ? WHERE id = ?`)
+      .run(name, download, repair, password, image || "", id);
 
     io.emit("games-updated", { action: "update", name });
     res.json({ success: true });
