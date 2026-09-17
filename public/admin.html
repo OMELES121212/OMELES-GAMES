@@ -662,7 +662,7 @@ async function entrarAdmin() {
         document.getElementById("adminLogin").classList.add("hidden");
         document.getElementById("adminPanel").classList.remove("hidden");
 
-        // 📌 Conectar Socket.IO con la key del admin
+        // Conectar Socket.IO con la key del admin
         conectarSocket();
 
         todasLasKeys = data.keys || [];
@@ -697,8 +697,8 @@ function conectarSocket() {
     });
 
     // 🔴 Kick en tiempo real si revocan nuestra key
-    socket.on("admin-key-revoked", (data) => {
-        console.log("🚫 Evento revoke recibido:", data);
+    socket.on("key-revoked", (data) => {
+        console.log("🚫 Evento key-revoked recibido:", data);
 
         if (data.key === adminKeyValue) {
             alert("⚠️ Tu Admin Key ha sido revocada.\n\nSerás expulsado del panel.");
@@ -797,7 +797,6 @@ async function cargarKeys() {
         const data = await response.json();
 
         if (!response.ok || !data.success) {
-            // Si la key fue revocada, echar
             if (response.status === 401) {
                 alert("⚠️ Tu Admin Key ya no es válida.");
                 adminKeyValue = "";
@@ -983,7 +982,7 @@ async function guardarMote() {
 
 async function revocarKey(id) {
 
-    if (!confirm("¿Seguro que quieres revocar esta key?\n\nLa key dejará de funcionar.")) return;
+    if (!confirm("¿Seguro que quieres revocar esta key?\n\nLa key dejará de funcionar y se expulsará al usuario conectado.")) return;
 
     try {
 
@@ -1017,7 +1016,7 @@ async function revocarKey(id) {
 
 async function eliminarKey(id) {
 
-    if (!confirm("⚠️ ELIMINAR KEY\n\nEsta acción eliminará la key definitivamente de la base de datos.\n\n¿Quieres continuar?")) return;
+    if (!confirm("⚠️ ELIMINAR KEY\n\nEsta acción eliminará la key definitivamente de la base de datos y expulsará al usuario conectado.\n\n¿Quieres continuar?")) return;
 
     try {
 
