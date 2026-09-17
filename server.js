@@ -56,7 +56,7 @@ function rateLimit(req, res, next) {
 function checkAdmin(req, res, next) {
     const key = req.headers["x-admin-key"];
 
-    // 1. ADMIN_KEY maestra del entorno (no se registra uso)
+    // 1. ADMIN_KEY maestra del entorno
     if (key === ADMIN_KEY) {
         return next();
     }
@@ -70,13 +70,11 @@ function checkAdmin(req, res, next) {
         return res.status(401).json({ success: false, message: "Admin Key incorrecta" });
     }
 
-    // Comprobar expiración
     if (row.expires_at && new Date(row.expires_at) <= new Date()) {
         db.prepare("UPDATE keys SET active = 0 WHERE id = ?").run(row.id);
         return res.status(401).json({ success: false, message: "Admin Key expirada" });
     }
 
-    // Comprobar si sigue activa
     if (!row.active) {
         return res.status(401).json({ success: false, message: "Admin Key revocada" });
     }
@@ -94,7 +92,7 @@ function checkAdmin(req, res, next) {
 }
 
 // ======================================================
-// SOCKET.IO - Autenticación con key
+// SOCKET.IO - Autenticación
 // ======================================================
 io.use((socket, next) => {
     const key = socket.handshake.auth.key;
@@ -151,7 +149,6 @@ app.get("/api/admin/keys", checkAdmin, (req, res) => {
     res.json({ success: true, keys });
 });
 
-// CREAR KEY
 app.post("/api/keys", checkAdmin, (req, res) => {
     const { type } = req.body;
 
@@ -185,23 +182,20 @@ app.post("/api/keys", checkAdmin, (req, res) => {
     res.json({ success: true, key: keyStr });
 });
 
-// EDITAR MOTE
 app.post("/api/admin/update-key-nickname", checkAdmin, (req, res) => {
     const { id, nickname } = req.body;
     db.prepare("UPDATE keys SET nickname = ? WHERE id = ?").run(nickname || "", id);
     res.json({ success: true });
 });
 
-// REVOCAR KEY (con emisión en tiempo real)
+// REVOCAR KEY (con kick en tiempo real)
 app.post("/api/admin/revoke-key", checkAdmin, (req, res) => {
     const id = req.body.id;
 
-    // Obtener la key antes de revocarla para poder emitirla
     const row = db.prepare("SELECT key FROM keys WHERE id = ?").get(id);
 
     db.prepare("UPDATE keys SET active = 0 WHERE id = ?").run(id);
 
-    // 📌 EMITIR EVENTO a todos los clientes conectados
     if (row) {
         io.emit("admin-key-revoked", { key: row.key });
         console.log(`🚫 Key revocada y emitida: ${row.key}`);
@@ -210,7 +204,7 @@ app.post("/api/admin/revoke-key", checkAdmin, (req, res) => {
     res.json({ success: true });
 });
 
-// ELIMINAR KEY (con emisión en tiempo real)
+// ELIMINAR KEY (con kick en tiempo real)
 app.post("/api/admin/delete-key", checkAdmin, (req, res) => {
     const id = req.body.id;
 
