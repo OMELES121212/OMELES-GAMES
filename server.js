@@ -54,15 +54,9 @@ function rateLimit(req, res, next) {
 function checkAdmin(req, res, next) {
     const key = req.headers["x-admin-key"];
 
-    // ADMIN_KEY del entorno
-    if (key === ADMIN_KEY) {
-        return next();
-    }
+    if (key === ADMIN_KEY) return next();
 
-    // Keys ADMIN en BD
-    const row = db.prepare(
-        "SELECT * FROM keys WHERE key = ? AND type LIKE 'ADMIN%'"
-    ).get(key);
+    const row = db.prepare("SELECT * FROM keys WHERE key = ? AND type LIKE 'ADMIN%'").get(key);
 
     if (!row) {
         return res.status(401).json({ success: false, message: "Admin Key incorrecta" });
@@ -77,26 +71,20 @@ function checkAdmin(req, res, next) {
         return res.status(401).json({ success: false, message: "Admin Key revocada" });
     }
 
-    // REGISTRAR USO
     const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "?";
     const uses = (row.use_count || 0) + 1;
-    db.prepare(`
-        UPDATE keys 
-        SET last_ip = ?, last_used_at = ?, use_count = ? 
-        WHERE id = ?
-    `).run(ip, new Date().toISOString(), uses, row.id);
+    db.prepare(`UPDATE keys SET last_ip = ?, last_used_at = ?, use_count = ? WHERE id = ?`)
+      .run(ip, new Date().toISOString(), uses, row.id);
 
     return next();
 }
 
 // ======================================================
-// SOCKET.IO - Autenticación
+// SOCKET.IO
 // ======================================================
 io.use((socket, next) => {
     const key = socket.handshake.auth.key;
-    if (key) {
-        socket.data.key = key;
-    }
+    if (key) socket.data.key = key;
     next();
 });
 
@@ -186,7 +174,7 @@ app.post("/api/admin/update-key-nickname", checkAdmin, (req, res) => {
     res.json({ success: true });
 });
 
-// REVOCAR KEY (emite a TODOS los sockets: admin y cliente)
+// REVOCAR KEY (con kick en tiempo real)
 app.post("/api/admin/revoke-key", checkAdmin, (req, res) => {
     const id = req.body.id;
 
@@ -196,13 +184,13 @@ app.post("/api/admin/revoke-key", checkAdmin, (req, res) => {
 
     if (row) {
         io.emit("key-revoked", { key: row.key, type: row.type });
-        console.log(`🚫 Key revocada y emitida: ${row.key} (tipo ${row.type})`);
+        console.log(`🚫 Key revocada y emitida: ${row.key}`);
     }
 
     res.json({ success: true });
 });
 
-// ELIMINAR KEY (también emite)
+// ELIMINAR KEY
 app.post("/api/admin/delete-key", checkAdmin, (req, res) => {
     const id = req.body.id;
 
@@ -212,7 +200,6 @@ app.post("/api/admin/delete-key", checkAdmin, (req, res) => {
 
     if (row) {
         io.emit("key-revoked", { key: row.key, type: row.type });
-        console.log(`🗑️ Key eliminada y emitida: ${row.key}`);
     }
 
     res.json({ success: true });
@@ -253,9 +240,79 @@ app.post("/api/admin/delete-game", checkAdmin, (req, res) => {
 });
 
 // ======================================================
+// IA - Proxy a Gemini
+// La API key vive en las variables de entorno del servidor
+// ======================================================
+app.post("/api/ai/chat", rateLimit, async (req, res) => {
+    const { mensaje, historial } = req.body;
+    if (!mensaje) return res.status(400).json({ success: false, message: "Falta el mensaje" });
+
+    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+    if (!GEMINI_API_KEY) {
+        console.error("❌ GEMINI_API_KEY no configurada");
+        return res.status(500).json({ success: false, message: "IA no configurada en el servidor" });
+    }
+
+    // Contexto del catálogo
+    const juegos = db.prepare("SELECT name FROM games WHERE active = 1").all();
+    const listaNombres = juegos.map(j => j.name).join(", ") || "ninguno";
+    const contexto = `Eres el asistente de OMELES GAMES, una plataforma de juegos. Respondes en español, de forma natural y cercana. Actualmente hay ${juegos.length} juegos en el catálogo: ${listaNombres}. Sé conciso pero amable. Usa emojis con moderación.`;
+
+    try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+        const body = {
+            contents: [
+                ...(historial || []).map(h => ({
+                    role: h.tipo === "user" ? "user" : "model",
+                    parts: [{ text: h.texto }]
+                })),
+                { role: "user", parts: [{ text: mensaje }] }
+            ],
+            systemInstruction: { parts: [{ text: contexto }] },
+            generationConfig: {
+                temperature: 0.9,
+                maxOutputTokens: 500
+            }
+        };
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            const err = await response.text();
+            console.error("❌ Gemini error:", response.status, err);
+            return res.status(500).json({
+                success: false,
+                message: "Error de la IA (código " + response.status + ")"
+            });
+        }
+
+        const data = await response.json();
+
+        if (!data.candidates || !data.candidates[0]) {
+            console.error("❌ Respuesta Gemini sin candidatos:", JSON.stringify(data));
+            return res.status(500).json({ success: false, message: "La IA no devolvió respuesta" });
+        }
+
+        const texto = data.candidates[0]?.content?.parts?.[0]?.text || "No pude generar respuesta.";
+        res.json({ success: true, respuesta: texto });
+
+    } catch (error) {
+        console.error("❌ Error IA:", error);
+        res.status(500).json({ success: false, message: "Error de conexión con la IA" });
+    }
+});
+
+// ======================================================
 // ARRANCAR
 // ======================================================
 server.listen(PORT, "0.0.0.0", () => {
     console.log(`\n✅ OMELES GAMES en puerto ${PORT}`);
-    console.log(`🔑 Admin Key: ${ADMIN_KEY}\n`);
+    console.log(`🔑 Admin Key: ${ADMIN_KEY}`);
+    console.log(`🤖 IA Gemini: ${process.env.GEMINI_API_KEY ? "configurada" : "NO configurada"}`);
+    console.log("");
 });
