@@ -589,7 +589,6 @@ Escribe lo que quieras 🎮</div>
 <script src="/socket.io/socket.io.js"></script>
 <script>
 const SERVER_URL = window.location.origin;
-const GEMINI_API_KEY = "AQ.Ab8RN6LzdNpOaymD_nYgyJUlo0KTlttQvv_aHEgcyJJ20QZDyg";
 
 let todosLosJuegos = [];
 let socket = null;
@@ -795,13 +794,9 @@ function setFilter(f){
     playClick();
 }
 
-/* ========== MENÚ (solo si hay key) ========== */
+/* ========== MENÚ ========== */
 function toggleMenu(){
-    if(!currentKey){
-        toast("Introduce tu KEY primero", "warning", "Acceso bloqueado");
-        playError();
-        return;
-    }
+    if(!currentKey){toast("Introduce tu KEY primero", "warning", "Acceso bloqueado");playError();return}
     document.getElementById("menuBtn").classList.toggle("active");
     document.getElementById("dropdown").classList.toggle("open");
     playClick();
@@ -824,11 +819,7 @@ function abrirJuegos(){
     document.getElementById("gameCanvasWrap").style.display = "none";
     playClick();
 }
-function cerrarJuegos(){
-    document.getElementById("gamesOverlay").classList.remove("open");
-    document.body.style.overflow = "";
-    detenerJuego();
-}
+function cerrarJuegos(){document.getElementById("gamesOverlay").classList.remove("open");document.body.style.overflow = "";detenerJuego()}
 function abrirJuego(nombre){
     document.getElementById("gamesGrid").style.display = "none";
     document.getElementById("gameCanvasWrap").style.display = "flex";
@@ -858,10 +849,7 @@ function detenerJuego(){
     }
     limpiarListeners();
 }
-function limpiarListeners(){
-    teclasListeners.forEach(l=>document.removeEventListener(l.tipo, l.fn));
-    teclasListeners = [];
-}
+function limpiarListeners(){teclasListeners.forEach(l=>document.removeEventListener(l.tipo, l.fn));teclasListeners = []}
 function addKey(fn){document.addEventListener("keydown", fn);teclasListeners.push({tipo:"keydown",fn})}
 function addClick(fn){canvas.addEventListener("mousedown", fn);teclasListeners.push({tipo:"mousedown",fn})}
 
@@ -871,7 +859,7 @@ function startSnake(){
     const grid = 25, tile = canvas.width / grid;
     let snake = [{x:12, y:12}], dir = {x:0, y:0}, comida = randComida(), puntos = 0, velocidad = 100;
     document.getElementById("gameHud").innerHTML = `🐍 Snake · Puntos: <b id="snakeScore">0</b>`;
-    function randComida(){ let c; do{c = {x: Math.floor(Math.random()*grid), y: Math.floor(Math.random()*grid)}} while(snake.some(s=>s.x===c.x&&s.y===c.y)); return c; }
+    function randComida(){let c;do{c = {x: Math.floor(Math.random()*grid), y: Math.floor(Math.random()*grid)}}while(snake.some(s=>s.x===c.x&&s.y===c.y));return c}
     function loop(){
         if(dir.x===0 && dir.y===0){ pintar(); return; }
         const head = {x: snake[0].x + dir.x, y: snake[0].y + dir.y};
@@ -912,13 +900,12 @@ function startPong(){
     let player = {y: 175, h: 100}, cpu = {y: 175, h: 100}, ball = {x: 350, y: 225, r: 8, vx: 5, vy: 3};
     let puntosP = 0, puntosC = 0;
     document.getElementById("gameHud").innerHTML = `🏓 Pong · <b id="pongP">0</b> — <b id="pongC">0</b> · Mueve el ratón`;
-    addClick(()=>{});
-    function mousemove(e){
+    const mousemove = (e)=>{
         if(juegoActivo!=="pong") return;
         const rect = canvas.getBoundingClientRect();
         const y = (e.clientY - rect.top) * (canvas.height / rect.height);
         player.y = Math.max(0, Math.min(canvas.height - player.h, y - player.h/2));
-    }
+    };
     document.addEventListener("mousemove", mousemove);
     teclasListeners.push({tipo:"mousemove", fn:mousemove});
     function loop(){
@@ -986,10 +973,10 @@ function startSimon(){
     const freqs = [440,550,660,770];
     let secuencia = [], mostrando = false, indice = 0, ronda = 1, terminado = false;
     document.getElementById("gameHud").innerHTML = `🎵 Simón · Ronda: <b id="simonRound">1</b>`;
-    function nuevaSecuencia(){ secuencia.push(Math.floor(Math.random()*4)); }
+    function nuevaSecuencia(){ secuencia.push(Math.floor(Math.random()*4)) }
     function mostrar(){
         mostrando = true;
-        secuencia.forEach((c,i)=>{ setTimeout(()=>{ beep(freqs[c], .3); drawHighlight(c); }, i*700); });
+        secuencia.forEach((c,i)=>{ setTimeout(()=>{ beep(freqs[c], .3); drawHighlight(c); }, i*700) });
         setTimeout(()=>{ mostrando = false; drawBase(); }, secuencia.length*700 + 300);
     }
     function drawBase(){
@@ -1033,7 +1020,7 @@ function startSimon(){
 /* --- REACCIÓN --- */
 function startReaction(){
     canvas.width = 600; canvas.height = 400;
-    let estado = "espera", tiempoInicio = 0, tiempoFinal = 0, mejor = 0;
+    let estado = "espera", tiempoInicio = 0, mejor = 0;
     document.getElementById("gameHud").innerHTML = `⚡ Reacción · Mejor: <b id="reactionBest">-</b> ms`;
     let timeoutId = null;
     function esperar(){
@@ -1055,11 +1042,9 @@ function startReaction(){
             ctx.fillStyle="#ff1744"; ctx.fillRect(0,0,canvas.width,canvas.height);
             ctx.fillStyle="#fff"; ctx.font="bold 30px Arial";
             ctx.fillText("¡Muy pronto! Clic para reintentar", canvas.width/2, canvas.height/2);
-            estado = "error";
-            beep(200,.2,.1);
+            estado = "error"; beep(200,.2,.1);
         } else if(estado === "listo"){
-            tiempoFinal = performance.now() - tiempoInicio;
-            const ms = Math.round(tiempoFinal);
+            const ms = Math.round(performance.now() - tiempoInicio);
             if(mejor === 0 || ms < mejor) mejor = ms;
             document.getElementById("reactionBest").textContent = mejor;
             estado = "espera";
@@ -1069,9 +1054,7 @@ function startReaction(){
             ctx.font="20px Arial";
             ctx.fillText("Clic para otro intento", canvas.width/2, canvas.height/2 + 40);
             beep(1000,.1);
-        } else if(estado === "error"){
-            esperar();
-        }
+        } else if(estado === "error"){ esperar() }
     });
     esperar();
 }
@@ -1084,12 +1067,12 @@ function startTicTac(){
     function draw(){
         ctx.fillStyle="#05050a"; ctx.fillRect(0,0,canvas.width,canvas.height);
         ctx.strokeStyle="rgba(139,92,255,.5)"; ctx.lineWidth=3;
-        for(let i=1;i<3;i++){ ctx.beginPath(); ctx.moveTo(i*150,20); ctx.lineTo(i*150,430); ctx.stroke(); ctx.beginPath(); ctx.moveTo(20,i*150); ctx.lineTo(430,i*150); ctx.stroke(); }
+        for(let i=1;i<3;i++){ ctx.beginPath(); ctx.moveTo(i*150,20); ctx.lineTo(i*150,430); ctx.stroke(); ctx.beginPath(); ctx.moveTo(20,i*150); ctx.lineTo(430,i*150); ctx.stroke() }
         tablero.forEach((v,i)=>{
             const x = (i%3)*150+75, y = Math.floor(i/3)*150+75;
             ctx.font="bold 70px Arial"; ctx.textAlign="center"; ctx.textBaseline="middle";
-            if(v === "X"){ ctx.fillStyle="#8b5cff"; ctx.fillText("X", x, y); }
-            if(v === "O"){ ctx.fillStyle="#ff4567"; ctx.fillText("O", x, y); }
+            if(v === "X"){ ctx.fillStyle="#8b5cff"; ctx.fillText("X", x, y) }
+            if(v === "O"){ ctx.fillStyle="#ff4567"; ctx.fillText("O", x, y) }
         });
         const g = checkWin();
         if(g){
@@ -1101,7 +1084,7 @@ function startTicTac(){
     }
     function checkWin(){
         const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-        for(const l of lines){ if(tablero[l[0]] && tablero[l[0]] === tablero[l[1]] && tablero[l[1]] === tablero[l[2]]) return tablero[l[0]]; }
+        for(const l of lines){ if(tablero[l[0]] && tablero[l[0]] === tablero[l[1]] && tablero[l[1]] === tablero[l[2]]) return tablero[l[0]] }
         if(tablero.every(c=>c)) return "empate";
         return null;
     }
@@ -1109,16 +1092,11 @@ function startTicTac(){
         const vacias = tablero.map((v,i)=>v?-1:i).filter(i=>i>=0);
         if(vacias.length === 0) return;
         const eleccion = vacias[Math.floor(Math.random()*vacias.length)];
-        tablero[eleccion] = "O";
-        turno = "X";
-        document.getElementById("tictacTurno").textContent = "X";
-        draw();
+        tablero[eleccion] = "O"; turno = "X";
+        document.getElementById("tictacTurno").textContent = "X"; draw();
     }
     addClick((e)=>{
-        if(terminado){
-            tablero = Array(9).fill(""); turno = "X"; terminado = false;
-            document.getElementById("tictacTurno").textContent = "X"; draw(); return;
-        }
+        if(terminado){ tablero = Array(9).fill(""); turno = "X"; terminado = false; document.getElementById("tictacTurno").textContent = "X"; draw(); return }
         if(turno !== "X") return;
         const rect = canvas.getBoundingClientRect();
         const x = (e.clientX - rect.left) * (canvas.width/rect.width);
@@ -1127,8 +1105,7 @@ function startTicTac(){
         const i = row*3+col;
         if(i >= 0 && i < 9 && !tablero[i]){
             tablero[i] = "X"; turno = "O"; beep(700,.05,.05);
-            document.getElementById("tictacTurno").textContent = "O";
-            draw();
+            document.getElementById("tictacTurno").textContent = "O"; draw();
             if(!checkWin()) setTimeout(cpuMove, 400);
         }
     });
@@ -1138,11 +1115,7 @@ function startTicTac(){
 /* ========== AIMLAB ========== */
 let aimActive=false, aimTimeLeft=30, aimTimer=null, aimScore=0, aimHits=0, aimMiss=0, aimConfig={}, aimTargets=[], aimMoveInt=null;
 function toggleAimTime(){document.getElementById("aimTimeField").style.display = document.getElementById("cfgMode").value==="infinite"?"none":"flex"}
-function abrirAim(){
-    if(!currentKey){toast("Introduce tu KEY primero","warning");return}
-    document.getElementById("dropdown").classList.remove("open"); document.getElementById("menuBtn").classList.remove("active");
-    document.getElementById("aimOverlay").classList.add("open"); document.body.style.overflow = "hidden"; volverAim(); playClick();
-}
+function abrirAim(){if(!currentKey){toast("Introduce tu KEY primero","warning");return}document.getElementById("dropdown").classList.remove("open");document.getElementById("menuBtn").classList.remove("active");document.getElementById("aimOverlay").classList.add("open");document.body.style.overflow="hidden";volverAim();playClick()}
 function cerrarAim(){document.getElementById("aimOverlay").classList.remove("open");document.body.style.overflow="";stopAim();clearTargets()}
 function volverAim(){stopAim();clearTargets();document.getElementById("aimConfig").style.display="flex";document.getElementById("aimResult").style.display="none";document.getElementById("aimHud").style.display="none";document.getElementById("aimArea").style.display="none"}
 function startAim(){
@@ -1237,7 +1210,7 @@ function cpsClick(){if(cpsState !== "running") return;cpsCount++;beep(1000+Math.
 document.getElementById("cpsArea").addEventListener("mousedown", cpsClick);
 document.addEventListener("keydown",(e)=>{if(e.key===" " && document.getElementById("cpsOverlay").classList.contains("open")){e.preventDefault();if(cpsState==="running") cpsClick()}});
 
-/* ========== IA GEMINI ========== */
+/* ========== IA GEMINI (vía backend) ========== */
 function abrirIa(){
     if(!currentKey){toast("Introduce tu KEY primero","warning");return}
     document.getElementById("dropdown").classList.remove("open"); document.getElementById("menuBtn").classList.remove("active");
@@ -1259,41 +1232,28 @@ async function enviarIa(){
     msgs.appendChild(typ); msgs.scrollTop = msgs.scrollHeight;
 
     try {
-        // Contexto de juegos
-        const contexto = `Eres el asistente de OMELES GAMES, una plataforma de juegos. Respondes en español, de forma natural y cercana. Actualmente hay ${todosLosJuegos.length} juegos en el catálogo: ${todosLosJuegos.map(j=>j.name).join(", ") || "ninguno"}. Sé conciso pero amable. Usa emojis con moderación.`;
-
-        const body = {
-            contents: [
-                ...aiHistorial.map(h => ({ role: h.tipo === "user" ? "user" : "model", parts: [{ text: h.texto }] })),
-                { role: "user", parts: [{ text: txt }] }
-            ],
-            systemInstruction: { parts: [{ text: contexto }] },
-            generationConfig: { temperature: 0.9, maxOutputTokens: 500 }
-        };
-
-        const r = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-            { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }
-        );
-
-        document.getElementById("aiTyp")?.remove();
+        const r = await fetch(`${SERVER_URL}/api/ai/chat`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                mensaje: txt,
+                historial: aiHistorial.slice(-6)
+            })
+        });
         const d = await r.json();
-
-        if(!r.ok){
-            console.error("Gemini error:", d);
-            addMsg("Lo siento, hubo un error al conectar con Gemini. Revisa la clave API.", "bot");
-            return;
-        }
-
-        const texto = d.candidates?.[0]?.content?.parts?.[0]?.text || "No pude generar respuesta.";
-        addMsg(texto, "bot");
-        aiHistorial.push({ tipo: "user", texto: txt });
-        aiHistorial.push({ tipo: "bot", texto: texto });
-        if(aiHistorial.length > 12) aiHistorial = aiHistorial.slice(-12);
-
-    } catch(e){
         document.getElementById("aiTyp")?.remove();
-        addMsg("Error de conexión con la IA: " + e.message, "bot");
+
+        if (d.success) {
+            addMsg(d.respuesta, "bot");
+            aiHistorial.push({ tipo: "user", texto: txt });
+            aiHistorial.push({ tipo: "bot", texto: d.respuesta });
+            if (aiHistorial.length > 12) aiHistorial = aiHistorial.slice(-12);
+        } else {
+            addMsg("Lo siento, no pude responder: " + (d.message || "error"), "bot");
+        }
+    } catch(e) {
+        document.getElementById("aiTyp")?.remove();
+        addMsg("Error de conexión con la IA.", "bot");
     }
 }
 function addMsg(t, tipo){
@@ -1339,9 +1299,7 @@ async function iniciarSesion(){
         conectarSocket();
         setTimeout(()=>{
             toast(`¡Bienvenido a OMELES GAMES!`, "success", "Acceso concedido");
-            setTimeout(()=>{
-                toast(`${todosLosJuegos.length} juegos disponibles`, "info", "Catálogo cargado");
-            }, 800);
+            setTimeout(()=>{toast(`${todosLosJuegos.length} juegos disponibles`, "info", "Catálogo cargado")}, 800);
         }, 400);
     }catch(e){
         console.error(e);
@@ -1387,9 +1345,7 @@ function cerrarSesion(){
 }
 
 /* ========== ESCAPE ========== */
-function escapeHTML(v){
-    return String(v ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
-}
+function escapeHTML(v){return String(v ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}
 
 /* ========== CARGAR JUEGOS ========== */
 async function cargarJuegos(){
