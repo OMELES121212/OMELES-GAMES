@@ -47,7 +47,7 @@ body.zen #menuBtn:hover{opacity:1;transform:scale(1.08)}
 #loginMessage{min-height:20px;margin-top:15px;font-size:13px;color:#ff5c5c}
 .login-hint{margin-top:20px;font-size:11px;color:#555}
 #clientScreen{display:none;min-height:100vh}
-header{height:80px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;border-bottom:1px solid rgba(255,255,255,.06);background:var(--hud-bg);backdrop-filter:blur(20px);position:sticky;top:0;z-index:100}
+header{height:80px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;border-bottom:1px solid rgba(255,255,255,.06);background:var(--hud-bg);backdrop-filter:blur(20px);position:sticky;top:0;z-index:100;transition:.3s}
 .logo{font-size:26px;font-weight:900;letter-spacing:2px}
 .logo span{color:#8b5cff}
 .h-right{display:flex;align-items:center;gap:15px}
@@ -75,6 +75,7 @@ main{max-width:1100px;margin:auto;padding:50px 25px}
 .search-input{width:100%;padding:18px 100px 18px 55px;border-radius:16px;border:1px solid rgba(139,92,255,.2);background:rgba(20,20,35,.6);color:#fff;outline:none;font-size:15px;transition:.3s}
 .search-input:focus{border-color:#8b5cff;box-shadow:0 0 30px rgba(139,92,255,.25)}
 .sc-key{position:absolute;right:18px;top:50%;transform:translateY(-50%);background:rgba(139,92,255,.15);border:1px solid rgba(139,92,255,.3);color:#b99cff;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;pointer-events:none}
+.sc-key.hide{display:none}
 .games{display:grid;grid-template-columns:1fr;gap:16px;transition:.3s}
 .games.view-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
 .games.view-compact{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
@@ -280,6 +281,7 @@ footer{text-align:center;padding:40px;color:#444;font-size:12px}
 .s-field input[type="color"]{width:52px;height:36px;border:1px solid #30304a;border-radius:8px;background:#08080e;cursor:pointer}
 .s-field input[type="range"]{flex:1;accent-color:#8b5cff}
 .s-field select{padding:8px 12px;border-radius:8px;border:1px solid #30304a;background:#08080e;color:#fff;outline:none;min-width:120px}
+.s-field input[type="text"]{flex:1;padding:8px 12px;border-radius:8px;border:1px solid #30304a;background:#08080e;color:#fff;outline:none;font-size:12px;min-width:0}
 .s-val{width:50px;text-align:center;color:#b99cff;font-weight:700;font-size:13px}
 .s-btn-row{display:flex;gap:10px;margin-top:10px}
 .s-btn{flex:1;padding:13px;border-radius:12px;border:1px solid rgba(100,116,139,.3);background:rgba(100,116,139,.15);color:#fff;font-weight:700;cursor:pointer;letter-spacing:1px}
@@ -291,10 +293,10 @@ footer{text-align:center;padding:40px;color:#444;font-size:12px}
 .game-item:hover{transform:translateY(-5px) scale(1.03);border-color:#8b5cff;box-shadow:0 15px 40px rgba(139,92,255,.3)}
 .game-item .gi-icon{font-size:36px;display:block}
 .game-canvas-wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#05050a}
-.game-canvas-wrap canvas{border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 60px rgba(139,92,255,.2);max-width:90vw;max-height:65vh}
-.game-hud{position:absolute;top:20px;left:50%;transform:translateX(-50%);display:flex;gap:20px;background:rgba(20,20,35,.9);backdrop-filter:blur(15px);padding:12px 28px;border-radius:14px;border:1px solid rgba(139,92,255,.3);font-size:13px;font-weight:700}
+.game-canvas-wrap canvas{border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 60px rgba(139,92,255,.2);max-width:90vw;max-height:75vh}
+.game-hud{position:absolute;top:20px;left:50%;transform:translateX(-50%);display:flex;gap:20px;background:rgba(20,20,35,.9);backdrop-filter:blur(15px);padding:12px 28px;border-radius:14px;border:1px solid rgba(139,92,255,.3);font-size:13px;font-weight:700;z-index:5}
 .game-hud b{color:#b99cff;font-size:17px}
-.game-back{position:absolute;top:20px;left:20px;padding:10px 20px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;font-weight:700;font-size:13px}
+.game-back{position:absolute;top:20px;left:20px;padding:10px 20px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;font-weight:700;font-size:13px;z-index:5}
 .game-back:hover{background:rgba(255,255,255,.15)}
 .palette-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(12px);z-index:3000;align-items:flex-start;justify-content:center;padding-top:15vh}
 .palette-overlay.open{display:flex}
@@ -341,6 +343,8 @@ footer{text-align:center;padding:40px;color:#444;font-size:12px}
 .palette-tabs{display:flex;gap:6px;padding:10px 16px;border-bottom:1px solid rgba(139,92,255,.1)}
 .palette-tab{padding:6px 12px;border-radius:8px;border:none;background:transparent;color:#888;font-weight:700;font-size:11px;letter-spacing:1px;cursor:pointer;text-transform:uppercase}
 .palette-tab.active{background:rgba(139,92,255,.2);color:#fff}
+#modeOverlay{z-index:1900}
+#modeOverlay .gm-box{max-width:460px}
 @media(max-width:600px){
 header{padding:0 20px;height:70px}.status{display:none}.session-timer{display:none}
 .hero h1{font-size:34px}main{padding:40px 18px}.login-box{padding:32px 24px}
@@ -432,7 +436,7 @@ header{padding:0 20px;height:70px}.status{display:none}.session-timer{display:no
 
 <div id="paletteOverlay" class="palette-overlay" onclick="if(event.target.id==='paletteOverlay')closePalette()">
     <div class="palette-box">
-        <input id="paletteInput" class="palette-input" placeholder="Busca comandos, juegos, juegos internos..." oninput="filterPalette()" onkeydown="paletteKeydown(event)">
+        <input id="paletteInput" class="palette-input" placeholder="Busca comandos, juegos, minijuegos..." oninput="filterPalette()" onkeydown="paletteKeydown(event)">
         <div class="palette-tabs">
             <button class="palette-tab active" data-cat="all" onclick="setPaletteCat('all')">Todo</button>
             <button class="palette-tab" data-cat="nav" onclick="setPaletteCat('nav')">Acciones</button>
@@ -451,18 +455,54 @@ header{padding:0 20px;height:70px}.status{display:none}.session-timer{display:no
         <button class="game-item" onclick="abrirJuego('memory')"><span class="gi-icon">🧠</span>Memory</button>
         <button class="game-item" onclick="abrirJuego('simon')"><span class="gi-icon">🎵</span>Simón</button>
         <button class="game-item" onclick="abrirJuego('reaction')"><span class="gi-icon">⚡</span>Reacción</button>
-        <button class="game-item" onclick="abrirJuego('tictac')"><span class="gi-icon">⭕</span>3 en Raya</button>
+        <button class="game-item" onclick="abrirJuegoConModo('tictac')"><span class="gi-icon">⭕</span>3 en Raya</button>
         <button class="game-item" onclick="abrirJuego('tetris')"><span class="gi-icon">🧱</span>Tetris</button>
         <button class="game-item" onclick="abrirJuego('2048')"><span class="gi-icon">🔢</span>2048</button>
         <button class="game-item" onclick="abrirJuego('minesweeper')"><span class="gi-icon">💣</span>Buscaminas</button>
         <button class="game-item" onclick="abrirJuego('breakout')"><span class="gi-icon">🧨</span>Breakout</button>
         <button class="game-item" onclick="abrirJuego('whack')"><span class="gi-icon">🔨</span>Whack-a-mole</button>
-        <button class="game-item" onclick="abrirJuego('connect4')"><span class="gi-icon">🔴</span>Conecta 4</button>
+        <button class="game-item" onclick="abrirJuegoConModo('connect4')"><span class="gi-icon">🔴</span>Conecta 4</button>
+        <button class="game-item" onclick="abrirJuego('rps')"><span class="gi-icon">✊</span>P. Papel Tijera</button>
     </div>
     <div class="game-canvas-wrap" id="gameCanvasWrap" style="display:none">
         <canvas id="gameCanvas"></canvas>
         <div class="game-hud" id="gameHud"></div>
         <button class="game-back" onclick="cerrarJuegoActual()">← Volver</button>
+    </div>
+</div>
+
+<div id="modeOverlay" class="game-modal">
+    <div class="gm-box">
+        <div class="gm-body">
+            <h2 class="gm-title" id="modeTitle">Configurar partida</h2>
+            <div class="gm-info" id="modeSub">Elige el modo de juego</div>
+            <div class="settings-sec" style="border:none;padding:0;margin-bottom:15px">
+                <h3 style="text-align:left">🎮 MODO</h3>
+                <div class="s-field"><label>Jugadores</label>
+                    <select id="modePlayers" onchange="document.getElementById('modeDiffField').style.display = this.value==='1p'?'flex':'none'">
+                        <option value="1p">1 vs Máquina</option>
+                        <option value="2p">2 Jugadores</option>
+                    </select>
+                </div>
+                <div class="s-field" id="modeDiffField"><label>Dificultad</label>
+                    <select id="modeDifficulty">
+                        <option value="easy">Fácil</option>
+                        <option value="medium" selected>Medio</option>
+                        <option value="hard">Difícil</option>
+                    </select>
+                </div>
+            </div>
+            <div class="gm-btns">
+                <button class="g-btn download" onclick="iniciarPartidaConfigurada()">
+                    <div class="g-btn-icon">▶️</div>
+                    <div class="g-btn-text"><span class="g-btn-t">EMPEZAR</span><span class="g-btn-s">Comenzar partida</span></div>
+                </button>
+                <button class="g-btn" onclick="cerrarModeOverlay()" style="background:rgba(100,116,139,.3)">
+                    <div class="g-btn-icon">✕</div>
+                    <div class="g-btn-text"><span class="g-btn-t">CANCELAR</span></div>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -670,12 +710,20 @@ Escribe abajo o usa una sugerencia 👇</div>
             <div class="s-field"><label>Color</label><input type="color" id="sExpColor" value="#ffffff"></div>
             <div class="s-field"><label>Nº partículas</label><input type="range" id="sExpCount" min="4" max="40" value="14" oninput="document.getElementById('sExpCountV').textContent=this.value"><span class="s-val" id="sExpCountV">14</span></div>
         </div>
-        <div class="settings-sec"><h3>🎨 HUD</h3>
+        <div class="settings-sec"><h3>🎨 HUD color</h3>
             <div class="s-field"><label>Color fondo</label><input type="color" id="sHudBg" value="#0a0a14"></div>
             <div class="s-field"><label>Opacidad</label><input type="range" id="sHudOp" min="0" max="100" value="60" oninput="document.getElementById('sHudOpV').textContent=this.value+'%'"><span class="s-val" id="sHudOpV">60%</span></div>
         </div>
+        <div class="settings-sec"><h3>📐 Format HUD</h3>
+            <div class="s-field"><label>Mostrar timer</label><select id="sHudTimer"><option value="on">Sí</option><option value="off">No</option></select></div>
+            <div class="s-field"><label>Mostrar status</label><select id="sHudStatus"><option value="on">Sí</option><option value="off">No</option></select></div>
+            <div class="s-field"><label>Borde inferior</label><select id="sHudBorder"><option value="on">Sí</option><option value="off">No</option></select></div>
+            <div class="s-field"><label>Blur fondo HUD</label><input type="range" id="sHudBlur" min="0" max="40" value="20" oninput="document.getElementById('sHudBlurV').textContent=this.value+'px'"><span class="s-val" id="sHudBlurV">20px</span></div>
+        </div>
         <div class="settings-sec"><h3>🌈 Fondo</h3>
             <div class="s-field"><label>Color base</label><input type="color" id="sBgColor" value="#05050a"></div>
+            <div class="s-field"><label>URL imagen</label><input type="text" id="sBgImage" placeholder="https://ejemplo.com/fondo.jpg"></div>
+            <div class="s-field"><label>Oscurecer imagen</label><input type="range" id="sBgDim" min="0" max="100" value="0" oninput="document.getElementById('sBgDimV').textContent=this.value+'%'"><span class="s-val" id="sBgDimV">0%</span></div>
         </div>
         <div class="settings-sec"><h3>🎮 Extras</h3>
             <div class="s-field"><label>Sound FX</label><select id="sSound"><option value="on">Sí</option><option value="off">No</option></select></div>
@@ -703,8 +751,19 @@ let searchTimer = null;
 let sessionStartTime = null;
 let sessionTimerInterval = null;
 
+/* ========== GAME CONFIG (modo/dificultad) ========== */
+let gameConfig = {players:"1p", difficulty:"medium"};
+let pendingGame = null;
+
 /* ========== SETTINGS ========== */
-const DEFAULT_SETTINGS = {tracerOn:"on",tracerColor:"#ffffff",tracerSize:6,explosionOn:"on",explosionColor:"#ffffff",explosionCount:14,hudBg:"#0a0a14",hudOpacity:60,bgColor:"#05050a",sound:"on",confetti:"on",notif:"on",view:"list"};
+const DEFAULT_SETTINGS = {
+    tracerOn:"on",tracerColor:"#ffffff",tracerSize:6,
+    explosionOn:"on",explosionColor:"#ffffff",explosionCount:14,
+    hudBg:"#0a0a14",hudOpacity:60,
+    hudTimer:"on",hudStatus:"on",hudBorder:"on",hudBlur:20,
+    bgColor:"#05050a",bgImage:"",bgDim:0,
+    sound:"on",confetti:"on",notif:"on",view:"list"
+};
 const PRESETS = {
     classic:{...DEFAULT_SETTINGS},
     neon:{tracerColor:"#ff00ff",tracerSize:8,explosionColor:"#00ffff",explosionCount:20,hudBg:"#1a0033",hudOpacity:70,bgColor:"#05050a",sound:"on",confetti:"on",notif:"on",view:"list"},
@@ -725,7 +784,34 @@ function aplicarSettings(){
     const r=parseInt(userSettings.hudBg.slice(1,3),16), g=parseInt(userSettings.hudBg.slice(3,5),16), b=parseInt(userSettings.hudBg.slice(5,7),16);
     document.documentElement.style.setProperty("--hud-bg", `rgba(${r},${g},${b},${userSettings.hudOpacity/100})`);
     document.documentElement.style.setProperty("--bg", userSettings.bgColor);
-    document.body.style.background = userSettings.bgColor;
+    document.body.style.backgroundColor = userSettings.bgColor;
+
+    // HUD format
+    const header = document.querySelector("header");
+    if(header){
+        header.style.borderBottom = userSettings.hudBorder === "off" ? "none" : "1px solid rgba(255,255,255,.06)";
+        header.style.backdropFilter = `blur(${userSettings.hudBlur}px)`;
+        header.style.webkitBackdropFilter = `blur(${userSettings.hudBlur}px)`;
+    }
+    const timer = document.querySelector(".session-timer");
+    if(timer) timer.style.display = userSettings.hudTimer === "off" ? "none" : "";
+    const status = document.querySelector("header .status");
+    if(status) status.style.display = userSettings.hudStatus === "off" ? "none" : "";
+
+    // Fondo con imagen
+    if(userSettings.bgImage){
+        document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,${userSettings.bgDim/100}),rgba(0,0,0,${userSettings.bgDim/100})), url("${userSettings.bgImage}")`;
+        document.body.style.backgroundSize = "cover";
+        document.body.style.backgroundAttachment = "fixed";
+        document.body.style.backgroundPosition = "center";
+        document.body.style.backgroundRepeat = "no-repeat";
+    } else {
+        document.body.style.backgroundImage = "";
+        document.body.style.backgroundSize = "";
+        document.body.style.backgroundAttachment = "";
+        document.body.style.backgroundPosition = "";
+        document.body.style.backgroundRepeat = "";
+    }
     if(userSettings.view) vistaActual = userSettings.view;
 }
 function guardarSettings(){
@@ -737,7 +823,13 @@ function guardarSettings(){
     userSettings.explosionCount = parseInt(document.getElementById("sExpCount").value);
     userSettings.hudBg = document.getElementById("sHudBg").value;
     userSettings.hudOpacity = parseInt(document.getElementById("sHudOp").value);
+    userSettings.hudTimer = document.getElementById("sHudTimer").value;
+    userSettings.hudStatus = document.getElementById("sHudStatus").value;
+    userSettings.hudBorder = document.getElementById("sHudBorder").value;
+    userSettings.hudBlur = parseInt(document.getElementById("sHudBlur").value);
     userSettings.bgColor = document.getElementById("sBgColor").value;
+    userSettings.bgImage = document.getElementById("sBgImage").value.trim();
+    userSettings.bgDim = parseInt(document.getElementById("sBgDim").value);
     userSettings.sound = document.getElementById("sSound").value;
     userSettings.confetti = document.getElementById("sConfetti").value;
     userSettings.notif = document.getElementById("sNotif").value;
@@ -776,7 +868,15 @@ function cargarValoresSettings(){
     document.getElementById("sHudBg").value = userSettings.hudBg;
     document.getElementById("sHudOp").value = userSettings.hudOpacity;
     document.getElementById("sHudOpV").textContent = userSettings.hudOpacity + "%";
+    document.getElementById("sHudTimer").value = userSettings.hudTimer;
+    document.getElementById("sHudStatus").value = userSettings.hudStatus;
+    document.getElementById("sHudBorder").value = userSettings.hudBorder;
+    document.getElementById("sHudBlur").value = userSettings.hudBlur;
+    document.getElementById("sHudBlurV").textContent = userSettings.hudBlur + "px";
     document.getElementById("sBgColor").value = userSettings.bgColor;
+    document.getElementById("sBgImage").value = userSettings.bgImage || "";
+    document.getElementById("sBgDim").value = userSettings.bgDim || 0;
+    document.getElementById("sBgDimV").textContent = (userSettings.bgDim || 0) + "%";
     document.getElementById("sSound").value = userSettings.sound;
     document.getElementById("sConfetti").value = userSettings.confetti;
     document.getElementById("sNotif").value = userSettings.notif;
@@ -838,7 +938,7 @@ function confetti(x, y){
 
 /* ========== OVERLAY CHECK ========== */
 function overlayAbierto(){
-    return ["gamesOverlay","aimOverlay","calcOverlay","cpsOverlay","aiOverlay","settingsOverlay","rankOverlay","achOverlay","gameModal","paletteOverlay"].some(id=>document.getElementById(id)?.classList.contains("open"));
+    return ["gamesOverlay","aimOverlay","calcOverlay","cpsOverlay","aiOverlay","settingsOverlay","rankOverlay","achOverlay","gameModal","paletteOverlay","modeOverlay"].some(id=>document.getElementById(id)?.classList.contains("open"));
 }
 
 /* ========== PARTÍCULAS ========== */
@@ -906,12 +1006,9 @@ function setView(v){
     vistaActual = v;
     userSettings.view = v;
     localStorage.setItem("omeles_settings", JSON.stringify(userSettings));
-    // Actualizar el switch del header
     document.querySelectorAll(".view-switch button").forEach(b=>b.classList.toggle("active", b.dataset.view===v));
-    // Actualizar el select de Settings
     const sel = document.getElementById("sView");
     if(sel) sel.value = v;
-    // Aplicar clase al contenedor
     const g = document.getElementById("games");
     g.className = "games" + (v==="list" ? "" : " view-"+v);
     playClick();
@@ -945,7 +1042,7 @@ const LOGROS = [
     {id:"5_favs", icon:"💫", name:"Coleccionista", desc:"5 favoritos"},
     {id:"first_game", icon:"🎮", name:"Jugador", desc:"Juega a un minijuego"},
     {id:"5_games", icon:"🎯", name:"Gamer", desc:"Prueba 5 juegos distintos"},
-    {id:"all_games", icon:"👑", name:"Maestro", desc:"Prueba los 12 juegos"},
+    {id:"all_games", icon:"👑", name:"Maestro", desc:"Prueba todos los juegos"},
     {id:"ai_master", icon:"🤖", name:"Científico", desc:"Usa la IA 10 veces"},
     {id:"cps_5", icon:"⚡", name:"Rápido", desc:"5 CPS o más"},
     {id:"cps_10", icon:"💨", name:"Relámpago", desc:"10 CPS o más"},
@@ -958,7 +1055,8 @@ const LOGROS = [
     {id:"tetris_1000", icon:"🧱", name:"Tetris master", desc:"1000+ en Tetris"},
     {id:"2048_win", icon:"🔢", name:"2048", desc:"Consigue 2048"},
     {id:"minesweeper_win", icon:"💣", name:"Buscaminas", desc:"Gana Buscaminas"},
-    {id:"connect4_win", icon:"🔴", name:"Conecta 4", desc:"Gana Conecta 4"}
+    {id:"connect4_win", icon:"🔴", name:"Conecta 4", desc:"Gana Conecta 4"},
+    {id:"rps_win", icon:"✊", name:"Piedra papel tijera", desc:"Gana una ronda de PPT"}
 ];
 function getLogros(){try{return JSON.parse(localStorage.getItem("omeles_logros")||"[]")}catch{return[]}}
 function tieneLogro(id){return getLogros().includes(id)}
@@ -1020,7 +1118,7 @@ function abrirRankings(){
 function cerrarRankings(){document.getElementById("rankOverlay").classList.remove("open");document.body.style.overflow="";}
 function renderRankings(){
     const r = getRankings();
-    const nombres = {snake:"🐍 Snake", pong:"🏓 Pong", memory:"🧠 Memory", simon:"🎵 Simón", reaction:"⚡ Reacción", tictac:"⭕ 3 en Raya", tetris:"🧱 Tetris", "2048":"🔢 2048", minesweeper:"💣 Buscaminas", breakout:"🧨 Breakout", whack:"🔨 Whack-a-mole", connect4:"🔴 Conecta 4", aim:"🎯 AimLab", cps:"⚡ CPS"};
+    const nombres = {snake:"🐍 Snake", pong:"🏓 Pong", memory:"🧠 Memory", simon:"🎵 Simón", reaction:"⚡ Reacción", tictac:"⭕ 3 en Raya", tetris:"🧱 Tetris", "2048":"🔢 2048", minesweeper:"💣 Buscaminas", breakout:"🧨 Breakout", whack:"🔨 Whack-a-mole", connect4:"🔴 Conecta 4", rps:"✊ PPT", aim:"🎯 AimLab", cps:"⚡ CPS"};
     const keys = Object.keys(r).filter(k=>r[k]>0);
     if(keys.length===0){
         document.getElementById("rankContent").innerHTML = `<div class="empty" style="grid-column:auto;"><div class="empty-icon">🏆</div>Aún no tienes récords. ¡Juega algo!</div>`;
@@ -1074,9 +1172,9 @@ function buildPalette(){
     todosLosJuegos.forEach(j=>{
         items.push({cat:"games", icon:"🎮", text:j.name, sub:"Del catálogo", action:()=>abrirModal(j)});
     });
-    const minigames = [["snake","🐍 Snake"],["pong","🏓 Pong"],["memory","🧠 Memory"],["simon","🎵 Simón"],["reaction","⚡ Reacción"],["tictac","⭕ 3 en Raya"],["tetris","🧱 Tetris"],["2048","🔢 2048"],["minesweeper","💣 Buscaminas"],["breakout","🧨 Breakout"],["whack","🔨 Whack-a-mole"],["connect4","🔴 Conecta 4"]];
+    const minigames = [["snake","🐍 Snake"],["pong","🏓 Pong"],["memory","🧠 Memory"],["simon","🎵 Simón"],["reaction","⚡ Reacción"],["tictac","⭕ 3 en Raya"],["tetris","🧱 Tetris"],["2048","🔢 2048"],["minesweeper","💣 Buscaminas"],["breakout","🧨 Breakout"],["whack","🔨 Whack-a-mole"],["connect4","🔴 Conecta 4"],["rps","✊ Piedra Papel Tijera"]];
     minigames.forEach(([id,name])=>{
-        items.push({cat:"minigames", icon:name.split(" ")[0], text:name.split(" ").slice(1).join(" "), sub:"Minijuego", action:()=>{abrirJuegos(); setTimeout(()=>abrirJuego(id), 200);}});
+        items.push({cat:"minigames", icon:name.split(" ")[0], text:name.split(" ").slice(1).join(" "), sub:"Minijuego", action:()=>{abrirJuegos(); setTimeout(()=>{ if(id==="tictac"||id==="connect4") abrirJuegoConModo(id); else abrirJuego(id); }, 200);}});
     });
     return items;
 }
@@ -1127,6 +1225,29 @@ function paletteKeydown(e){
     if(e.key === "Enter"){ e.preventDefault(); paletteRun(paletteSelected); }
 }
 
+/* ========== MODO/DIFICULTAD ========== */
+function abrirJuegoConModo(nombre){
+    pendingGame = nombre;
+    document.getElementById("modeTitle").textContent = nombre === "tictac" ? "3 en Raya" : "Conecta 4";
+    document.getElementById("modePlayers").value = "1p";
+    document.getElementById("modeDifficulty").value = "medium";
+    document.getElementById("modeDiffField").style.display = "flex";
+    document.getElementById("modeOverlay").classList.add("open");
+    playClick();
+}
+function cerrarModeOverlay(){
+    document.getElementById("modeOverlay").classList.remove("open");
+    pendingGame = null;
+    if(!document.getElementById("gamesOverlay").classList.contains("open")) document.body.style.overflow = "";
+}
+function iniciarPartidaConfigurada(){
+    gameConfig.players = document.getElementById("modePlayers").value;
+    gameConfig.difficulty = document.getElementById("modeDifficulty").value;
+    const g = pendingGame;
+    cerrarModeOverlay();
+    if(g) abrirJuego(g);
+}
+
 /* ========== JUEGOS ========== */
 let canvas = null, ctx = null, gameLoop = null, juegoActivo = null, teclasListeners = [];
 let juegosProbados = new Set(JSON.parse(localStorage.getItem("omeles_juegos_probados")||"[]"));
@@ -1153,8 +1274,8 @@ function abrirJuego(nombre){
     localStorage.setItem("omeles_juegos_probados", JSON.stringify([...juegosProbados]));
     desbloquearLogro("first_game");
     if(juegosProbados.size>=5) desbloquearLogro("5_games");
-    if(juegosProbados.size>=12) desbloquearLogro("all_games");
-    const fns = {snake:startSnake, pong:startPong, memory:startMemory, simon:startSimon, reaction:startReaction, tictac:startTicTac, tetris:startTetris, "2048":start2048, minesweeper:startMinesweeper, breakout:startBreakout, whack:startWhack, connect4:startConnect4};
+    if(juegosProbados.size>=13) desbloquearLogro("all_games");
+    const fns = {snake:startSnake, pong:startPong, memory:startMemory, simon:startSimon, reaction:startReaction, tictac:startTicTac, tetris:startTetris, "2048":start2048, minesweeper:startMinesweeper, breakout:startBreakout, whack:startWhack, connect4:startConnect4, rps:startRps};
     if(fns[nombre]) fns[nombre]();
 }
 function cerrarJuegoActual(){
@@ -1406,10 +1527,65 @@ function startReaction(){
 }
 
 /* --- 3 EN RAYA --- */
+function ticTacWinCheck(board, p){
+    const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    return lines.some(l => board[l[0]]===p && board[l[1]]===p && board[l[2]]===p);
+}
+function ticTacMinimax(board, depth, isMax){
+    if(ticTacWinCheck(board, "O")) return 10 - depth;
+    if(ticTacWinCheck(board, "X")) return depth - 10;
+    if(board.every(c=>c)) return 0;
+    const vacias = board.map((v,i)=>v?-1:i).filter(i=>i>=0);
+    if(isMax){
+        let best = -Infinity;
+        for(const i of vacias){
+            board[i] = "O";
+            best = Math.max(best, ticTacMinimax(board, depth+1, false));
+            board[i] = "";
+        }
+        return best;
+    } else {
+        let best = Infinity;
+        for(const i of vacias){
+            board[i] = "X";
+            best = Math.min(best, ticTacMinimax(board, depth+1, true));
+            board[i] = "";
+        }
+        return best;
+    }
+}
+function ticTacAiMove(board, difficulty){
+    const vacias = board.map((v,i)=>v?-1:i).filter(i=>i>=0);
+    if(vacias.length === 0) return -1;
+    if(difficulty === "hard"){
+        let bestScore = -Infinity, bestMove = vacias[0];
+        for(const i of vacias){
+            board[i] = "O";
+            const score = ticTacMinimax(board, 0, false);
+            board[i] = "";
+            if(score > bestScore){ bestScore = score; bestMove = i; }
+        }
+        return bestMove;
+    }
+    if(difficulty === "medium"){
+        // ganar
+        for(const i of vacias){ const t=[...board]; t[i]="O"; if(ticTacWinCheck(t,"O")) return i; }
+        // bloquear
+        for(const i of vacias){ const t=[...board]; t[i]="X"; if(ticTacWinCheck(t,"X")) return i; }
+        // centro
+        if(board[4] === "") return 4;
+        // esquinas
+        const corners = [0,2,6,8].filter(i=>board[i]==="");
+        if(corners.length) return corners[Math.floor(Math.random()*corners.length)];
+    }
+    return vacias[Math.floor(Math.random()*vacias.length)];
+}
 function startTicTac(){
     canvas.width = 450; canvas.height = 450;
     let tablero = Array(9).fill(""), turno = "X", terminado = false;
-    document.getElementById("gameHud").innerHTML = `⭕ 3 en Raya · Turno: <b id="tictacTurno">X</b>`;
+    const modo = gameConfig.players;
+    const dif = gameConfig.difficulty;
+    document.getElementById("gameHud").innerHTML = `⭕ 3 en Raya · Turno: <b id="tictacTurno">${modo==="2p"?"J1 (X)":"Tú (X)"}</b>`;
     function draw(){
         ctx.fillStyle="#05050a"; ctx.fillRect(0,0,canvas.width,canvas.height);
         ctx.strokeStyle="rgba(139,92,255,.5)"; ctx.lineWidth=3;
@@ -1435,45 +1611,72 @@ function startTicTac(){
         if(tablero.every(c=>c)) return "empate";
         return null;
     }
+    function updateTurno(){
+        const el = document.getElementById("tictacTurno");
+        if(!el) return;
+        if(modo === "2p") el.textContent = turno === "X" ? "J1 (X)" : "J2 (O)";
+        else el.textContent = turno === "X" ? "Tú (X)" : "CPU (O)";
+    }
     function cpuMove(){
-        const vacias = tablero.map((v,i)=>v?-1:i).filter(i=>i>=0);
-        if(vacias.length === 0) return;
-        const eleccion = vacias[Math.floor(Math.random()*vacias.length)];
+        const eleccion = ticTacAiMove(tablero, dif);
+        if(eleccion < 0) return;
         tablero[eleccion] = "O"; turno = "X";
-        document.getElementById("tictacTurno").textContent = "X"; draw();
+        updateTurno(); draw();
     }
     addCanvasClick((e)=>{
-        if(terminado){ tablero = Array(9).fill(""); turno = "X"; terminado = false; document.getElementById("tictacTurno").textContent = "X"; draw(); return; }
-        if(turno !== "X") return;
+        if(terminado){ tablero = Array(9).fill(""); turno = "X"; terminado = false; updateTurno(); draw(); return; }
+        if(modo === "1p" && turno !== "X") return;
         const rect = canvas.getBoundingClientRect();
         const x = (e.clientX - rect.left) * (canvas.width/rect.width);
         const y = (e.clientY - rect.top) * (canvas.height/rect.height);
         const col = Math.floor(x/150), row = Math.floor(y/150);
         const i = row*3+col;
         if(i >= 0 && i < 9 && !tablero[i]){
-            tablero[i] = "X"; turno = "O"; beep(700,.05,.05);
-            document.getElementById("tictacTurno").textContent = "O"; draw();
-            if(!checkWin()) setTimeout(cpuMove, 400);
+            tablero[i] = turno; beep(700,.05,.05);
+            const g = checkWin();
+            if(g){
+                if(g === "X") guardarRecord("tictac", 1);
+                terminado = true; draw(); return;
+            }
+            if(modo === "2p"){
+                turno = turno === "X" ? "O" : "X";
+                updateTurno(); draw();
+            } else {
+                turno = "O"; updateTurno(); draw();
+                setTimeout(cpuMove, 350);
+            }
         }
     });
     draw();
 }
 
-/* --- TETRIS --- */
+/* --- TETRIS (reescrito) --- */
+let tetrisRunning = false;
 function startTetris(){
     canvas.width = 300; canvas.height = 600;
     const cols = 10, rows = 20, size = 30;
     let board = Array.from({length:rows}, ()=>Array(cols).fill(0));
     let pieza = nuevaPieza(), puntos = 0, dropInterval = 500, lastDrop = performance.now();
-    const formas = [[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[1,1,0],[0,1,1]],[[0,1,1],[1,1,0]]];
+    tetrisRunning = true;
+    const formas = [
+        [[1,1,1,1]],
+        [[1,1],[1,1]],
+        [[0,1,0],[1,1,1]],
+        [[1,0,0],[1,1,1]],
+        [[0,0,1],[1,1,1]],
+        [[1,1,0],[0,1,1]],
+        [[0,1,1],[1,1,0]]
+    ];
     const colores = ["#00f0f0","#f0f000","#a000f0","#0000f0","#f0a000","#00f000","#f00000"];
-    document.getElementById("gameHud").innerHTML = `🧱 Tetris · Puntos: <b id="tetrisScore">0</b>`;
-    function nuevaPieza(){ const i = Math.floor(Math.random()*formas.length); return {shape: formas[i].map(r=>[...r]), color: colores[i], x: Math.floor(cols/2)-1, y: 0}; }
-    function colision(p, offX=0, offY=0, shp=null){
-        const s = shp || p.shape;
-        for(let y=0;y<s.length;y++) for(let x=0;x<s[y].length;x++){
-            if(!s[y][x]) continue;
-            const nx = p.x+x+offX, ny = p.y+y+offY;
+    document.getElementById("gameHud").innerHTML = `🧱 Tetris · Puntos: <b id="tetrisScore">0</b> · ← → ↓ · ↑ rotar · Espacio`;
+    function nuevaPieza(){
+        const i = Math.floor(Math.random()*formas.length);
+        return {shape: formas[i].map(r=>[...r]), color: colores[i], x: Math.floor(cols/2)-1, y: 0};
+    }
+    function colision(shp, px, py){
+        for(let y=0;y<shp.length;y++) for(let x=0;x<shp[y].length;x++){
+            if(!shp[y][x]) continue;
+            const nx = px+x, ny = py+y;
             if(nx<0||nx>=cols||ny>=rows) return true;
             if(ny>=0 && board[ny][nx]) return true;
         }
@@ -1486,16 +1689,27 @@ function startTetris(){
                 board.splice(y,1);
                 board.unshift(Array(cols).fill(0));
                 puntos+=100;
-                document.getElementById("tetrisScore").textContent=puntos;
+                const s = document.getElementById("tetrisScore");
+                if(s) s.textContent=puntos;
                 y++;
                 if(puntos % 500 === 0 && dropInterval > 100) dropInterval -= 50;
             }
         }
         pieza = nuevaPieza();
-        if(colision(pieza)){
-            clearInterval(gameLoop); gameLoop=null;
+        if(colision(pieza.shape, pieza.x, pieza.y)){
+            tetrisRunning = false;
             guardarRecord("tetris", puntos);
             if(puntos>=1000) desbloquearLogro("tetris_1000");
+        }
+    }
+    function draw(){
+        ctx.fillStyle="#05050a"; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.strokeStyle="rgba(139,92,255,.15)"; ctx.lineWidth=1;
+        for(let i=0;i<=cols;i++){ ctx.beginPath(); ctx.moveTo(i*size,0); ctx.lineTo(i*size,canvas.height); ctx.stroke(); }
+        for(let i=0;i<=rows;i++){ ctx.beginPath(); ctx.moveTo(0,i*size); ctx.lineTo(canvas.width,i*size); ctx.stroke(); }
+        board.forEach((row,y)=>row.forEach((c,x)=>{ if(c){ ctx.fillStyle=c; ctx.fillRect(x*size+1, y*size+1, size-2, size-2); } }));
+        pieza.shape.forEach((row,y)=>row.forEach((v,x)=>{ if(v){ ctx.fillStyle=pieza.color; ctx.fillRect((pieza.x+x)*size+1, (pieza.y+y)*size+1, size-2, size-2); } }));
+        if(!tetrisRunning){
             ctx.fillStyle="rgba(0,0,0,.8)"; ctx.fillRect(0,0,canvas.width,canvas.height);
             ctx.fillStyle="#ff4567"; ctx.font="bold 30px Arial"; ctx.textAlign="center";
             ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
@@ -1503,35 +1717,36 @@ function startTetris(){
             ctx.fillText(`Puntos: ${puntos}`, canvas.width/2, canvas.height/2+30);
         }
     }
-    function loop(){
-        const t = performance.now();
+    function loop(t){
+        if(!tetrisRunning || juegoActivo!=="tetris") return;
         if(t - lastDrop > dropInterval){
-            if(!colision(pieza, 0, 1)) pieza.y++;
+            if(!colision(pieza.shape, pieza.x, pieza.y+1)) pieza.y++;
             else fijar();
             lastDrop = t;
         }
-        if(juegoActivo !== "tetris") return;
-        ctx.fillStyle="#05050a"; ctx.fillRect(0,0,canvas.width,canvas.height);
-        ctx.strokeStyle="rgba(139,92,255,.15)";
-        for(let i=0;i<=cols;i++){ ctx.beginPath(); ctx.moveTo(i*size,0); ctx.lineTo(i*size,canvas.height); ctx.stroke(); }
-        for(let i=0;i<=rows;i++){ ctx.beginPath(); ctx.moveTo(0,i*size); ctx.lineTo(canvas.width,i*size); ctx.stroke(); }
-        board.forEach((row,y)=>row.forEach((c,x)=>{ if(c){ ctx.fillStyle=c; ctx.fillRect(x*size+1, y*size+1, size-2, size-2); } }));
-        pieza.shape.forEach((row,y)=>row.forEach((v,x)=>{ if(v){ ctx.fillStyle=pieza.color; ctx.fillRect((pieza.x+x)*size+1, (pieza.y+y)*size+1, size-2, size-2); } }));
+        draw();
+        if(tetrisRunning) gameLoop = requestAnimationFrame(loop);
     }
     addKey((e)=>{
-        if(juegoActivo!=="tetris") return;
-        if(e.key==="ArrowLeft" && !colision(pieza,-1,0)) pieza.x--;
-        if(e.key==="ArrowRight" && !colision(pieza,1,0)) pieza.x++;
-        if(e.key==="ArrowDown" && !colision(pieza,0,1)) pieza.y++;
-        if(e.key==="ArrowUp"){
+        if(juegoActivo!=="tetris" || !tetrisRunning) return;
+        if(e.key==="ArrowLeft" && !colision(pieza.shape, pieza.x-1, pieza.y)) pieza.x--;
+        else if(e.key==="ArrowRight" && !colision(pieza.shape, pieza.x+1, pieza.y)) pieza.x++;
+        else if(e.key==="ArrowDown" && !colision(pieza.shape, pieza.x, pieza.y+1)) pieza.y++;
+        else if(e.key==="ArrowUp"){
             const rotated = pieza.shape[0].map((_,i)=>pieza.shape.map(r=>r[i]).reverse());
-            if(!colision(pieza,0,0,rotated)) pieza.shape = rotated;
+            if(!colision(rotated, pieza.x, pieza.y)) pieza.shape = rotated;
+        } else if(e.key===" "){
+            e.preventDefault();
+            while(!colision(pieza.shape, pieza.x, pieza.y+1)) pieza.y++;
+            fijar();
+            lastDrop = performance.now();
         }
+        draw();
     });
-    gameLoop = setInterval(loop, 30);
+    gameLoop = requestAnimationFrame((t)=>{lastDrop = t; loop(t);});
 }
 
-/* --- 2048 (rotación corregida) --- */
+/* --- 2048 --- */
 function start2048(){
     canvas.width = 500; canvas.height = 500;
     const size = 4, tile = 115, gap = 12, offset = (canvas.width - (tile*size + gap*(size-1)))/2;
@@ -1577,7 +1792,6 @@ function start2048(){
         while(arr.length < size) arr.push(0);
         return arr;
     }
-    // ⚠️ CORREGIDO: rotación ahora es antihoraria (CCW)
     function rotate(g){
         const n = g.length;
         const r = Array.from({length:n}, ()=>Array(n).fill(0));
@@ -1611,7 +1825,7 @@ function start2048(){
     gameLoop = setInterval(()=>{}, 1000);
 }
 
-/* --- BUSCAMINAS (right-click corregido) --- */
+/* --- BUSCAMINAS (grid mejorada) --- */
 function startMinesweeper(){
     canvas.width = 400; canvas.height = 400;
     const size = 8, tile = 50, minas = 10;
@@ -1627,7 +1841,7 @@ function startMinesweeper(){
             if(ny>=0 && ny<size && nx>=0 && nx<size && board[ny][nx] !== -1) board[ny][nx]++;
         }
     }
-    document.getElementById("gameHud").innerHTML = `💣 Buscaminas · Clic izq. = descubrir · Clic derecho = marcar`;
+    document.getElementById("gameHud").innerHTML = `💣 Buscaminas · Clic izq = descubrir · Clic der = marcar`;
     function reveal(x, y){
         if(x<0||x>=size||y<0||y>=size||visible[y][x]||marcadas[y][x]) return;
         visible[y][x] = true;
@@ -1641,19 +1855,32 @@ function startMinesweeper(){
         const colores = ["","#8b5cff","#22c55e","#eab308","#f97316","#ff1744","#a855f7","#ec4899","#fff"];
         for(let y=0;y<size;y++) for(let x=0;x<size;x++){
             const px = x*tile, py = y*tile;
+            // Fondo de cada celda
             if(visible[y][x]){
                 ctx.fillStyle = board[y][x] === -1 ? "rgba(255,23,68,.4)" : "rgba(139,92,255,.08)";
-                ctx.fillRect(px, py, tile-2, tile-2);
+                ctx.fillRect(px, py, tile, tile);
                 if(board[y][x] > 0){
                     ctx.fillStyle = colores[board[y][x]]; ctx.font = "bold 24px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
                     ctx.fillText(board[y][x], px + tile/2, py + tile/2);
                 }
                 if(board[y][x] === -1){ ctx.font = "24px Arial"; ctx.fillText("💣", px + tile/2, py + tile/2); }
             } else {
-                ctx.fillStyle = marcadas[y][x] ? "rgba(255,23,68,.3)" : "rgba(139,92,255,.2)";
-                ctx.beginPath(); ctx.roundRect(px+2, py+2, tile-6, tile-6, 8); ctx.fill();
-                if(marcadas[y][x]){ ctx.font = "24px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("🚩", px + tile/2, py + tile/2); }
+                // Celda oculta con estilo "relieve" y grid visible
+                ctx.fillStyle = marcadas[y][x] ? "rgba(255,23,68,.3)" : "rgba(139,92,255,.18)";
+                ctx.fillRect(px+1, py+1, tile-2, tile-2);
+                // Efecto de bisel
+                ctx.fillStyle = "rgba(255,255,255,.08)";
+                ctx.fillRect(px+1, py+1, tile-2, 2);
+                ctx.fillRect(px+1, py+1, 2, tile-2);
+                ctx.fillStyle = "rgba(0,0,0,.25)";
+                ctx.fillRect(px+1, py+tile-3, tile-2, 2);
+                ctx.fillRect(px+tile-3, py+1, 2, tile-2);
+                if(marcadas[y][x]){ ctx.font = "22px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("🚩", px + tile/2, py + tile/2); }
             }
+            // Grid lines visibles
+            ctx.strokeStyle = "rgba(139,92,255,.35)";
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(px+0.5, py+0.5, tile-1, tile-1);
         }
         if(terminado || ganado){
             ctx.fillStyle = "rgba(0,0,0,.75)"; ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -1676,7 +1903,6 @@ function startMinesweeper(){
             draw();
         }
     });
-    // ⚠️ CORREGIDO: usa addCanvasCtx para limpieza automática
     addCanvasCtx((e)=>{
         e.preventDefault();
         if(terminado || ganado) return;
@@ -1797,26 +2023,71 @@ function startWhack(){
 }
 
 /* --- CONECTA 4 --- */
+function connect4WinCheck(board, p){
+    const rows = 6, cols = 7;
+    for(let y=0;y<rows;y++) for(let x=0;x<cols;x++){
+        if(board[y][x] !== p) continue;
+        if(x+3<cols && board[y][x+1]===p && board[y][x+2]===p && board[y][x+3]===p) return true;
+        if(y+3<rows && board[y+1][x]===p && board[y+2][x]===p && board[y+3][x]===p) return true;
+        if(x+3<cols && y+3<rows && board[y+1][x+1]===p && board[y+2][x+2]===p && board[y+3][x+3]===p) return true;
+        if(x-3>=0 && y+3<rows && board[y+1][x-1]===p && board[y+2][x-2]===p && board[y+3][x-3]===p) return true;
+    }
+    return false;
+}
+function connect4Drop(board, col, player){
+    const rows = 6;
+    for(let y=rows-1;y>=0;y--){ if(board[y][col] === 0){ board[y][col] = player; return true; } }
+    return false;
+}
+function connect4AiMove(board, difficulty){
+    const cols = 7, rows = 6;
+    const disponibles = [];
+    for(let c=0;c<cols;c++) if(board[0][c] === 0) disponibles.push(c);
+    if(disponibles.length === 0) return -1;
+    if(difficulty === "hard"){
+        // 1. Ganar ya
+        for(const c of disponibles){
+            const test = board.map(r=>[...r]);
+            connect4Drop(test, c, 2);
+            if(connect4WinCheck(test, 2)) return c;
+        }
+        // 2. Bloquear
+        for(const c of disponibles){
+            const test = board.map(r=>[...r]);
+            connect4Drop(test, c, 1);
+            if(connect4WinCheck(test, 1)) return c;
+        }
+        // 3. Centro preferido
+        const pref = [3,2,4,1,5,0,6];
+        for(const c of pref) if(disponibles.includes(c)) return c;
+    }
+    if(difficulty === "medium"){
+        for(const c of disponibles){
+            const test = board.map(r=>[...r]);
+            connect4Drop(test, c, 2);
+            if(connect4WinCheck(test, 2)) return c;
+        }
+        for(const c of disponibles){
+            const test = board.map(r=>[...r]);
+            connect4Drop(test, c, 1);
+            if(connect4WinCheck(test, 1)) return c;
+        }
+        const pref = [3,2,4,1,5];
+        for(const c of pref) if(disponibles.includes(c)) return c;
+    }
+    return disponibles[Math.floor(Math.random()*disponibles.length)];
+}
 function startConnect4(){
     canvas.width = 490; canvas.height = 420;
     const cols = 7, rows = 6, cell = 70;
     let board = Array.from({length:rows}, ()=>Array(cols).fill(0));
     let turno = 1, terminado = false, ganador = 0;
-    document.getElementById("gameHud").innerHTML = `🔴 Conecta 4 · Turno: <b id="c4Turno">Tú (🔴)</b>`;
-    function drop(col, player){
-        for(let y=rows-1;y>=0;y--){
-            if(board[y][col] === 0){ board[y][col] = player; return true; }
-        }
-        return false;
-    }
+    const modo = gameConfig.players;
+    const dif = gameConfig.difficulty;
+    document.getElementById("gameHud").innerHTML = `🔴 Conecta 4 · Turno: <b id="c4Turno">${modo==="2p"?"J1 (🔴)":"Tú (🔴)"}</b>`;
     function checkWin(){
-        for(let y=0;y<rows;y++) for(let x=0;x<cols;x++){
-            const p = board[y][x]; if(!p) continue;
-            if(x+3<cols && board[y][x+1]===p && board[y][x+2]===p && board[y][x+3]===p) return p;
-            if(y+3<rows && board[y+1][x]===p && board[y+2][x]===p && board[y+3][x]===p) return p;
-            if(x+3<cols && y+3<rows && board[y+1][x+1]===p && board[y+2][x+2]===p && board[y+3][x+3]===p) return p;
-            if(x-3>=0 && y+3<rows && board[y+1][x-1]===p && board[y+2][x-2]===p && board[y+3][x-3]===p) return p;
-        }
+        if(connect4WinCheck(board, 1)) return 1;
+        if(connect4WinCheck(board, 2)) return 2;
         return 0;
     }
     function draw(){
@@ -1828,43 +2099,138 @@ function startConnect4(){
         }
         if(ganador){
             ctx.fillStyle="rgba(0,0,0,.75)"; ctx.fillRect(0,0,canvas.width,canvas.height);
-            ctx.fillStyle = ganador === 1 ? "#22c55e" : "#ff4567"; ctx.font = "bold 36px Arial"; ctx.textAlign = "center";
-            ctx.fillText(ganador === 1 ? "¡GANASTE!" : "PERDISTE", canvas.width/2, canvas.height/2);
+            let txt = "";
+            if(ganador === 1) txt = modo === "2p" ? "¡J1 GANA!" : "¡GANASTE!";
+            else if(ganador === 2) txt = modo === "2p" ? "¡J2 GANA!" : "PERDISTE";
+            else txt = "EMPATE";
+            ctx.fillStyle = (ganador === 1 || (modo === "2p" && ganador === 2)) ? "#22c55e" : "#ff4567"; ctx.font = "bold 36px Arial"; ctx.textAlign = "center";
+            ctx.fillText(txt, canvas.width/2, canvas.height/2);
             ctx.font="18px Arial"; ctx.fillStyle="#aaa"; ctx.fillText("Clic para volver a jugar", canvas.width/2, canvas.height/2+40);
         }
     }
+    function updateTurno(){
+        const el = document.getElementById("c4Turno");
+        if(!el) return;
+        if(modo === "2p") el.textContent = turno === 1 ? "J1 (🔴)" : "J2 (🟡)";
+        else el.textContent = ganador ? "Fin" : (turno === 1 ? "Tú (🔴)" : "CPU (🟡)");
+    }
     function cpuMove(){
-        const disponibles = [];
-        for(let c=0;c<cols;c++) if(board[0][c] === 0) disponibles.push(c);
-        if(disponibles.length === 0){ terminado = true; return; }
-        const c = disponibles[Math.floor(Math.random()*disponibles.length)];
-        drop(c, 2);
+        const c = connect4AiMove(board, dif);
+        if(c < 0){ terminado = true; return; }
+        connect4Drop(board, c, 2);
         ganador = checkWin();
         if(ganador === 2) terminado = true;
         else if(ganador === 1){ terminado = true; guardarRecord("connect4", 1); desbloquearLogro("connect4_win"); }
         else turno = 1;
-        document.getElementById("c4Turno").textContent = ganador ? "Fin" : "Tú (🔴)";
-        draw();
+        updateTurno(); draw();
     }
     addCanvasClick((e)=>{
         if(terminado){
             board = Array.from({length:rows}, ()=>Array(cols).fill(0));
             terminado = false; ganador = 0; turno = 1;
-            document.getElementById("c4Turno").textContent = "Tú (🔴)"; draw(); return;
+            updateTurno(); draw(); return;
         }
-        if(turno !== 1) return;
+        if(modo === "1p" && turno !== 1) return;
         const rect = canvas.getBoundingClientRect();
         const x = Math.floor((e.clientX - rect.left) * (canvas.width/rect.width) / cell);
         if(x < 0 || x >= cols) return;
-        if(!drop(x, 1)) return;
+        if(!connect4Drop(board, x, turno)) return;
         ganador = checkWin();
         if(ganador === 1){ terminado = true; guardarRecord("connect4", 1); desbloquearLogro("connect4_win"); }
-        else{ turno = 2; setTimeout(cpuMove, 300); }
-        document.getElementById("c4Turno").textContent = ganador ? "Fin" : (turno === 1 ? "Tú (🔴)" : "CPU (🟡)");
-        draw();
+        else if(ganador === 2){ terminado = true; }
+        else{
+            if(modo === "2p"){ turno = turno === 1 ? 2 : 1; }
+            else { turno = 2; setTimeout(cpuMove, 300); }
+        }
+        updateTurno(); draw();
     });
     draw();
     gameLoop = setInterval(()=>{}, 1000);
+}
+
+/* --- PIEDRA PAPEL TIJERA (nuevo) --- */
+function startRps(){
+    canvas.width = 600; canvas.height = 420;
+    const opciones = ["✊","✋","✌️"];
+    const nombres = ["Piedra","Papel","Tijera"];
+    const modo = gameConfig.players;
+    let pScore = 0, cScore = 0, empates = 0, pPick = null, cPick = null, mostrando = false;
+    document.getElementById("gameHud").innerHTML = `✊ PPT · Tú: <b id="rpsP">0</b> — CPU: <b id="rpsC">0</b> · Empates: <b id="rpsE">0</b>`;
+    function drawBase(){
+        ctx.fillStyle="#05050a"; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle="rgba(139,92,255,.08)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle="#fff"; ctx.font="bold 16px Arial"; ctx.textAlign="center";
+        ctx.fillText("Elige tu jugada", canvas.width/2, 40);
+        for(let i=0;i<3;i++){
+            const x = 100 + i*200, y = 180;
+            ctx.fillStyle = "rgba(139,92,255,.15)";
+            ctx.beginPath(); ctx.roundRect(x-70, y-70, 140, 140, 20); ctx.fill();
+            ctx.strokeStyle = "rgba(139,92,255,.5)"; ctx.lineWidth = 2; ctx.stroke();
+            ctx.font = "70px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+            ctx.fillStyle = "#fff";
+            ctx.fillText(opciones[i], x, y-5);
+            ctx.font = "bold 14px Arial"; ctx.fillStyle = "#b99cff";
+            ctx.fillText(nombres[i], x, y+55);
+        }
+        // Marcador
+        ctx.font = "bold 20px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "top";
+        ctx.fillStyle = "#22c55e";
+        ctx.fillText(`TÚ: ${pScore}`, 200, 340);
+        ctx.fillStyle = "#ff4567";
+        ctx.fillText(`CPU: ${cScore}`, 400, 340);
+        if(empates > 0){ ctx.fillStyle = "#888"; ctx.font = "14px Arial"; ctx.fillText(`Empates: ${empates}`, canvas.width/2, 370); }
+    }
+    function drawResult(result){
+        ctx.fillStyle="#05050a"; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.font = "100px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.fillStyle = "#fff";
+        ctx.fillText(opciones[pPick], 150, 180);
+        ctx.fillText(opciones[cPick], 450, 180);
+        ctx.font = "bold 28px Arial"; ctx.fillStyle = "#b99cff";
+        ctx.fillText("VS", 300, 180);
+        ctx.font = "bold 18px Arial"; ctx.fillStyle = "#aaa";
+        ctx.fillText(nombres[pPick], 150, 260);
+        ctx.fillText(nombres[cPick], 450, 260);
+        const colors = {ganaste:"#22c55e", perdiste:"#ff4567", empate:"#fbbf24"};
+        const textos = {ganaste:"¡GANASTE!", perdiste:"PERDISTE", empate:"EMPATE"};
+        ctx.font = "bold 42px Arial"; ctx.fillStyle = colors[result];
+        ctx.fillText(textos[result], 300, 340);
+    }
+    function jugar(playerIdx){
+        const cpuIdx = Math.floor(Math.random()*3);
+        pPick = playerIdx; cPick = cpuIdx;
+        let result;
+        if(playerIdx === cpuIdx) result = "empate";
+        else if((playerIdx - cpuIdx + 3) % 3 === 1) result = "ganaste";
+        else result = "perdiste";
+        if(result === "ganaste"){ pScore++; desbloquearLogro("rps_win"); beep(1000,.1); }
+        else if(result === "perdiste"){ cScore++; beep(220,.15,.1); }
+        else { empates++; beep(500,.1,.05); }
+        guardarRecord("rps", pScore);
+        document.getElementById("rpsP").textContent = pScore;
+        document.getElementById("rpsC").textContent = cScore;
+        document.getElementById("rpsE").textContent = empates;
+        mostrando = true;
+        drawResult(result);
+        setTimeout(()=>{ mostrando = false; if(modo==="1p"||modo==="2p") drawBase(); }, 1600);
+    }
+    addCanvasClick((e)=>{
+        if(mostrando) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX - rect.left) * (canvas.width/rect.width);
+        const y = (e.clientY - rect.top) * (canvas.height/rect.height);
+        for(let i=0;i<3;i++){
+            const bx = 100 + i*200, by = 180;
+            if(x > bx-70 && x < bx+70 && y > by-70 && y < by+70){
+                if(modo === "2p"){ /* mismo comportamiento simplificado */ }
+                jugar(i);
+                break;
+            }
+        }
+    });
+    drawBase();
+    gameLoop = setInterval(()=>{ if(!mostrando && juegoActivo==="rps") { /* sin redibujado constante */ } }, 1000);
 }
 
 /* ========== AIMLAB ========== */
@@ -2012,7 +2378,7 @@ function cpsClick(){if(cpsState !== "running") return;cpsCount++;beep(1000+Math.
 document.getElementById("cpsArea").addEventListener("mousedown", cpsClick);
 document.addEventListener("keydown",(e)=>{if(e.key===" " && document.getElementById("cpsOverlay").classList.contains("open")){e.preventDefault();if(cpsState==="running") cpsClick();}});
 
-/* ========== OMELES IA (CORREGIDA) ========== */
+/* ========== OMELES IA ========== */
 function abrirIa(){
     if(!currentKey){toast("Introduce tu KEY primero","warning");return;}
     document.getElementById("dropdown").classList.remove("open"); document.getElementById("menuBtn").classList.remove("active");
@@ -2045,20 +2411,16 @@ function addMsg(t, tipo){
     localStorage.setItem("omeles_ai_count", c);
     if(c >= 10) desbloquearLogro("ai_master");
 }
-// ⚠️ CORREGIDA: solo matchea si el nombre del juego está contenido en la query
 function buscarJuegoIA(t){
     t = t.toLowerCase().trim();
     if(!t) return null;
-    // 1. Coincidencia exacta
     let found = todosLosJuegos.find(g => String(g.name).toLowerCase() === t);
     if(found) return found;
-    // 2. La query contiene el nombre completo del juego (mínimo 4 chars de nombre)
     found = todosLosJuegos.find(g => {
         const n = String(g.name).toLowerCase();
         return n.length >= 4 && t.includes(n);
     });
     if(found) return found;
-    // 3. El nombre contiene la query (mínimo 4 chars de query)
     if(t.length >= 4){
         found = todosLosJuegos.find(g => String(g.name).toLowerCase().includes(t));
     }
@@ -2066,8 +2428,6 @@ function buscarJuegoIA(t){
 }
 function respuestaIa(texto){
     const t = texto.toLowerCase().trim();
-
-    // 1. Saludos y cortesía PRIMERO
     if(t.includes("hola")||t.includes("hey")||t.includes("buenas")||t.includes("saludos"))
         return "¡Hola! 👋 ¿En qué puedo ayudarte?";
     if(t.includes("como estas")||t.includes("cómo estás")||t.includes("que tal")||t.includes("qué tal"))
@@ -2076,40 +2436,26 @@ function respuestaIa(texto){
         return "¡De nada! 😊";
     if(t.includes("adios")||t.includes("adiós")||t.includes("chao")||t.includes("hasta luego")||t.includes("bye"))
         return "¡Hasta luego! 👋";
-
-    // 2. Hora / fecha
     if(t.includes("hora")||t.includes("qué hora")) return "Son las " + new Date().toLocaleTimeString('es-ES') + " ⏰";
     if(t.includes("fecha")||t.includes("dia")||t.includes("día")) return "Hoy es " + new Date().toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) + " 📅";
-
-    // 3. Sobre el bot
     if(t.includes("quien eres")||t.includes("quién eres")||t.includes("que eres")||t.includes("qué eres"))
         return "Soy OMELES IA, el asistente virtual de OMELES GAMES 🤖";
     if(t.includes("ayuda")||t.includes("help")||t.includes("socorro"))
         return "Puedo ayudarte con:\n• \"cuántos juegos hay\"\n• \"lista de juegos\"\n• \"info de [nombre del juego]\"\n• Dudas sobre descargas o keys";
-
-    // 4. Herramientas
     if(t.includes("aimlab")||t.includes("aim lab")) return "El AimLab está en el menú 🎯";
     if(t.includes("cps")) return "El CPS Test está en el menú. ¡Mide tu velocidad de clic! ⚡";
     if(t.includes("calculadora")) return "La calculadora está en el menú 🧮";
-
-    // 5. Chistes
     if(t.includes("chiste")||t.includes("broma"))
         return "¿Por qué los programadores prefieren el modo oscuro? Porque la luz atrae a los bugs 🐛😄";
-
-    // 6. Contar juegos
     if((t.includes("cuantos")||t.includes("cuántos")||t.includes("numero")||t.includes("número")||t.includes("total")) && t.includes("juego")){
         return todosLosJuegos.length === 0
             ? "Ahora mismo no hay juegos en el catálogo."
             : `📊 Actualmente hay ${todosLosJuegos.length} juego${todosLosJuegos.length === 1 ? "" : "s"} en el catálogo.`;
     }
-
-    // 7. Lista de juegos
     if(t.includes("lista")||t.includes("que juegos")||t.includes("qué juegos")||t.includes("muestra")||t.includes("ver juegos")||t.includes("cuales son")||t.includes("cuáles son")){
         if(todosLosJuegos.length === 0) return "No hay juegos disponibles ahora mismo.";
         return `📋 Lista de juegos (${todosLosJuegos.length}):\n${todosLosJuegos.map((g,i)=>`${i+1}. ${g.name}`).join("\n")}`;
     }
-
-    // 8. Dudas generales
     if(t.includes("key")||t.includes("clave")||t.includes("acceso"))
         return "Necesitas una KEY de acceso. Pídesela al administrador 🔑";
     if(t.includes("contraseña")||t.includes("password"))
@@ -2118,8 +2464,6 @@ function respuestaIa(texto){
         return "Pulsa en el juego que quieras y luego en DESCARGAR ⬇️";
     if(t.includes("reparar")||t.includes("reparacion")||t.includes("reparación")||t.includes("arreglar"))
         return "Si un juego no funciona, prueba con el botón REPARACIÓN 🔧";
-
-    // 9. Buscar juego SOLO si menciona "info", "sobre", "datos" o "de X" O si el nombre coincide bien
     if(t.includes("info") || t.includes("informacion") || t.includes("información") || t.includes("datos") || t.includes("sobre")){
         const limpio = t.replace(/info|informacion|información|datos|sobre|de|dime|dame|quiero|saber|el|la|los|las|un|una/g, "").trim();
         const j = buscarJuegoIA(limpio);
@@ -2132,9 +2476,7 @@ function respuestaIa(texto){
             return r;
         }
     }
-
-    // 10. Si la query es corta (probablemente un nombre de juego), buscar
-    if(t.length >= 3 && t.length <= 30 && !t.includes(" ") === false){
+    if(t.length >= 3 && t.length <= 30){
         const j = buscarJuegoIA(t);
         if(j){
             let r = `🎮 ${j.name}\n\n`;
@@ -2145,8 +2487,6 @@ function respuestaIa(texto){
             return r;
         }
     }
-
-    // 11. Fallback
     if(t.includes("?"))
         return "Buena pregunta 🤔. Prueba a preguntar por un juego específico o escribe 'ayuda'.";
     if(t.split(" ").length <= 2)
@@ -2325,7 +2665,7 @@ document.getElementById("gameModal").addEventListener("click",(e)=>{if(e.target.
 /* ========== KEYBOARD SHORTCUTS ========== */
 document.addEventListener("keydown",(e)=>{
     if(e.key==="Escape"){
-        ["gameModal","gamesOverlay","aimOverlay","calcOverlay","cpsOverlay","aiOverlay","settingsOverlay","rankOverlay","achOverlay","paletteOverlay"].forEach(id=>{
+        ["gameModal","gamesOverlay","aimOverlay","calcOverlay","cpsOverlay","aiOverlay","settingsOverlay","rankOverlay","achOverlay","paletteOverlay","modeOverlay"].forEach(id=>{
             const el = document.getElementById(id);
             if(el?.classList.contains("open")){
                 if(id==="gameModal") cerrarModal();
@@ -2338,6 +2678,7 @@ document.addEventListener("keydown",(e)=>{
                 if(id==="rankOverlay") cerrarRankings();
                 if(id==="achOverlay") cerrarLogros();
                 if(id==="paletteOverlay") closePalette();
+                if(id==="modeOverlay") cerrarModeOverlay();
             }
         });
         document.getElementById("dropdown").classList.remove("open");
@@ -2350,7 +2691,7 @@ document.addEventListener("keydown",(e)=>{
     }
 });
 function hayOverlayAbiertoSimple(){
-    return ["gameModal","gamesOverlay","aimOverlay","calcOverlay","cpsOverlay","aiOverlay","settingsOverlay","rankOverlay","achOverlay","paletteOverlay"].some(id=>document.getElementById(id)?.classList.contains("open"));
+    return ["gameModal","gamesOverlay","aimOverlay","calcOverlay","cpsOverlay","aiOverlay","settingsOverlay","rankOverlay","achOverlay","paletteOverlay","modeOverlay"].some(id=>document.getElementById(id)?.classList.contains("open"));
 }
 document.getElementById("searchInput")?.addEventListener("focus",()=>document.getElementById("scKey").classList.add("hide"));
 document.getElementById("searchInput")?.addEventListener("blur",()=>document.getElementById("scKey").classList.remove("hide"));
