@@ -434,19 +434,13 @@ app.post("/api/ai/chat", rateLimit, async (req, res) => {
         res.json({ success: true, respuesta: d.candidates?.[0]?.content?.parts?.[0]?.text || "Sin respuesta" });
     } catch { res.status(500).json({ success: false, message: "Error IA" }); }
 });
+
 // ======================================================
 // BACKUP - Descargar base de datos
 // ======================================================
 app.get("/api/admin/download-db", checkAdmin, (req, res) => {
     const dbPath = require("path").join(__dirname, "omeles.db");
-    res.download(dbPath, "omeles-backup.db");
-});
-
-// Ver datos como JSON (por si quieres curiosear)
-app.get("/api/admin/db-info", checkAdmin, (req, res) => {
-    const games = db.prepare("SELECT * FROM games").all();
-    const keys = db.prepare("SELECT * FROM keys").all();
-    res.json({ success: true, totalGames: games.length, totalKeys: keys.length, games, keys });
+    res.download(dbPath, `omeles-backup-${new Date().toISOString().slice(0,10)}.db`);
 });
 server.listen(PORT, "0.0.0.0", () => {
     console.log(`\n✅ OMELES GAMES en puerto ${PORT}`);
