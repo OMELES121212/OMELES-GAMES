@@ -342,7 +342,6 @@ app.post("/api/admin/revoke-key", checkAdmin, (req, res) => {
 app.post("/api/admin/delete-key", checkAdmin, (req, res) => {
     const row = db.prepare("SELECT key, type FROM keys WHERE id = ?").get(req.body.id);
     if (row && row.key === ADMIN_KEY) return res.status(403).json({ success: false, message: "No puedes borrar el Root Admin" });
-    // Desasignar usuarios que tuvieran esta key
     db.prepare("DELETE FROM users WHERE key_id = ?").run(req.body.id);
     db.prepare("DELETE FROM keys WHERE id = ?").run(req.body.id);
     if (row) io.emit("key-revoked", { key: row.key, type: row.type });
@@ -439,9 +438,20 @@ app.post("/api/ai/chat", rateLimit, async (req, res) => {
 // BACKUP - Descargar base de datos
 // ======================================================
 app.get("/api/admin/download-db", checkAdmin, (req, res) => {
-    const dbPath = require("path").join(__dirname, "omeles.db");
+    try {
+        // Fusiona el WAL en el .db principal antes de descargar
+        db.pragma("wal_checkpoint(TRUNCATE)");
+        console.log("✅ Checkpoint WAL completado");
+    } catch (e) {
+        console.error("❌ Error en checkpoint:", e);
+    }
+
+    // Usa DB_PATH del volume si existe, si no el directorio del proyecto
+    const dbPath = process.env.DB_PATH || path.join(__dirname, "omeles.db");
+    console.log(`📥 Descargando DB desde: ${dbPath}`);
     res.download(dbPath, `omeles-backup-${new Date().toISOString().slice(0,10)}.db`);
 });
+
 server.listen(PORT, "0.0.0.0", () => {
     console.log(`\n✅ OMELES GAMES en puerto ${PORT}`);
     console.log(`🔑 Root Admin: ${ADMIN_KEY}\n`);
