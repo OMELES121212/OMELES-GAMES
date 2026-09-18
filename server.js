@@ -19,7 +19,6 @@ const PORT = process.env.PORT || 3000;
 const ADMIN_KEY = process.env.ADMIN_KEY || "OMELES-ADMIN-2026";
 
 app.use(cors());
-// Permite subidas grandes (50 MB) para el import de DB
 app.use(express.json({ limit: "50mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -77,6 +76,36 @@ function checkAdmin(req, res, next) {
     next();
 }
 
+/* ============================================================
+   HELPER: Resolver juegos permitidos según game_mode
+============================================================ */
+function resolverJuegosPermitidos(row) {
+    const mode = row.game_mode || "all";
+    const allActive = db.prepare("SELECT * FROM games WHERE active = 1 ORDER BY id DESC").all();
+
+    if (mode === "none") return [];
+    if (mode === "all") return allActive;
+
+    let ids = [];
+    if (row.allowed_games) {
+        try { ids = JSON.parse(row.allowed_games); } catch { ids = []; }
+    }
+
+    if (mode === "whitelist") {
+        if (!Array.isArray(ids) || ids.length === 0) return [];
+        const ph = ids.map(() => "?").join(",");
+        return db.prepare(`SELECT * FROM games WHERE active = 1 AND id IN (${ph}) ORDER BY id DESC`).all(...ids);
+    }
+
+    if (mode === "blacklist") {
+        if (!Array.isArray(ids) || ids.length === 0) return allActive;
+        const ph = ids.map(() => "?").join(",");
+        return db.prepare(`SELECT * FROM games WHERE active = 1 AND id NOT IN (${ph}) ORDER BY id DESC`).all(...ids);
+    }
+
+    return allActive;
+}
+
 /* ============ SOCKET ============ */
 io.use((socket, next) => {
     const key = socket.handshake.auth.key;
@@ -130,8 +159,10 @@ app.post("/api/register", rateLimit, (req, res) => {
         db.prepare(`UPDATE keys SET last_ip = ?, last_used_at = ?, use_count = use_count + 1 WHERE id = ?`)
           .run(ip, now, keyRow.id);
 
-        let allowed = null;
-        if (keyRow.allowed_games) { try { allowed = JSON.parse(keyRow.allowed_games); } catch {} }
+        const juegosPermitidos = resolverJuegosPermitidos(keyRow);
+        const allowed = keyRow.game_mode === "all"
+            ? null
+            : juegosPermitidos.map(g => g.id);
 
         res.json({ success: true, user: { username: username.trim() }, key: keyRow.key, type: keyRow.type, allowed });
     } catch (e) {
@@ -167,8 +198,8 @@ app.post("/api/login-user", rateLimit, (req, res) => {
     db.prepare(`UPDATE keys SET last_ip = ?, last_used_at = ?, use_count = use_count + 1 WHERE id = ?`)
       .run(ip, now, key.id);
 
-    let allowed = null;
-    if (key.allowed_games) { try { allowed = JSON.parse(key.allowed_games); } catch {} }
+    const juegosPermitidos = resolverJuegosPermitidos(key);
+    const allowed = key.game_mode === "all" ? null : juegosPermitidos.map(g => g.id);
 
     res.json({ success: true, user: { username: user.username }, key: key.key, type: key.type, allowed });
 });
@@ -195,9 +226,10 @@ app.post("/api/login", rateLimit, (req, res) => {
     db.prepare(`UPDATE keys SET last_ip = ?, last_used_at = ?, use_count = ?, active = ? WHERE id = ?`)
       .run(ip, new Date().toISOString(), uses, active, row.id);
 
-    let allowed = null;
-    if (row.allowed_games) { try { allowed = JSON.parse(row.allowed_games); } catch {} }
-    res.json({ success: true, type: row.type, allowed });
+    const juegosPermitidos = resolverJuegosPermitidos(row);
+    const allowed = row.game_mode === "all" ? null : juegosPermitidos.map(g => g.id);
+
+    res.json({ success: true, type: row.type, allowed, game_mode: row.game_mode });
 });
 
 /* ============ INFO ADMIN ============ */
@@ -218,16 +250,7 @@ app.get("/api/games", (req, res) => {
     const row = db.prepare("SELECT * FROM keys WHERE key = ?").get(key);
     if (!row) return res.status(401).json({ success: false, message: "Key no válida" });
 
-    let games;
-    if (row.allowed_games) {
-        let ids;
-        try { ids = JSON.parse(row.allowed_games); } catch { ids = []; }
-        if (!Array.isArray(ids) || ids.length === 0) return res.json({ success: true, games: [] });
-        const ph = ids.map(() => "?").join(",");
-        games = db.prepare(`SELECT * FROM games WHERE active = 1 AND id IN (${ph}) ORDER BY id DESC`).all(...ids);
-    } else {
-        games = db.prepare("SELECT * FROM games WHERE active = 1 ORDER BY id DESC").all();
-    }
+    const games = resolverJuegosPermitidos(row);
     res.json({ success: true, games });
 });
 
@@ -238,7 +261,7 @@ app.get("/api/admin/keys", checkAdmin, (req, res) => {
 });
 
 app.post("/api/keys", checkAdmin, (req, res) => {
-    const { type, gameId, gameIds, permissions, massive, count } = req.body;
+    const { type, gameId, gameIds, permissions, massive, count, gameMode } = req.body;
     const validos = ["24H","7D","30D","LIFETIME","ONE_USE",
         "ADMIN","ADMIN_24H","ADMIN_7D","ADMIN_30D","ADMIN_ONE_USE","ADMIN_LIFETIME"];
     if (!validos.includes(type)) return res.status(400).json({ success: false, message: "Tipo inválido" });
@@ -250,6 +273,10 @@ app.post("/api/keys", checkAdmin, (req, res) => {
         permsValue = Array.isArray(permissions) ? JSON.stringify(permissions) : JSON.stringify(["*"]);
     }
 
+    /* Modo de juegos */
+    let mode = String(gameMode || "all").toLowerCase();
+    if (!["all","none","whitelist","blacklist"].includes(mode)) mode = "all";
+
     let ids = [];
     if (Array.isArray(gameIds) && gameIds.length > 0) {
         ids = gameIds.map(Number).filter(n => Number.isFinite(n) && n > 0);
@@ -258,6 +285,7 @@ app.post("/api/keys", checkAdmin, (req, res) => {
         if (Number.isFinite(gid) && gid > 0) ids = [gid];
     }
 
+    // Validar que los ids existen
     if (ids.length > 0) {
         const ph = ids.map(() => "?").join(",");
         const found = db.prepare(`SELECT id FROM games WHERE active = 1 AND id IN (${ph})`).all(...ids);
@@ -265,8 +293,19 @@ app.post("/api/keys", checkAdmin, (req, res) => {
             return res.status(404).json({ success: false, message: "Algún juego no existe" });
     }
 
-    const gameIdPrefix = ids.length === 1 ? `${ids[0]}-` : "";
-    const allowed_games = ids.length > 0 ? JSON.stringify(ids) : null;
+    // Para modo "all" o "none" ignoramos los ids
+    let allowed_games = null;
+    let gameIdPrefix = "";
+    if (mode === "whitelist" || mode === "blacklist") {
+        if (ids.length === 0 && mode === "whitelist") {
+            // Sin juegos seleccionados en whitelist = no verá nada
+            allowed_games = JSON.stringify([]);
+        } else {
+            allowed_games = JSON.stringify(ids);
+        }
+        // Prefijo solo si whitelist con 1 juego
+        if (mode === "whitelist" && ids.length === 1) gameIdPrefix = `${ids[0]}-`;
+    }
 
     const numCount = massive ? Math.min(Math.max(Number(count) || 1, 1), 500) : 1;
     const isMassiveFlag = massive ? 1 : 0;
@@ -280,7 +319,7 @@ app.post("/api/keys", checkAdmin, (req, res) => {
 
     const generatedKeys = [];
     try {
-        const stmt = db.prepare(`INSERT INTO keys (key, type, created_at, expires_at, active, allowed_games, permissions, massive) VALUES (?, ?, ?, ?, 1, ?, ?, ?)`);
+        const stmt = db.prepare(`INSERT INTO keys (key, type, created_at, expires_at, active, allowed_games, permissions, massive, game_mode) VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?)`);
         const checkStmt = db.prepare("SELECT id FROM keys WHERE key = ?");
 
         const doInsert = db.transaction(() => {
@@ -288,7 +327,7 @@ app.post("/api/keys", checkAdmin, (req, res) => {
                 let keyStr, attempts = 0;
                 do { keyStr = `OMELES-${gameIdPrefix}${rand()}-${rand()}`; attempts++; }
                 while (checkStmt.get(keyStr) && attempts < 20);
-                stmt.run(keyStr, type, now.toISOString(), expires, allowed_games, permsValue, isMassiveFlag);
+                stmt.run(keyStr, type, now.toISOString(), expires, allowed_games, permsValue, isMassiveFlag, mode);
                 generatedKeys.push(keyStr);
             }
         });
@@ -300,7 +339,7 @@ app.post("/api/keys", checkAdmin, (req, res) => {
 
     if (massive) io.emit("keys-massive-created", { count: generatedKeys.length });
 
-    res.json({ success: true, key: generatedKeys[0], keys: generatedKeys, count: generatedKeys.length, massive: !!massive });
+    res.json({ success: true, key: generatedKeys[0], keys: generatedKeys, count: generatedKeys.length, massive: !!massive, gameMode: mode });
 });
 
 app.post("/api/admin/update-key-permissions", checkAdmin, (req, res) => {
@@ -325,26 +364,38 @@ app.post("/api/admin/update-key-nickname", checkAdmin, (req, res) => {
 });
 
 app.get("/api/admin/key-games/:id", checkAdmin, (req, res) => {
-    const row = db.prepare("SELECT allowed_games FROM keys WHERE id = ?").get(req.params.id);
+    const row = db.prepare("SELECT allowed_games, game_mode FROM keys WHERE id = ?").get(req.params.id);
     if (!row) return res.status(404).json({ success: false, message: "No encontrada" });
-    const allGames = db.prepare("SELECT id, name FROM games WHERE active = 1 ORDER BY name").all();
+    const allGames = db.prepare("SELECT id, name, created_at FROM games WHERE active = 1 ORDER BY name").all();
     let allowed = null;
     if (row.allowed_games) { try { allowed = JSON.parse(row.allowed_games); } catch { allowed = []; } }
-    res.json({ success: true, allowed, allGames });
+    res.json({ success: true, allowed, allGames, gameMode: row.game_mode || "all" });
 });
 
 app.post("/api/admin/update-key-games", checkAdmin, (req, res) => {
-    const { id, allowed } = req.body;
+    const { id, allowed, gameMode } = req.body;
     if (!id) return res.status(400).json({ success: false, message: "Falta id" });
+
+    const row = db.prepare("SELECT * FROM keys WHERE id = ?").get(id);
+    if (!row) return res.status(404).json({ success: false, message: "No encontrada" });
+
+    let mode = gameMode ? String(gameMode).toLowerCase() : (row.game_mode || "all");
+    if (!["all","none","whitelist","blacklist"].includes(mode)) mode = "all";
+
     let value = null;
     if (Array.isArray(allowed)) {
-        const total = db.prepare("SELECT COUNT(*) as c FROM games WHERE active = 1").get().c;
-        if (allowed.length === total) value = null;
-        else value = JSON.stringify(allowed.map(Number));
+        if (mode === "whitelist" || mode === "blacklist") {
+            value = JSON.stringify(allowed.map(Number));
+        } else {
+            value = null;
+        }
     }
-    db.prepare("UPDATE keys SET allowed_games = ? WHERE id = ?").run(value, id);
-    const row = db.prepare("SELECT key FROM keys WHERE id = ?").get(id);
-    if (row) io.to(`key:${row.key}`).emit("key-updated", { key: row.key });
+
+    db.prepare("UPDATE keys SET allowed_games = ?, game_mode = ? WHERE id = ?").run(value, mode, id);
+
+    const row2 = db.prepare("SELECT key FROM keys WHERE id = ?").get(id);
+    if (row2) io.to(`key:${row2.key}`).emit("key-updated", { key: row2.key });
+
     res.json({ success: true });
 });
 
@@ -416,8 +467,8 @@ app.get("/api/admin/games", checkAdmin, (req, res) => {
 app.post("/api/games", checkAdmin, (req, res) => {
     const { name, download, repair, password, image } = req.body;
     if (!name) return res.status(400).json({ success: false, message: "Falta nombre" });
-    db.prepare(`INSERT INTO games (name, download, repair, password, image, active) VALUES (?, ?, ?, ?, ?, 1)`)
-      .run(name, download || "", repair || "", password || "", image || "");
+    db.prepare(`INSERT INTO games (name, download, repair, password, image, active, created_at) VALUES (?, ?, ?, ?, ?, 1, ?)`)
+      .run(name, download || "", repair || "", password || "", image || "", new Date().toISOString());
     io.emit("games-updated", { action: "create", name });
     res.json({ success: true });
 });
@@ -465,7 +516,7 @@ app.post("/api/ai/chat", rateLimit, async (req, res) => {
 });
 
 /* ============================================================
-   BACKUP - EXPORTAR (descargar DB)
+   BACKUP - EXPORTAR
 ============================================================ */
 app.get("/api/admin/download-db", checkAdmin, (req, res) => {
     try {
@@ -480,7 +531,7 @@ app.get("/api/admin/download-db", checkAdmin, (req, res) => {
 });
 
 /* ============================================================
-   BACKUP - IMPORTAR (subir DB)
+   BACKUP - IMPORTAR
 ============================================================ */
 app.post("/api/admin/import-db", checkAdmin, (req, res) => {
     const { dbBase64 } = req.body;
@@ -490,7 +541,6 @@ app.post("/api/admin/import-db", checkAdmin, (req, res) => {
     try {
         fs.writeFileSync(tmpPath, Buffer.from(dbBase64, "base64"));
 
-        // Verificar que es una DB SQLite válida
         let oldDb;
         try {
             oldDb = new Database(tmpPath, { readonly: true });
@@ -513,8 +563,8 @@ app.post("/api/admin/import-db", checkAdmin, (req, res) => {
                 try {
                     const exists = db.prepare("SELECT id FROM games WHERE name = ?").get(g.name);
                     if (!exists) {
-                        db.prepare(`INSERT INTO games (name, download, repair, password, image, active) VALUES (?, ?, ?, ?, ?, ?)`)
-                          .run(g.name, g.download || "", g.repair || "", g.password || "", g.image || "", g.active || 1);
+                        db.prepare(`INSERT INTO games (name, download, repair, password, image, active, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)`)
+                          .run(g.name, g.download || "", g.repair || "", g.password || "", g.image || "", g.active || 1, g.created_at || new Date().toISOString());
                         gamesIn++;
                     }
                 } catch (e) { console.error("Error importando juego:", g.name, e.message); }
@@ -524,11 +574,12 @@ app.post("/api/admin/import-db", checkAdmin, (req, res) => {
                 try {
                     const exists = db.prepare("SELECT id FROM keys WHERE key = ?").get(k.key);
                     if (!exists) {
-                        db.prepare(`INSERT INTO keys (key, type, nickname, created_at, expires_at, active, use_count, last_ip, last_used_at, allowed_games, permissions, massive)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+                        db.prepare(`INSERT INTO keys (key, type, nickname, created_at, expires_at, active, use_count, last_ip, last_used_at, allowed_games, permissions, massive, game_mode)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
                           .run(k.key, k.type, k.nickname || "", k.created_at, k.expires_at, k.active, k.use_count || 0,
                                k.last_ip || null, k.last_used_at || null,
-                               k.allowed_games || null, k.permissions || null, k.massive || 0);
+                               k.allowed_games || null, k.permissions || null, k.massive || 0,
+                               k.game_mode || "all");
                         keysIn++;
                     }
                 } catch (e) { console.error("Error importando key:", k.key, e.message); }
@@ -573,9 +624,6 @@ app.post("/api/admin/import-db", checkAdmin, (req, res) => {
     }
 });
 
-/* ============================================================
-   ARRANCAR
-============================================================ */
 server.listen(PORT, "0.0.0.0", () => {
     console.log(`\n✅ OMELES GAMES en puerto ${PORT}`);
     console.log(`🔑 Root Admin: ${ADMIN_KEY}\n`);
