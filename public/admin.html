@@ -13,7 +13,6 @@ body{margin:0;background:var(--bg);color:var(--text);min-height:100vh;font-size:
 background-image:radial-gradient(circle at 20% 0%,rgba(139,92,255,.08),transparent 40%),
 radial-gradient(circle at 80% 100%,rgba(37,99,235,.06),transparent 40%);background-attachment:fixed}
 
-/* Ocultar sidebar hasta login */
 body:not(.logged-in) .sidebar,
 body:not(.logged-in) .mob-bar{display:none!important}
 body:not(.logged-in) .main{margin-left:0}
@@ -55,7 +54,7 @@ font-weight:500;border-left:3px solid transparent}
 .user-role{font-size:10.5px;color:#b99cff;font-weight:700;letter-spacing:1px;text-transform:uppercase}
 .logout-wrap{padding:14px}
 .logout-btn{width:100%;padding:11px;border:1px solid var(--border-light);background:transparent;color:#aaa;border-radius:10px;
-cursor:pointer;font-weight:700;font-size:12px;letter-spacing:1px;transition:.15s}
+cursor:pointer;font-weight:700;font-size:12px;letter-spacing:1px;transition:.15s;font-family:inherit}
 .logout-btn:hover{background:rgba(255,69,103,.1);color:var(--red);border-color:rgba(255,69,103,.3)}
 
 /* MAIN */
@@ -85,6 +84,7 @@ padding:22px;position:relative;overflow:hidden;transition:.25s}
 .stat-card.green .stat-val{color:var(--green)}
 .stat-card.red .stat-val{color:var(--red)}
 .stat-card.cyan .stat-val{color:var(--cyan)}
+.stat-card.orange .stat-val{color:var(--orange)}
 
 /* INPUTS */
 input,select{width:100%;padding:13px 15px;border-radius:11px;border:1px solid var(--border-light);background:#08080e;color:#fff;
@@ -96,7 +96,7 @@ label{font-size:11px;color:#9d7cff;font-weight:700;letter-spacing:1px;text-trans
 
 /* BUTTONS */
 .btn{border:0;border-radius:11px;padding:12px 20px;color:#fff;cursor:pointer;font-weight:700;font-size:13.5px;transition:.2s;
-letter-spacing:.3px;display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#0077ff,#7b2cff)}
+letter-spacing:.3px;display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#0077ff,#7b2cff);font-family:inherit}
 .btn:hover{transform:translateY(-1px);filter:brightness(1.12)}
 .btn.small{padding:8px 13px;font-size:12px;border-radius:9px}
 .btn.full{width:100%;justify-content:center}
@@ -147,7 +147,7 @@ tbody tr:hover{background:rgba(139,92,255,.05)}
 /* FILTERS */
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
 .filter-btn{padding:9px 16px;border-radius:10px;border:1px solid var(--border-light);background:rgba(255,255,255,.02);color:#aaa;
-cursor:pointer;font-size:12.5px;font-weight:700;transition:.2s;display:inline-flex;align-items:center;gap:7px}
+cursor:pointer;font-size:12.5px;font-weight:700;transition:.2s;display:inline-flex;align-items:center;gap:7px;font-family:inherit}
 .filter-btn:hover{border-color:rgba(139,92,255,.4);color:#fff}
 .filter-btn.active{background:linear-gradient(135deg,rgba(139,92,255,.25),rgba(37,99,235,.2));border-color:var(--purple);color:#fff}
 .filter-btn .fc{background:rgba(0,0,0,.35);padding:1px 8px;border-radius:8px;font-size:10.5px;font-weight:800}
@@ -181,7 +181,7 @@ max-height:92vh;overflow-y:auto;animation:modalIn .25s cubic-bezier(.34,1.56,.64
 .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--border)}
 .modal-head h2{font-size:19px;font-weight:900;color:#fff}
 .modal-close{background:transparent;border:0;color:#888;font-size:24px;cursor:pointer;width:36px;height:36px;border-radius:9px;
-display:flex;align-items:center;justify-content:center;transition:.15s}
+display:flex;align-items:center;justify-content:center;transition:.15s;font-family:inherit}
 .modal-close:hover{background:rgba(255,255,255,.07);color:#fff}
 .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:18px;border-top:1px solid var(--border)}
 
@@ -205,7 +205,6 @@ display:flex;align-items:center;justify-content:center;transition:.15s}
 .perm-item-info{flex:1}
 .perm-item-name{font-size:13.5px;font-weight:700;color:#fff;margin-bottom:2px}
 .perm-item-desc{font-size:11px;color:var(--muted)}
-.perm-item.all-warn{background:rgba(255,140,0,.05);border-color:rgba(255,140,0,.2);margin-bottom:8px}
 
 /* MSG */
 .msg{padding:12px 15px;border-radius:11px;margin-top:15px;font-size:13px;font-weight:600;display:none}
@@ -233,7 +232,7 @@ pointer-events:auto;position:relative}
 .mob-bar{display:none;position:fixed;top:0;left:0;right:0;height:60px;background:var(--sidebar);border-bottom:1px solid var(--border);
 z-index:99;align-items:center;padding:0 20px;gap:14px}
 .mob-toggle{width:42px;height:42px;border-radius:10px;border:1px solid var(--border-light);background:transparent;color:#fff;font-size:18px;cursor:pointer;
-display:flex;align-items:center;justify-content:center}
+display:flex;align-items:center;justify-content:center;font-family:inherit}
 .mob-brand{font-size:16px;font-weight:900;letter-spacing:1.5px;background:linear-gradient(90deg,#00b7ff,#8b5cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99}
 .mob-overlay.show{display:block}
@@ -250,7 +249,6 @@ display:flex;align-items:center;justify-content:center}
 </head>
 <body>
 
-<!-- MOBILE BAR -->
 <div class="mob-bar">
     <button class="mob-toggle" onclick="toggleSidebar()">☰</button>
     <div class="mob-brand">OMELES GAMES</div>
@@ -259,7 +257,6 @@ display:flex;align-items:center;justify-content:center}
 
 <div class="app">
 
-    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
         <div class="brand">OMELES GAMES<small>PANEL DE ADMIN</small></div>
 
@@ -280,6 +277,11 @@ display:flex;align-items:center;justify-content:center}
             </div>
 
             <div class="nav-section">
+                <div class="nav-title">Usuarios</div>
+                <div class="nav-item" data-page="users" onclick="navigateTo('users')"><span class="ico">👥</span>Usuarios Registrados<span class="badge" id="badgeUsers">0</span></div>
+            </div>
+
+            <div class="nav-section">
                 <div class="nav-title">Sistema</div>
                 <div class="nav-item" data-page="games" onclick="navigateTo('games')"><span class="ico">🕹️</span>Gestionar Juegos</div>
                 <div class="nav-item" data-page="stats" onclick="navigateTo('stats')"><span class="ico">📈</span>Estadísticas</div>
@@ -296,10 +298,8 @@ display:flex;align-items:center;justify-content:center}
         </div>
     </aside>
 
-    <!-- MAIN -->
     <main class="main">
 
-        <!-- LOGIN -->
         <div id="loginScreen" class="page active">
             <div class="login-wrap">
                 <div class="card" style="text-align:center;padding:40px 32px;">
@@ -313,7 +313,6 @@ display:flex;align-items:center;justify-content:center}
             </div>
         </div>
 
-        <!-- DASHBOARD -->
         <div id="page-dashboard" class="page">
             <div class="page-head"><h1>📊 Dashboard</h1><p>Resumen general del sistema</p></div>
             <div class="stats-grid" id="dashboardStats"></div>
@@ -321,7 +320,6 @@ display:flex;align-items:center;justify-content:center}
             <div class="card"><div class="card-title">🕒 Últimas keys creadas</div><div id="dashboardRecent"></div></div>
         </div>
 
-        <!-- GENERATE -->
         <div id="page-generate" class="page">
             <div class="page-head"><h1>🔑 Generar Keys</h1><p>Crea keys de usuario, admin o específicas de un juego</p></div>
 
@@ -374,7 +372,6 @@ display:flex;align-items:center;justify-content:center}
             </div>
         </div>
 
-        <!-- KEYS ALL -->
         <div id="page-keys-all" class="page">
             <div class="page-head"><h1>📋 Todas las Keys</h1><p>Vista completa</p></div>
             <div class="card">
@@ -391,7 +388,6 @@ display:flex;align-items:center;justify-content:center}
             </div>
         </div>
 
-        <!-- KEYS GLOBAL -->
         <div id="page-keys-global" class="page">
             <div class="page-head"><h1>🌐 Keys Globales</h1><p>Keys que ven TODOS los juegos</p></div>
             <div class="card">
@@ -400,7 +396,6 @@ display:flex;align-items:center;justify-content:center}
             </div>
         </div>
 
-        <!-- KEYS EXHAUSTED -->
         <div id="page-keys-exhausted" class="page">
             <div class="page-head"><h1>⚠️ Keys Agotadas</h1><p>Revocadas, expiradas o usadas</p></div>
             <div class="card">
@@ -409,7 +404,6 @@ display:flex;align-items:center;justify-content:center}
             </div>
         </div>
 
-        <!-- KEYS GAME -->
         <div id="page-keys-game" class="page">
             <div class="page-head"><h1 id="gameKeysTitle">🎮 Keys por Juego</h1><p id="gameKeysSub">Selecciona un juego del menú</p></div>
             <div class="card">
@@ -418,7 +412,14 @@ display:flex;align-items:center;justify-content:center}
             </div>
         </div>
 
-        <!-- GAMES -->
+        <div id="page-users" class="page">
+            <div class="page-head"><h1>👥 Usuarios Registrados</h1><p>Cuentas creadas y sus credenciales completas</p></div>
+            <div class="card">
+                <div class="search-w"><input id="searchUsers" placeholder="Buscar por usuario, key o IP..." oninput="renderUsersPage()"></div>
+                <div id="usersTable"></div>
+            </div>
+        </div>
+
         <div id="page-games" class="page">
             <div class="page-head"><h1>🕹️ Gestionar Juegos</h1><p>Añade, edita y elimina juegos</p></div>
             <div class="card">
@@ -443,7 +444,6 @@ display:flex;align-items:center;justify-content:center}
             </div>
         </div>
 
-        <!-- STATS -->
         <div id="page-stats" class="page">
             <div class="page-head"><h1>📈 Estadísticas</h1><p>Análisis detallado</p></div>
             <div class="card"><div class="card-title">🔢 Por tipo</div><div id="statsByType"></div></div>
@@ -531,6 +531,7 @@ let adminPermissions = [];
 let isRootAdmin = false;
 let todasLasKeys = [];
 let todosLosJuegos = [];
+let todosLosUsuarios = [];
 let socket = null;
 
 let juegoEditandoId = null;
@@ -547,16 +548,16 @@ let ultimaKeyGenerada = "";
 
 const keysFilterState = { all:"all", gameId:null };
 
-/* Lista de permisos disponibles */
 const PERMISOS_DISPONIBLES = [
-    { id:"dashboard",       icon:"📊", name:"Dashboard",         desc:"Ver resumen general" },
-    { id:"generate",        icon:"🔑", name:"Generar Keys",      desc:"Crear nuevas keys" },
-    { id:"keys-all",        icon:"📋", name:"Todas las Keys",    desc:"Ver todas las keys" },
-    { id:"keys-global",     icon:"🌐", name:"Keys Globales",     desc:"Ver keys globales" },
-    { id:"keys-exhausted",  icon:"⚠️", name:"Keys Agotadas",     desc:"Ver keys revocadas/expiradas" },
-    { id:"keys-game",       icon:"🎮", name:"Keys por Juego",    desc:"Ver keys por juego" },
-    { id:"games",           icon:"🕹️", name:"Gestionar Juegos",  desc:"Añadir, editar, eliminar juegos" },
-    { id:"stats",           icon:"📈", name:"Estadísticas",      desc:"Ver estadísticas" },
+    { id:"dashboard",       icon:"📊", name:"Dashboard",            desc:"Ver resumen general" },
+    { id:"generate",        icon:"🔑", name:"Generar Keys",         desc:"Crear nuevas keys" },
+    { id:"keys-all",        icon:"📋", name:"Todas las Keys",       desc:"Ver todas las keys" },
+    { id:"keys-global",     icon:"🌐", name:"Keys Globales",        desc:"Ver keys globales" },
+    { id:"keys-exhausted",  icon:"⚠️", name:"Keys Agotadas",        desc:"Ver keys revocadas/expiradas" },
+    { id:"keys-game",       icon:"🎮", name:"Keys por Juego",       desc:"Ver keys por juego" },
+    { id:"users",           icon:"👥", name:"Usuarios Registrados", desc:"Ver cuentas y contraseñas" },
+    { id:"games",           icon:"🕹️", name:"Gestionar Juegos",     desc:"Añadir, editar, eliminar juegos" },
+    { id:"stats",           icon:"📈", name:"Estadísticas",         desc:"Ver estadísticas" },
     { id:"manage_permissions", icon:"🔐", name:"Gestionar permisos", desc:"Puede editar permisos de otros admins" }
 ];
 
@@ -608,7 +609,6 @@ function tengoPermiso(perm){
    NAVEGACIÓN
 ============================================================ */
 function navigateTo(page){
-    // Verificar permiso
     const checkPage = page.startsWith("keys-game-") ? "keys-game" : page;
     if(!tengoPermiso(checkPage)){
         toast("No tienes permiso para esa sección","warning");
@@ -631,6 +631,7 @@ function navigateTo(page){
     if(page === "keys-exhausted") renderKeysPage("exhausted");
     if(page === "games") renderGamesList();
     if(page === "stats") renderStats();
+    if(page === "users") renderUsersPage();
 
     if(window.innerWidth <= 900) closeSidebar();
 }
@@ -650,7 +651,6 @@ function toggleGamesSubmenu(){
 }
 
 function aplicarPermisosUI(){
-    // Mostrar/ocultar items del menú
     document.querySelectorAll(".nav-item, .nav-sub-item").forEach(el => {
         const page = el.dataset.page;
         if(!page) return;
@@ -662,7 +662,6 @@ function aplicarPermisosUI(){
         }
     });
 
-    // Bloque ADMIN en generar: solo si puede gestionar permisos
     const canGrant = isRootAdmin || adminPermissions.includes("*") || adminPermissions.includes("manage_permissions");
     document.getElementById("adminTypesBlock").style.display = canGrant ? "" : "none";
     document.getElementById("typeGridAdmin").style.display = canGrant ? "" : "none";
@@ -682,7 +681,6 @@ function renderGamesSubmenu(){
             <span class="cnt">${cnt}</span>
         </div>`;
     }).join("");
-    // Aplicar permisos a los items nuevos
     document.querySelectorAll(".nav-sub-item").forEach(el => {
         const page = el.dataset.page;
         if(page && page.startsWith("keys-game-") && !tengoPermiso("keys-game")){
@@ -726,10 +724,10 @@ async function entrarAdmin(){
         conectarSocket();
         await cargarJuegos();
         await cargarKeys();
+        await cargarUsuarios();
         actualizarTodo();
 
-        // Navegar a la primera sección permitida
-        const inicio = ["dashboard","generate","keys-all","keys-global","keys-exhausted","keys-game","games","stats"]
+        const inicio = ["dashboard","generate","keys-all","keys-global","keys-exhausted","keys-game","users","games","stats"]
             .find(p => tengoPermiso(p));
         if(inicio) navigateTo(inicio);
         else document.getElementById("page-dashboard").classList.add("active");
@@ -782,10 +780,21 @@ async function cargarJuegos(){
     if(!r.ok || !d.success){ if(r.status === 401){ location.reload(); return; } throw new Error(); }
     todosLosJuegos = d.games || [];
 }
+async function cargarUsuarios(){
+    try{
+        const r = await fetch("/api/admin/users",{ headers:{"x-admin-key":adminKeyValue} });
+        const d = await r.json();
+        if(!r.ok || !d.success){ todosLosUsuarios = []; return; }
+        todosLosUsuarios = d.users || [];
+    } catch(e){
+        todosLosUsuarios = [];
+    }
+}
 async function recargarTodo(){
     try{
         await cargarJuegos();
         await cargarKeys();
+        await cargarUsuarios();
         actualizarTodo();
         const activePage = document.querySelector(".page.active")?.id.replace("page-","");
         if(activePage === "dashboard") renderDashboard();
@@ -795,12 +804,14 @@ async function recargarTodo(){
         if(activePage === "keys-game") renderKeysPage("game");
         if(activePage === "games") renderGamesList();
         if(activePage === "stats") renderStats();
+        if(activePage === "users") renderUsersPage();
     } catch(e){ console.error(e); }
 }
 function actualizarTodo(){
     document.getElementById("badgeKeysAll").textContent = todasLasKeys.length;
     document.getElementById("badgeKeysGlobal").textContent = todasLasKeys.filter(k => !extraerGameIdDeKey(k.key)).length;
     document.getElementById("badgeKeysExhausted").textContent = todasLasKeys.filter(k => estaAgotada(k)).length;
+    document.getElementById("badgeUsers").textContent = todosLosUsuarios.length;
     renderGamesSubmenu();
     actualizarSelectJuegos();
 }
@@ -865,7 +876,6 @@ async function generarKey(){
     try{
         const body = { type: tipoKeySeleccionado };
         if(juegoKeySeleccionado) body.gameId = Number(juegoKeySeleccionado);
-        // Si es admin, el default es todos los permisos
         if(tipoKeySeleccionado.startsWith("ADMIN")) body.permissions = ["*"];
 
         const r = await fetch("/api/keys",{
@@ -982,7 +992,6 @@ function renderKeyRow(key){
         juegoHTML = `<span class="badge-games limited">🎮 ${escapeHTML(gameNameById(gid))}</span>`;
     }
 
-    // Acciones
     const esAdmin = t.startsWith("ADMIN");
     const canManagePerms = isRootAdmin || adminPermissions.includes("*") || adminPermissions.includes("manage_permissions");
 
@@ -1029,6 +1038,96 @@ function verKeysDeJuego(gid){
 }
 
 /* ============================================================
+   USUARIOS
+============================================================ */
+function renderUsersPage(){
+    const cont = document.getElementById("usersTable");
+    if(!cont) return;
+    const b = (document.getElementById("searchUsers").value||"").toLowerCase().trim();
+    let lista = todosLosUsuarios;
+    if(b) lista = lista.filter(u =>
+        String(u.username).toLowerCase().includes(b) ||
+        String(u.key_value||"").toLowerCase().includes(b) ||
+        String(u.key_last_ip||"").toLowerCase().includes(b) ||
+        String(u.key_nickname||"").toLowerCase().includes(b)
+    );
+
+    document.getElementById("badgeUsers").textContent = todosLosUsuarios.length;
+
+    if(!lista.length){
+        cont.innerHTML = `<div class="empty"><span class="empty-ico">👥</span>${b ? "Sin resultados" : "Sin usuarios registrados"}</div>`;
+        return;
+    }
+
+    cont.innerHTML = `<div class="table-wrap"><table><thead><tr>
+        <th>USUARIO</th><th>CONTRASEÑA</th><th>KEY</th><th>TIPO</th>
+        <th>ESTADO</th><th>REGISTRADO</th><th>ÚLTIMO LOGIN</th><th>ÚLTIMA IP</th><th>ACCIÓN</th>
+    </tr></thead><tbody>
+        ${lista.map(u => {
+            const activa = u.key_active && (!u.key_expires || new Date(u.key_expires) > new Date());
+            const estadoTag = activa ? `<span class="tag active">ACTIVA</span>` : `<span class="tag inactive">INACTIVA</span>`;
+            const tipoTag = String(u.key_type||"").startsWith("ADMIN")
+                ? `<span class="tag admin">👑 ADMIN</span>`
+                : `<span class="tag warn">${escapeHTML(u.key_type||"-")}</span>`;
+            return `<tr>
+                <td><span class="nickname">${escapeHTML(u.username)}</span></td>
+                <td><span class="key-code" style="color:#ffd166;font-weight:700;">${escapeHTML(u.plain_password||"???")}</span></td>
+                <td><span class="key-code">${escapeHTML(u.key_value||"-")}</span></td>
+                <td>${tipoTag}</td>
+                <td>${estadoTag}</td>
+                <td style="font-size:11.5px;color:#aaa;">${formatearFecha(u.created_at)}</td>
+                <td style="font-size:11.5px;color:#aaa;">${u.last_login ? formatearFecha(u.last_login) : "-"}</td>
+                <td style="font-size:11.5px;color:#aaa;">${u.key_last_ip ? escapeHTML(u.key_last_ip) : "-"}</td>
+                <td>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                        <button class="btn ghost small" onclick="resetearPassword(${u.id})" title="Resetear contraseña">🔑</button>
+                        <button class="btn danger small" onclick="eliminarUsuario(${u.id})" title="Eliminar cuenta">🗑️</button>
+                    </div>
+                </td>
+            </tr>`;
+        }).join("")}
+    </tbody></table></div>`;
+}
+
+async function resetearPassword(id){
+    const u = todosLosUsuarios.find(x => Number(x.id) === Number(id));
+    if(!u) return;
+    const nueva = prompt(`Nueva contraseña para "${u.username}" (mín. 4 caracteres):`);
+    if(!nueva || nueva.length < 4){ if(nueva !== null) alert("Mínimo 4 caracteres"); return; }
+    try{
+        const r = await fetch("/api/admin/reset-user-password",{
+            method:"POST",
+            headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
+            body: JSON.stringify({ id, newPassword: nueva })
+        });
+        const d = await r.json();
+        if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
+        toast("Contraseña actualizada","success");
+        await cargarUsuarios();
+        renderUsersPage();
+    } catch { alert("Error de conexión"); }
+}
+
+async function eliminarUsuario(id){
+    const u = todosLosUsuarios.find(x => Number(x.id) === Number(id));
+    if(!u) return;
+    if(!confirm(`⚠️ Eliminar la cuenta "${u.username}"?\n\nSu KEY quedará libre para otra cuenta.`)) return;
+    try{
+        const r = await fetch("/api/admin/delete-user",{
+            method:"POST",
+            headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
+            body: JSON.stringify({ id })
+        });
+        const d = await r.json();
+        if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
+        toast("Usuario eliminado","info");
+        await cargarUsuarios();
+        actualizarTodo();
+        renderUsersPage();
+    } catch { alert("Error de conexión"); }
+}
+
+/* ============================================================
    DASHBOARD
 ============================================================ */
 function renderDashboard(){
@@ -1037,12 +1136,14 @@ function renderDashboard(){
     const agotadas = todasLasKeys.filter(k => estaAgotada(k)).length;
     const globales = todasLasKeys.filter(k => !extraerGameIdDeKey(k.key)).length;
     const porJuego = total - globales;
+    const totalUsers = todosLosUsuarios.length;
 
     document.getElementById("dashboardStats").innerHTML = `
         <div class="stat-card"><span class="stat-ico">🔑</span><div class="stat-label">Total Keys</div><div class="stat-val">${total}</div><div class="stat-sub">Creadas</div></div>
         <div class="stat-card green"><span class="stat-ico">✅</span><div class="stat-label">Activas</div><div class="stat-val">${activas}</div><div class="stat-sub">Listas</div></div>
         <div class="stat-card red"><span class="stat-ico">⚠️</span><div class="stat-label">Agotadas</div><div class="stat-val">${agotadas}</div><div class="stat-sub">Inactivas</div></div>
         <div class="stat-card cyan"><span class="stat-ico">🎮</span><div class="stat-label">Por Juego</div><div class="stat-val">${porJuego}</div><div class="stat-sub">${globales} globales</div></div>
+        <div class="stat-card orange"><span class="stat-ico">👥</span><div class="stat-label">Usuarios</div><div class="stat-val">${totalUsers}</div><div class="stat-sub">Cuentas creadas</div></div>
     `;
 
     const counts = {};
@@ -1211,8 +1312,6 @@ function abrirModalPerms(id){
     permsEditandoId = id;
     let actuales = [];
     try{ actuales = k.permissions ? JSON.parse(k.permissions) : ["*"]; } catch { actuales = ["*"]; }
-
-    // Si tiene "*", marcar todos
     if(actuales.includes("*")) permsSelected = PERMISOS_DISPONIBLES.map(p => p.id);
     else permsSelected = actuales;
 
@@ -1350,7 +1449,7 @@ async function revocarKey(id){
     } catch(e){ alert("Error"); }
 }
 async function eliminarKey(id){
-    if(!confirm("⚠️ ELIMINAR KEY")) return;
+    if(!confirm("⚠️ ELIMINAR KEY\n\nSi tiene un usuario vinculado, también se eliminará la cuenta.")) return;
     try{
         const r = await fetch("/api/admin/delete-key",{
             method:"POST",
@@ -1360,7 +1459,7 @@ async function eliminarKey(id){
         const d = await r.json();
         if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
         toast("Key eliminada","info");
-        await cargarKeys(); actualizarTodo(); refrescarPaginaActiva();
+        await cargarKeys(); await cargarUsuarios(); actualizarTodo(); refrescarPaginaActiva();
     } catch(e){ alert("Error"); }
 }
 
@@ -1373,6 +1472,7 @@ function refrescarPaginaActiva(){
     if(p === "keys-game") renderKeysPage("game");
     if(p === "games") renderGamesList();
     if(p === "stats") renderStats();
+    if(p === "users") renderUsersPage();
 }
 
 /* ============================================================
