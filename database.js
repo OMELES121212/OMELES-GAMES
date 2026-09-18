@@ -33,29 +33,35 @@ db.prepare(`
     )
 `).run();
 
-// Migraciones
+db.prepare(`
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        key_id INTEGER NOT NULL,
+        created_at TEXT,
+        last_login TEXT,
+        FOREIGN KEY (key_id) REFERENCES keys(id) ON DELETE CASCADE
+    )
+`).run();
+
 try {
     const cols = db.prepare("PRAGMA table_info(keys)").all();
     if (!cols.some(c => c.name === "allowed_games")) {
         db.prepare("ALTER TABLE keys ADD COLUMN allowed_games TEXT DEFAULT NULL").run();
-        console.log("✅ Columna allowed_games añadida");
     }
     if (!cols.some(c => c.name === "permissions")) {
         db.prepare("ALTER TABLE keys ADD COLUMN permissions TEXT DEFAULT NULL").run();
-        console.log("✅ Columna permissions añadida");
     }
-} catch (e) {
-    console.error("Error migrando:", e.message);
-}
+} catch (e) { console.error("Migración:", e.message); }
 
 const ADMIN_KEY = process.env.ADMIN_KEY || "OMELES-ADMIN-2026";
 const exists = db.prepare("SELECT id FROM keys WHERE key = ?").get(ADMIN_KEY);
 if (!exists) {
-    db.prepare(`
-        INSERT INTO keys (key, type, created_at, expires_at, active, nickname, permissions)
-        VALUES (?, ?, ?, ?, 1, ?, ?)
-    `).run(ADMIN_KEY, "ADMIN_LIFETIME", new Date().toISOString(), null, "Root Admin", JSON.stringify(["*"]));
-    console.log(`✅ Root Admin key creada: ${ADMIN_KEY}`);
+    db.prepare(`INSERT INTO keys (key, type, created_at, expires_at, active, nickname, permissions)
+        VALUES (?, ?, ?, ?, 1, ?, ?)`)
+      .run(ADMIN_KEY, "ADMIN_LIFETIME", new Date().toISOString(), null, "Root Admin", JSON.stringify(["*"]));
+    console.log(`✅ Root Admin creado: ${ADMIN_KEY}`);
 }
 
 module.exports = db;
