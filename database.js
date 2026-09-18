@@ -2,7 +2,6 @@ const Database = require("better-sqlite3");
 const path = require("path");
 
 const db = new Database(path.join(__dirname, "omeles.db"));
-
 db.pragma("journal_mode = WAL");
 
 db.prepare(`
@@ -17,7 +16,8 @@ db.prepare(`
         use_count INTEGER DEFAULT 0,
         last_ip TEXT,
         last_used_at TEXT,
-        allowed_games TEXT DEFAULT NULL
+        allowed_games TEXT DEFAULT NULL,
+        permissions TEXT DEFAULT NULL
     )
 `).run();
 
@@ -33,25 +33,29 @@ db.prepare(`
     )
 `).run();
 
+// Migraciones
 try {
     const cols = db.prepare("PRAGMA table_info(keys)").all();
-    const hasAllowed = cols.some(c => c.name === "allowed_games");
-    if (!hasAllowed) {
+    if (!cols.some(c => c.name === "allowed_games")) {
         db.prepare("ALTER TABLE keys ADD COLUMN allowed_games TEXT DEFAULT NULL").run();
-        console.log("✅ Columna allowed_games añadida a keys");
+        console.log("✅ Columna allowed_games añadida");
+    }
+    if (!cols.some(c => c.name === "permissions")) {
+        db.prepare("ALTER TABLE keys ADD COLUMN permissions TEXT DEFAULT NULL").run();
+        console.log("✅ Columna permissions añadida");
     }
 } catch (e) {
-    console.error("Error migrando tabla keys:", e.message);
+    console.error("Error migrando:", e.message);
 }
 
 const ADMIN_KEY = process.env.ADMIN_KEY || "OMELES-ADMIN-2026";
 const exists = db.prepare("SELECT id FROM keys WHERE key = ?").get(ADMIN_KEY);
 if (!exists) {
     db.prepare(`
-        INSERT INTO keys (key, type, created_at, expires_at, active, nickname)
-        VALUES (?, ?, ?, ?, 1, ?)
-    `).run(ADMIN_KEY, "ADMIN_LIFETIME", new Date().toISOString(), null, "Root Admin");
-    console.log(`✅ Admin key raíz creada: ${ADMIN_KEY}`);
+        INSERT INTO keys (key, type, created_at, expires_at, active, nickname, permissions)
+        VALUES (?, ?, ?, ?, 1, ?, ?)
+    `).run(ADMIN_KEY, "ADMIN_LIFETIME", new Date().toISOString(), null, "Root Admin", JSON.stringify(["*"]));
+    console.log(`✅ Root Admin key creada: ${ADMIN_KEY}`);
 }
 
 module.exports = db;
