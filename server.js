@@ -148,7 +148,7 @@ app.get("/api/admin/keys", checkAdmin, (req, res) => {
 });
 
 app.post("/api/keys", checkAdmin, (req, res) => {
-    const { type } = req.body;
+    const { type, gameId } = req.body;
 
     const validos = [
         "24H", "7D", "30D", "LIFETIME", "ONE_USE",
@@ -159,8 +159,25 @@ app.post("/api/keys", checkAdmin, (req, res) => {
         return res.status(400).json({ success: false, message: "Tipo inválido" });
     }
 
+    // Validar gameId si viene
+    let allowed_games = null;
+    let gameIdPrefix = "";
+
+    if (gameId !== undefined && gameId !== null && gameId !== "") {
+        const gid = Number(gameId);
+        if (!Number.isFinite(gid) || gid <= 0) {
+            return res.status(400).json({ success: false, message: "ID de juego inválido" });
+        }
+        const game = db.prepare("SELECT id FROM games WHERE id = ? AND active = 1").get(gid);
+        if (!game) {
+            return res.status(404).json({ success: false, message: "Juego no encontrado" });
+        }
+        gameIdPrefix = `${gid}-`;
+        allowed_games = JSON.stringify([gid]);
+    }
+
     const rand = () => crypto.randomBytes(3).toString("hex").toUpperCase();
-    const keyStr = `OMELES-${rand()}-${rand()}`;
+    const keyStr = `OMELES-${gameIdPrefix}${rand()}-${rand()}`;
     const now = new Date();
     let expires = null;
 
@@ -174,10 +191,10 @@ app.post("/api/keys", checkAdmin, (req, res) => {
         expires = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString();
     }
 
-    db.prepare(`INSERT INTO keys (key, type, created_at, expires_at, active) VALUES (?, ?, ?, ?, 1)`)
-      .run(keyStr, type, now.toISOString(), expires);
+    db.prepare(`INSERT INTO keys (key, type, created_at, expires_at, active, allowed_games) VALUES (?, ?, ?, ?, 1, ?)`)
+      .run(keyStr, type, now.toISOString(), expires, allowed_games);
 
-    res.json({ success: true, key: keyStr });
+    res.json({ success: true, key: keyStr, gameId: gameIdPrefix ? Number(gameId) : null });
 });
 
 app.post("/api/admin/update-key-nickname", checkAdmin, (req, res) => {
