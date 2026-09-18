@@ -86,6 +86,7 @@
     .secondary { background: #171729; border: 1px solid #343451; }
     .admin-btn { background: linear-gradient(135deg, #ff8c00, #ffb347); }
     .admin-lifetime-btn { background: linear-gradient(135deg, #ff1744, #ff8c00); }
+    .games-key-btn { background: linear-gradient(135deg, #16a34a, #22c55e); }
 
     .key-result {
         display: none;
@@ -111,7 +112,7 @@
 
     .table-wrapper { overflow-x: auto; }
 
-    table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+    table { width: 100%; border-collapse: collapse; min-width: 1200px; }
 
     th, td {
         padding: 13px;
@@ -198,9 +199,7 @@
 
     .empty { text-align: center; color: #666; padding: 30px; }
 
-    /* =========================
-       MODAL
-    ========================= */
+    /* MODAL */
     .modal-overlay {
         display: none;
         position: fixed;
@@ -313,6 +312,80 @@
 
     .modal-actions button { margin: 0; }
 
+    /* KEY GAMES MODAL */
+    .key-games-toolbar {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+    }
+
+    .key-games-list {
+        max-height: 380px;
+        overflow-y: auto;
+        background: #08080e;
+        border: 1px solid #25253a;
+        border-radius: 12px;
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+
+    .key-game-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: .15s;
+        user-select: none;
+    }
+
+    .key-game-item:hover { background: rgba(123,44,255,.1); }
+
+    .key-game-item input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        accent-color: #22c55e;
+        cursor: pointer;
+        margin: 0;
+        flex-shrink: 0;
+    }
+
+    .key-game-item label {
+        flex: 1;
+        cursor: pointer;
+        font-size: 14px;
+        color: #fff;
+        margin: 0;
+    }
+
+    .key-games-mode {
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: 13px;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+
+    .key-games-mode.all {
+        background: rgba(0,255,157,.08);
+        border: 1px solid rgba(0,255,157,.25);
+        color: #00ff9d;
+    }
+
+    .key-games-mode.limited {
+        background: rgba(255,215,102,.08);
+        border: 1px solid rgba(255,215,102,.25);
+        color: #ffd166;
+    }
+
+    .key-games-count {
+        color: #888;
+        font-size: 12px;
+        margin-left: 6px;
+    }
+
     @media (max-width: 800px) {
         .form-grid { grid-template-columns: 1fr; }
         .form-grid .full { grid-column: auto; }
@@ -326,45 +399,22 @@
 
 <div class="container">
 
-    <div class="logo">
-        OMELES GAMES
-    </div>
-
-    <div class="subtitle">
-        PANEL DE ADMINISTRACIÓN
-    </div>
+    <div class="logo">OMELES GAMES</div>
+    <div class="subtitle">PANEL DE ADMINISTRACIÓN</div>
 
     <!-- LOGIN -->
-
     <div id="adminLogin" class="panel login-box">
-
         <h2>🔐 Acceso administrador</h2>
-
-        <input
-            id="adminKey"
-            type="password"
-            placeholder="Introduce la Admin Key"
-        >
-
-        <button
-            onclick="entrarAdmin()"
-            style="width:100%;"
-        >
-            ENTRAR AL PANEL
-        </button>
-
+        <input id="adminKey" type="password" placeholder="Introduce la Admin Key">
+        <button onclick="entrarAdmin()" style="width:100%;">ENTRAR AL PANEL</button>
         <div id="loginMessage" class="message"></div>
-
     </div>
 
     <!-- PANEL ADMIN -->
-
     <div id="adminPanel" class="hidden">
 
         <!-- GENERADOR DE KEYS -->
-
         <div class="panel">
-
             <h2>🔑 Generador de Keys</h2>
 
             <p style="color:#777;">
@@ -372,13 +422,11 @@
             </p>
 
             <div class="buttons">
-
                 <button onclick="crearKey('24H')">24 HORAS</button>
                 <button onclick="crearKey('7D')">7 DÍAS</button>
                 <button onclick="crearKey('30D')">30 DÍAS</button>
                 <button onclick="crearKey('LIFETIME')">LIFETIME</button>
                 <button onclick="crearKey('ONE_USE')">1 SOLO USO</button>
-
             </div>
 
             <p style="color:#777;margin-top:25px;">
@@ -386,65 +434,39 @@
             </p>
 
             <div class="buttons">
-
                 <button class="admin-btn" onclick="crearKey('ADMIN_24H')">👑 ADMIN 24H</button>
                 <button class="admin-btn" onclick="crearKey('ADMIN_7D')">👑 ADMIN 7D</button>
                 <button class="admin-btn" onclick="crearKey('ADMIN_30D')">👑 ADMIN 30D</button>
-                <button class="admin-btn" onclick="crearKey('ADMIN_ONE_USE')" title="Sirve 1 vez como cliente, indefinido como admin">👑 ADMIN 1 USO</button>
+                <button class="admin-btn" onclick="crearKey('ADMIN_ONE_USE')">👑 ADMIN 1 USO</button>
                 <button class="admin-lifetime-btn" onclick="crearKey('ADMIN_LIFETIME')">👑 ADMIN LIFETIME</button>
-
             </div>
 
             <div id="keyResult" class="key-result">
-
-                <div style="color:#777;">
-                    KEY GENERADA
-                </div>
-
-                <div
-                    id="generatedKey"
-                    class="generated-key">
-                </div>
-
-                <button
-                    class="copy"
-                    onclick="copiarKey()">
-                    📋 COPIAR KEY
-                </button>
-
+                <div style="color:#777;">KEY GENERADA</div>
+                <div id="generatedKey" class="generated-key"></div>
+                <button class="copy" onclick="copiarKey()">📋 COPIAR KEY</button>
             </div>
-
         </div>
 
         <!-- KEYS -->
-
         <div class="panel">
-
             <h2>📋 Keys creadas</h2>
 
-            <input
-                id="search"
-                class="search"
-                placeholder="Buscar key, mote, tipo, IP..."
-                oninput="filtrarKeys()"
-            >
+            <input id="search" class="search" placeholder="Buscar key, mote, tipo, IP..." oninput="filtrarKeys()">
 
-            <button onclick="cargarKeys()">
-                🔄 ACTUALIZAR
-            </button>
+            <button onclick="cargarKeys()">🔄 ACTUALIZAR</button>
 
             <div id="keysMessage" class="message"></div>
 
             <div class="table-wrapper">
-
                 <table>
-
                     <thead>
                         <tr>
                             <th>MOTE</th>
                             <th>KEY</th>
                             <th>TIPO</th>
                             <th>ESTADO</th>
+                            <th>JUEGOS</th>
                             <th>CREADA</th>
                             <th>EXPIRA</th>
                             <th>ÚLTIMA IP</th>
@@ -453,133 +475,78 @@
                             <th>ACCIÓN</th>
                         </tr>
                     </thead>
-
                     <tbody id="keysTable"></tbody>
-
                 </table>
-
             </div>
-
         </div>
 
         <!-- CREAR JUEGO -->
-
         <div class="panel">
-
             <h2>🎮 Añadir juego</h2>
-
-            <p style="color:#777;">
-                Añade un nuevo juego al catálogo de OMELES GAMES.
-            </p>
+            <p style="color:#777;">Añade un nuevo juego al catálogo de OMELES GAMES.</p>
 
             <div class="form-grid">
-
                 <div class="full">
-                    <input
-                        id="gameName"
-                        placeholder="Nombre del juego"
-                    >
+                    <input id="gameName" placeholder="Nombre del juego">
                 </div>
-
                 <div>
-                    <input
-                        id="gameDownload"
-                        placeholder="Link de descarga"
-                    >
+                    <input id="gameDownload" placeholder="Link de descarga">
                 </div>
-
                 <div>
-                    <input
-                        id="gameRepair"
-                        placeholder="Link de reparación"
-                    >
+                    <input id="gameRepair" placeholder="Link de reparación">
                 </div>
-
                 <div class="full">
-                    <input
-                        id="gamePassword"
-                        placeholder="Password del juego"
-                    >
+                    <input id="gamePassword" placeholder="Password del juego">
                 </div>
-
                 <div class="full">
-                    <input
-                        id="gameImage"
-                        placeholder="URL de imagen (ej: https://i.imgur.com/abc.jpg)"
-                    >
+                    <input id="gameImage" placeholder="URL de imagen (ej: https://i.imgur.com/abc.jpg)">
                 </div>
-
             </div>
 
-            <button onclick="crearJuego()">
-                ➕ AÑADIR JUEGO
-            </button>
-
+            <button onclick="crearJuego()">➕ AÑADIR JUEGO</button>
             <div id="gameMessage" class="message"></div>
-
         </div>
 
         <!-- GESTOR DE JUEGOS -->
-
         <div class="panel">
-
             <h2>🛠️ Editor de juegos</h2>
 
-            <input
-                id="gameSearch"
-                class="search"
-                placeholder="Buscar juego..."
-                oninput="filtrarJuegos()"
-            >
-
-            <button onclick="cargarJuegos()">
-                🔄 ACTUALIZAR JUEGOS
-            </button>
+            <input id="gameSearch" class="search" placeholder="Buscar juego..." oninput="filtrarJuegos()">
+            <button onclick="cargarJuegos()">🔄 ACTUALIZAR JUEGOS</button>
 
             <div id="gamesList"></div>
-
         </div>
 
     </div>
 
 </div>
 
-<!-- =========================
-     MODAL EDITAR JUEGO
-========================= -->
-
+<!-- MODAL EDITAR JUEGO -->
 <div id="editModal" class="modal-overlay">
     <div class="modal-box">
-
         <div class="modal-header">
             <h2>✏️ Editar juego</h2>
             <button class="modal-close" onclick="cerrarModalEditar()">✕</button>
         </div>
 
-        <div class="modal-preview" id="modalPreview">
-            <span>Sin imagen</span>
-        </div>
+        <div class="modal-preview" id="modalPreview"><span>Sin imagen</span></div>
 
         <div class="modal-field">
             <label>Nombre del juego</label>
             <input id="editName" type="text" placeholder="Nombre del juego">
         </div>
-
         <div class="modal-field">
             <label>Link de descarga</label>
             <input id="editDownload" type="text" placeholder="https://...">
         </div>
-
         <div class="modal-field">
             <label>Link de reparación</label>
             <input id="editRepair" type="text" placeholder="https://...">
         </div>
-
         <div class="modal-field">
             <label>Password del juego</label>
             <input id="editPassword" type="text" placeholder="Contraseña">
         </div>
-
         <div class="modal-field">
             <label>URL de imagen</label>
             <input id="editImage" type="text" placeholder="https://i.imgur.com/abc.jpg" oninput="actualizarPreview()">
@@ -594,13 +561,9 @@
     </div>
 </div>
 
-<!-- =========================
-     MODAL EDITAR MOTE
-========================= -->
-
+<!-- MODAL EDITAR MOTE -->
 <div id="nickModal" class="modal-overlay">
     <div class="modal-box" style="max-width: 450px;">
-
         <div class="modal-header">
             <h2>✏️ Editar mote</h2>
             <button class="modal-close" onclick="cerrarModalMote()">✕</button>
@@ -620,6 +583,39 @@
     </div>
 </div>
 
+<!-- MODAL JUEGOS POR KEY -->
+<div id="keyGamesModal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 650px;">
+        <div class="modal-header">
+            <h2>🎮 Juegos permitidos</h2>
+            <button class="modal-close" onclick="cerrarModalJuegosKey()">✕</button>
+        </div>
+
+        <p style="color:#888;font-size:13px;margin-bottom:15px;">
+            <strong style="color:#00c8ff;">MODO ACTUAL:</strong>
+            <span id="keyGamesMode">Cargando...</span>
+        </p>
+
+        <div class="key-games-toolbar">
+            <button class="secondary" onclick="marcarTodosJuegos(true)">✅ Todos</button>
+            <button class="secondary" onclick="marcarTodosJuegos(false)">❌ Ninguno</button>
+            <button class="secondary" onclick="marcarTodosJuegos('invert')">🔁 Invertir</button>
+        </div>
+
+        <input id="keyGamesSearch" placeholder="🔍 Buscar juego..." oninput="filtrarJuegosKey()">
+
+        <div id="keyGamesList" class="key-games-list"></div>
+
+        <div class="modal-actions">
+            <button class="secondary" onclick="cerrarModalJuegosKey()">CANCELAR</button>
+            <button onclick="guardarJuegosKey()" style="background:linear-gradient(135deg,#16a34a,#22c55e)">💾 GUARDAR JUEGOS</button>
+        </div>
+
+        <div id="keyGamesMessage" class="message"></div>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
 <script>
 
 let adminKeyValue = "";
@@ -627,14 +623,15 @@ let todasLasKeys = [];
 let todosLosJuegos = [];
 let juegoEditandoId = null;
 let keyEditandoId = null;
+let keyGamesEditandoId = null;
+let keyGamesSelected = [];
+let keyGamesAll = [];
 let socket = null;
 
 /* ======================================================
    LOGIN ADMIN
 ====================================================== */
-
 async function entrarAdmin() {
-
     const key = document.getElementById("adminKey").value.trim();
     const message = document.getElementById("loginMessage");
 
@@ -644,7 +641,6 @@ async function entrarAdmin() {
     }
 
     try {
-
         const response = await fetch("/api/admin/keys", {
             method: "GET",
             headers: { "x-admin-key": key }
@@ -662,7 +658,6 @@ async function entrarAdmin() {
         document.getElementById("adminLogin").classList.add("hidden");
         document.getElementById("adminPanel").classList.remove("hidden");
 
-        // Conectar Socket.IO con la key del admin
         conectarSocket();
 
         todasLasKeys = data.keys || [];
@@ -676,44 +671,30 @@ async function entrarAdmin() {
 }
 
 /* ======================================================
-   SOCKET.IO - TIEMPO REAL
+   SOCKET.IO
 ====================================================== */
-
 function conectarSocket() {
+    if (socket) { socket.disconnect(); socket = null; }
 
-    if (socket) {
-        socket.disconnect();
-        socket = null;
-    }
-
-    socket = io({
-        auth: {
-            key: adminKeyValue
-        }
-    });
+    socket = io({ auth: { key: adminKeyValue } });
 
     socket.on("connect", () => {
         console.log("✅ Socket conectado con key admin");
     });
 
-    // 🔴 Kick en tiempo real si revocan nuestra key
     socket.on("key-revoked", (data) => {
-        console.log("🚫 Evento key-revoked recibido:", data);
-
         if (data.key === adminKeyValue) {
             alert("⚠️ Tu Admin Key ha sido revocada.\n\nSerás expulsado del panel.");
             adminKeyValue = "";
             location.reload();
             return;
         }
-
         if (adminKeyValue) {
             cargarJuegos();
             cargarKeys();
         }
     });
 
-    // Actualización de catálogo en tiempo real
     socket.on("games-updated", () => {
         if (adminKeyValue) {
             cargarJuegos();
@@ -725,16 +706,10 @@ function conectarSocket() {
 /* ======================================================
    CREAR KEY
 ====================================================== */
-
 async function crearKey(type) {
-
-    if (!adminKeyValue) {
-        alert("Primero inicia sesión como administrador.");
-        return;
-    }
+    if (!adminKeyValue) { alert("Primero inicia sesión como administrador."); return; }
 
     try {
-
         const response = await fetch("/api/keys", {
             method: "POST",
             headers: {
@@ -762,15 +737,9 @@ async function crearKey(type) {
     }
 }
 
-/* ======================================================
-   COPIAR KEY
-====================================================== */
-
 async function copiarKey() {
-
     const key = document.getElementById("generatedKey").textContent;
     if (!key) return;
-
     try {
         await navigator.clipboard.writeText(key);
         alert("Key copiada.");
@@ -782,13 +751,10 @@ async function copiarKey() {
 /* ======================================================
    CARGAR KEYS
 ====================================================== */
-
 async function cargarKeys() {
-
     if (!adminKeyValue) return;
 
     try {
-
         const response = await fetch("/api/admin/keys", {
             method: "GET",
             headers: { "x-admin-key": adminKeyValue }
@@ -819,25 +785,16 @@ async function cargarKeys() {
 /* ======================================================
    MOSTRAR KEYS
 ====================================================== */
-
 function mostrarKeys(keys) {
-
     const table = document.getElementById("keysTable");
     table.innerHTML = "";
 
     if (!keys || !keys.length) {
-        table.innerHTML = `
-            <tr>
-                <td colspan="10" class="empty">
-                    No hay keys creadas.
-                </td>
-            </tr>
-        `;
+        table.innerHTML = `<tr><td colspan="11" class="empty">No hay keys creadas.</td></tr>`;
         return;
     }
 
     keys.forEach(key => {
-
         const tr = document.createElement("tr");
 
         let estado = "";
@@ -859,52 +816,43 @@ function mostrarKeys(keys) {
         }
 
         let tipo;
-        if (key.type === "ONE_USE") {
-            tipo = `<span class="one-use">1 USO</span>`;
-        } else if (key.type === "ADMIN") {
-            tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN</span>`;
-        } else if (key.type === "ADMIN_24H") {
-            tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN 24H</span>`;
-        } else if (key.type === "ADMIN_7D") {
-            tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN 7D</span>`;
-        } else if (key.type === "ADMIN_30D") {
-            tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN 30D</span>`;
-        } else if (key.type === "ADMIN_ONE_USE") {
-            tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN 1 USO</span>`;
-        } else if (key.type === "ADMIN_LIFETIME") {
-            tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN LIFETIME</span>`;
+        if (key.type === "ONE_USE") tipo = `<span class="one-use">1 USO</span>`;
+        else if (key.type === "ADMIN") tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN</span>`;
+        else if (key.type === "ADMIN_24H") tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN 24H</span>`;
+        else if (key.type === "ADMIN_7D") tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN 7D</span>`;
+        else if (key.type === "ADMIN_30D") tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN 30D</span>`;
+        else if (key.type === "ADMIN_ONE_USE") tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN 1 USO</span>`;
+        else if (key.type === "ADMIN_LIFETIME") tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN LIFETIME</span>`;
+        else tipo = escapeHTML(key.type);
+
+        let juegosTxt;
+        if (!key.allowed_games) {
+            juegosTxt = `<span style="color:#00ff9d;">🌐 TODOS</span>`;
         } else {
-            tipo = escapeHTML(key.type);
+            try {
+                const arr = JSON.parse(key.allowed_games);
+                juegosTxt = `<span style="color:#ffd166;">🎯 ${arr.length} juego${arr.length === 1 ? "" : "s"}</span>`;
+            } catch {
+                juegosTxt = `<span style="color:#00ff9d;">🌐 TODOS</span>`;
+            }
         }
 
         tr.innerHTML = `
-            <td>
-                <span class="nickname">
-                    ${key.nickname ? escapeHTML(key.nickname) : "Sin mote"}
-                </span>
-            </td>
-            <td>
-                <strong class="key-text">${escapeHTML(key.key)}</strong>
-            </td>
+            <td><span class="nickname">${key.nickname ? escapeHTML(key.nickname) : "Sin mote"}</span></td>
+            <td><strong class="key-text">${escapeHTML(key.key)}</strong></td>
             <td>${tipo}</td>
             <td><span class="${claseEstado}">${estado}</span></td>
+            <td>${juegosTxt}</td>
             <td>${formatearFecha(key.created_at)}</td>
             <td>${key.expires_at ? formatearFecha(key.expires_at) : "∞"}</td>
             <td>${key.last_ip ? escapeHTML(key.last_ip) : "-"}</td>
             <td>${key.last_used_at ? formatearFecha(key.last_used_at) : "-"}</td>
             <td>${Number(key.use_count) || 0}</td>
             <td>
-                <button class="edit" onclick="abrirModalMote(${Number(key.id)})">
-                    ✏️ MOTE
-                </button>
-                ${key.active ? `
-                    <button class="secondary" onclick="revocarKey(${Number(key.id)})">
-                        REVOCAR
-                    </button>
-                ` : ""}
-                <button class="danger" onclick="eliminarKey(${Number(key.id)})">
-                    🗑️
-                </button>
+                <button class="edit" onclick="abrirModalMote(${Number(key.id)})">✏️ MOTE</button>
+                <button class="games-key-btn" onclick="abrirModalJuegosKey(${Number(key.id)})">🎮 JUEGOS</button>
+                ${key.active ? `<button class="secondary" onclick="revocarKey(${Number(key.id)})">REVOCAR</button>` : ""}
+                <button class="danger" onclick="eliminarKey(${Number(key.id)})">🗑️</button>
             </td>
         `;
 
@@ -915,14 +863,9 @@ function mostrarKeys(keys) {
 /* ======================================================
    MODAL EDITAR MOTE
 ====================================================== */
-
 function abrirModalMote(id) {
-
     const key = todasLasKeys.find(k => Number(k.id) === Number(id));
-    if (!key) {
-        alert("Key no encontrada.");
-        return;
-    }
+    if (!key) { alert("Key no encontrada."); return; }
 
     keyEditandoId = id;
     document.getElementById("editNickname").value = key.nickname || "";
@@ -940,14 +883,12 @@ function cerrarModalMote() {
 }
 
 async function guardarMote() {
-
     if (!keyEditandoId) return;
 
     const nickname = document.getElementById("editNickname").value.trim();
     const message = document.getElementById("nickMessage");
 
     try {
-
         const response = await fetch("/api/admin/update-key-nickname", {
             method: "POST",
             headers: {
@@ -965,9 +906,7 @@ async function guardarMote() {
         }
 
         mostrarMensaje(message, "✅ Mote actualizado.", true);
-
         await cargarKeys();
-
         setTimeout(() => cerrarModalMote(), 500);
 
     } catch (error) {
@@ -977,15 +916,166 @@ async function guardarMote() {
 }
 
 /* ======================================================
-   REVOCAR KEY
+   MODAL JUEGOS POR KEY
 ====================================================== */
+async function abrirModalJuegosKey(id) {
+    const key = todasLasKeys.find(k => Number(k.id) === Number(id));
+    if (!key) { alert("Key no encontrada."); return; }
 
+    keyGamesEditandoId = id;
+
+    const msg = document.getElementById("keyGamesMessage");
+    msg.style.display = "none";
+
+    document.getElementById("keyGamesList").innerHTML = `<div style="padding:20px;text-align:center;color:#666;">Cargando...</div>`;
+    document.getElementById("keyGamesModal").classList.add("open");
+
+    try {
+        const r = await fetch(`/api/admin/key-games/${id}`, {
+            headers: { "x-admin-key": adminKeyValue }
+        });
+        const d = await r.json();
+
+        if (!r.ok || !d.success) {
+            document.getElementById("keyGamesList").innerHTML = `<div style="padding:20px;text-align:center;color:#ff5672;">Error cargando juegos.</div>`;
+            return;
+        }
+
+        keyGamesAll = d.allGames || [];
+        keyGamesSelected = d.allowed === null
+            ? keyGamesAll.map(g => Number(g.id))
+            : d.allowed.map(Number);
+
+        actualizarModoJuegosKey();
+        renderJuegosKey();
+
+    } catch (e) {
+        console.error(e);
+        document.getElementById("keyGamesList").innerHTML = `<div style="padding:20px;text-align:center;color:#ff5672;">Error de conexión.</div>`;
+    }
+}
+
+function cerrarModalJuegosKey() {
+    document.getElementById("keyGamesModal").classList.remove("open");
+    keyGamesEditandoId = null;
+    keyGamesSelected = [];
+}
+
+function actualizarModoJuegosKey() {
+    const el = document.getElementById("keyGamesMode");
+    const total = keyGamesAll.length;
+    const sel = keyGamesSelected.length;
+
+    if (sel === 0) {
+        el.className = "key-games-mode limited";
+        el.textContent = "⚠️ SIN JUEGOS — la key no podrá ver nada";
+    } else if (sel === total) {
+        el.className = "key-games-mode all";
+        el.textContent = `🌐 TODOS los juegos (${total})`;
+    } else {
+        el.className = "key-games-mode limited";
+        el.textContent = `🎯 Limitada: ${sel} de ${total} juegos`;
+    }
+}
+
+function renderJuegosKey() {
+    const list = document.getElementById("keyGamesList");
+    const filtro = document.getElementById("keyGamesSearch").value.toLowerCase().trim();
+
+    const visibles = keyGamesAll.filter(g => !filtro || g.name.toLowerCase().includes(filtro));
+
+    if (visibles.length === 0) {
+        list.innerHTML = `<div style="padding:20px;text-align:center;color:#666;">No hay juegos.</div>`;
+        return;
+    }
+
+    list.innerHTML = visibles.map(g => {
+        const checked = keyGamesSelected.includes(Number(g.id)) ? "checked" : "";
+        return `
+            <div class="key-game-item">
+                <input type="checkbox" id="kg_${g.id}" ${checked} onchange="toggleJuegoKey(${g.id}, this.checked)">
+                <label for="kg_${g.id}">${escapeHTML(g.name)} <span class="key-games-count">#${g.id}</span></label>
+            </div>
+        `;
+    }).join("");
+}
+
+function filtrarJuegosKey() {
+    renderJuegosKey();
+}
+
+function toggleJuegoKey(id, checked) {
+    id = Number(id);
+    if (checked) {
+        if (!keyGamesSelected.includes(id)) keyGamesSelected.push(id);
+    } else {
+        keyGamesSelected = keyGamesSelected.filter(x => x !== id);
+    }
+    actualizarModoJuegosKey();
+}
+
+function marcarTodosJuegos(modo) {
+    if (modo === true) {
+        keyGamesSelected = keyGamesAll.map(g => Number(g.id));
+    } else if (modo === false) {
+        keyGamesSelected = [];
+    } else if (modo === "invert") {
+        keyGamesSelected = keyGamesAll
+            .filter(g => !keyGamesSelected.includes(Number(g.id)))
+            .map(g => Number(g.id));
+    }
+    actualizarModoJuegosKey();
+    renderJuegosKey();
+}
+
+async function guardarJuegosKey() {
+    if (!keyGamesEditandoId) return;
+
+    const message = document.getElementById("keyGamesMessage");
+    const total = keyGamesAll.length;
+
+    let allowed;
+    if (keyGamesSelected.length === total) {
+        allowed = null;
+    } else {
+        allowed = keyGamesSelected;
+    }
+
+    try {
+        const response = await fetch("/api/admin/update-key-games", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-admin-key": adminKeyValue
+            },
+            body: JSON.stringify({ id: keyGamesEditandoId, allowed: allowed })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            mostrarMensaje(message, data.message || "No se pudo guardar.", false);
+            return;
+        }
+
+        mostrarMensaje(message, "✅ Juegos actualizados. El usuario verá los cambios al instante.", true);
+
+        await cargarKeys();
+        setTimeout(() => cerrarModalJuegosKey(), 900);
+
+    } catch (error) {
+        console.error(error);
+        mostrarMensaje(message, "Error conectando con el servidor.", false);
+    }
+}
+
+/* ======================================================
+   REVOCAR / ELIMINAR KEY
+====================================================== */
 async function revocarKey(id) {
-
     if (!confirm("¿Seguro que quieres revocar esta key?\n\nLa key dejará de funcionar y se expulsará al usuario conectado.")) return;
 
     try {
-
         const response = await fetch("/api/admin/revoke-key", {
             method: "POST",
             headers: {
@@ -1010,16 +1100,10 @@ async function revocarKey(id) {
     }
 }
 
-/* ======================================================
-   ELIMINAR KEY
-====================================================== */
-
 async function eliminarKey(id) {
-
-    if (!confirm("⚠️ ELIMINAR KEY\n\nEsta acción eliminará la key definitivamente de la base de datos y expulsará al usuario conectado.\n\n¿Quieres continuar?")) return;
+    if (!confirm("⚠️ ELIMINAR KEY\n\nEsta acción eliminará la key definitivamente y expulsará al usuario conectado.\n\n¿Quieres continuar?")) return;
 
     try {
-
         const response = await fetch("/api/admin/delete-key", {
             method: "POST",
             headers: {
@@ -1047,9 +1131,7 @@ async function eliminarKey(id) {
 /* ======================================================
    FILTRAR KEYS
 ====================================================== */
-
 function filtrarKeys() {
-
     const texto = document.getElementById("search").value.toLowerCase().trim();
 
     if (!texto) {
@@ -1057,14 +1139,12 @@ function filtrarKeys() {
         return;
     }
 
-    const filtradas = todasLasKeys.filter(key => {
-        return (
-            String(key.key).toLowerCase().includes(texto) ||
-            String(key.nickname || "").toLowerCase().includes(texto) ||
-            String(key.type).toLowerCase().includes(texto) ||
-            String(key.last_ip || "").toLowerCase().includes(texto)
-        );
-    });
+    const filtradas = todasLasKeys.filter(key => (
+        String(key.key).toLowerCase().includes(texto) ||
+        String(key.nickname || "").toLowerCase().includes(texto) ||
+        String(key.type).toLowerCase().includes(texto) ||
+        String(key.last_ip || "").toLowerCase().includes(texto)
+    ));
 
     mostrarKeys(filtradas);
 }
@@ -1072,9 +1152,7 @@ function filtrarKeys() {
 /* ======================================================
    CREAR JUEGO
 ====================================================== */
-
 async function crearJuego() {
-
     const name = document.getElementById("gameName").value.trim();
     const download = document.getElementById("gameDownload").value.trim();
     const repair = document.getElementById("gameRepair").value.trim();
@@ -1088,7 +1166,6 @@ async function crearJuego() {
     }
 
     try {
-
         const response = await fetch("/api/games", {
             method: "POST",
             headers: {
@@ -1124,13 +1201,10 @@ async function crearJuego() {
 /* ======================================================
    CARGAR JUEGOS
 ====================================================== */
-
 async function cargarJuegos() {
-
     if (!adminKeyValue) return;
 
     try {
-
         const response = await fetch("/api/admin/games", {
             method: "GET",
             headers: { "x-admin-key": adminKeyValue }
@@ -1161,23 +1235,16 @@ async function cargarJuegos() {
 /* ======================================================
    MOSTRAR JUEGOS
 ====================================================== */
-
 function mostrarJuegos(juegos) {
-
     const container = document.getElementById("gamesList");
     container.innerHTML = "";
 
     if (!juegos || !juegos.length) {
-        container.innerHTML = `
-            <div class="empty">
-                No hay juegos creados.
-            </div>
-        `;
+        container.innerHTML = `<div class="empty">No hay juegos creados.</div>`;
         return;
     }
 
     juegos.forEach(game => {
-
         const card = document.createElement("div");
         card.className = "game-card";
 
@@ -1212,12 +1279,8 @@ function mostrarJuegos(juegos) {
             </div>
 
             <div style="margin-top:15px;clear:both;">
-                <button class="edit" onclick="abrirModalEditar(${Number(game.id)})">
-                    ✏️ EDITAR
-                </button>
-                <button class="danger" onclick="eliminarJuego(${Number(game.id)})">
-                    🗑️ BORRAR
-                </button>
+                <button class="edit" onclick="abrirModalEditar(${Number(game.id)})">✏️ EDITAR</button>
+                <button class="danger" onclick="eliminarJuego(${Number(game.id)})">🗑️ BORRAR</button>
             </div>
         `;
 
@@ -1228,14 +1291,9 @@ function mostrarJuegos(juegos) {
 /* ======================================================
    MODAL EDITAR JUEGO
 ====================================================== */
-
 function abrirModalEditar(id) {
-
     const juego = todosLosJuegos.find(g => Number(g.id) === Number(id));
-    if (!juego) {
-        alert("Juego no encontrado.");
-        return;
-    }
+    if (!juego) { alert("Juego no encontrado."); return; }
 
     juegoEditandoId = id;
 
@@ -1273,7 +1331,6 @@ function actualizarPreview() {
 }
 
 async function guardarEdicion() {
-
     if (!juegoEditandoId) return;
 
     const name = document.getElementById("editName").value.trim();
@@ -1289,21 +1346,13 @@ async function guardarEdicion() {
     }
 
     try {
-
         const response = await fetch("/api/admin/update-game", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "x-admin-key": adminKeyValue
             },
-            body: JSON.stringify({
-                id: juegoEditandoId,
-                name,
-                download,
-                repair,
-                password,
-                image
-            })
+            body: JSON.stringify({ id: juegoEditandoId, name, download, repair, password, image })
         });
 
         const data = await response.json();
@@ -1316,7 +1365,6 @@ async function guardarEdicion() {
         mostrarMensaje(message, "✅ Juego actualizado correctamente.", true);
 
         await cargarJuegos();
-
         setTimeout(() => cerrarModalEditar(), 700);
 
     } catch (error) {
@@ -1332,26 +1380,27 @@ document.getElementById("editModal").addEventListener("click", (e) => {
 document.getElementById("nickModal").addEventListener("click", (e) => {
     if (e.target.id === "nickModal") cerrarModalMote();
 });
+document.getElementById("keyGamesModal").addEventListener("click", (e) => {
+    if (e.target.id === "keyGamesModal") cerrarModalJuegosKey();
+});
 document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
         if (document.getElementById("editModal").classList.contains("open")) cerrarModalEditar();
         if (document.getElementById("nickModal").classList.contains("open")) cerrarModalMote();
+        if (document.getElementById("keyGamesModal").classList.contains("open")) cerrarModalJuegosKey();
     }
 });
 
 /* ======================================================
    ELIMINAR JUEGO
 ====================================================== */
-
 async function eliminarJuego(id) {
-
     const juego = todosLosJuegos.find(game => Number(game.id) === Number(id));
     const nombre = juego ? juego.name : "este juego";
 
     if (!confirm(`⚠️ BORRAR JUEGO\n\nVas a eliminar "${nombre}" definitivamente.\n\n¿Quieres continuar?`)) return;
 
     try {
-
         const response = await fetch("/api/admin/delete-game", {
             method: "POST",
             headers: {
@@ -1379,9 +1428,7 @@ async function eliminarJuego(id) {
 /* ======================================================
    FILTRAR JUEGOS
 ====================================================== */
-
 function filtrarJuegos() {
-
     const texto = document.getElementById("gameSearch").value.toLowerCase().trim();
 
     if (!texto) {
@@ -1399,7 +1446,6 @@ function filtrarJuegos() {
 /* ======================================================
    FECHAS
 ====================================================== */
-
 function formatearFecha(fecha) {
     if (!fecha) return "-";
     const d = new Date(fecha);
@@ -1410,7 +1456,6 @@ function formatearFecha(fecha) {
 /* ======================================================
    SEGURIDAD HTML
 ====================================================== */
-
 function escapeHTML(texto) {
     return String(texto ?? "")
         .replaceAll("&", "&amp;")
@@ -1420,18 +1465,9 @@ function escapeHTML(texto) {
         .replaceAll("'", "&#039;");
 }
 
-function escapeJS(texto) {
-    return String(texto ?? "")
-        .replaceAll("\\", "\\\\")
-        .replaceAll("'", "\\'")
-        .replaceAll("\n", "\\n")
-        .replaceAll("\r", "");
-}
-
 /* ======================================================
    MENSAJES
 ====================================================== */
-
 function mostrarMensaje(elemento, texto, correcto) {
     elemento.textContent = texto;
     elemento.className = "message " + (correcto ? "success" : "error");
@@ -1441,13 +1477,11 @@ function mostrarMensaje(elemento, texto, correcto) {
 /* ======================================================
    ENTER LOGIN
 ====================================================== */
-
 document.getElementById("adminKey").addEventListener("keydown", function(event) {
     if (event.key === "Enter") entrarAdmin();
 });
 
 </script>
 
-<script src="/socket.io/socket.io.js"></script>
 </body>
 </html>
