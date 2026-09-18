@@ -285,6 +285,7 @@ display:flex;align-items:center;justify-content:center;font-family:inherit}
                 <div class="nav-title">Sistema</div>
                 <div class="nav-item" data-page="games" onclick="navigateTo('games')"><span class="ico">🕹️</span>Gestionar Juegos</div>
                 <div class="nav-item" data-page="stats" onclick="navigateTo('stats')"><span class="ico">📈</span>Estadísticas</div>
+                <div class="nav-item" data-page="backup" onclick="navigateTo('backup')"><span class="ico">💾</span>Backup DB</div>
             </div>
         </nav>
 
@@ -451,6 +452,37 @@ display:flex;align-items:center;justify-content:center;font-family:inherit}
             <div class="card"><div class="card-title">🌐 IPs</div><div id="statsByIp"></div></div>
         </div>
 
+        <!-- NUEVA PÁGINA: BACKUP -->
+        <div id="page-backup" class="page">
+            <div class="page-head"><h1>💾 Backup de Base de Datos</h1><p>Descarga una copia completa de todos los datos</p></div>
+
+            <div class="card">
+                <div class="card-title">📦 Descargar copia de seguridad</div>
+                <div class="card-sub">Descarga el archivo <b style="color:#00c8ff;">omeles.db</b> completo con todas las keys, juegos y usuarios.</div>
+                <button class="btn full success" onclick="descargarBackup()" id="backupBtn" style="padding:16px;font-size:15px;">⬇️ DESCARGAR omeles.db</button>
+                <div id="backupMessage" class="msg"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">ℹ️ Información</div>
+                <div style="color:#aaa;font-size:13px;line-height:2;">
+                    <div>📁 <b style="color:#fff;">Archivo:</b> <code style="color:#00c8ff;font-family:monospace;">omeles.db</code></div>
+                    <div>🗄️ <b style="color:#fff;">Formato:</b> SQLite (ábrelo con <a href="https://sqlitebrowser.org/" target="_blank" style="color:#8b5cff;">DB Browser for SQLite</a>)</div>
+                    <div>📊 <b style="color:#fff;">Contenido:</b> Keys, juegos y usuarios registrados</div>
+                    <div>💡 <b style="color:#fff;">Consejo:</b> Guarda backups regularmente para no perder datos</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🔍 ¿Dónde se guardan los datos?</div>
+                <div style="color:#aaa;font-size:13px;line-height:2;">
+                    <div>• En <b style="color:#fff;">local</b>: <code style="color:#00c8ff;">tu-proyecto/omeles.db</code></div>
+                    <div>• En <b style="color:#fff;">Railway</b>: dentro del volumen persistente <code style="color:#00c8ff;">/data/omeles.db</code></div>
+                    <div>• Cada vez que creas/editas algo, se actualiza automáticamente este archivo</div>
+                </div>
+            </div>
+        </div>
+
     </main>
 </div>
 
@@ -558,6 +590,7 @@ const PERMISOS_DISPONIBLES = [
     { id:"users",           icon:"👥", name:"Usuarios Registrados", desc:"Ver cuentas y contraseñas" },
     { id:"games",           icon:"🕹️", name:"Gestionar Juegos",     desc:"Añadir, editar, eliminar juegos" },
     { id:"stats",           icon:"📈", name:"Estadísticas",         desc:"Ver estadísticas" },
+    { id:"backup",          icon:"💾", name:"Backup DB",            desc:"Descargar copia de la base de datos" },
     { id:"manage_permissions", icon:"🔐", name:"Gestionar permisos", desc:"Puede editar permisos de otros admins" }
 ];
 
@@ -727,7 +760,7 @@ async function entrarAdmin(){
         await cargarUsuarios();
         actualizarTodo();
 
-        const inicio = ["dashboard","generate","keys-all","keys-global","keys-exhausted","keys-game","users","games","stats"]
+        const inicio = ["dashboard","generate","keys-all","keys-global","keys-exhausted","keys-game","users","games","stats","backup"]
             .find(p => tengoPermiso(p));
         if(inicio) navigateTo(inicio);
         else document.getElementById("page-dashboard").classList.add("active");
@@ -1504,6 +1537,51 @@ function renderStats(){
     document.getElementById("statsByIp").innerHTML = ipEntries.length
         ? ipEntries.map(([ip,c]) => `<div style="display:flex;justify-content:space-between;padding:10px 14px;border-radius:9px;background:rgba(255,255,255,.02);margin-bottom:7px;font-size:12.5px;"><span style="font-family:monospace;color:#ddd;">${escapeHTML(ip)}</span><span style="color:#b99cff;font-weight:700;">${c}</span></div>`).join("")
         : `<div class="empty"><span class="empty-ico">🌐</span>Sin datos</div>`;
+}
+
+/* ============================================================
+   BACKUP - Descargar base de datos
+============================================================ */
+async function descargarBackup(){
+    const btn = document.getElementById("backupBtn");
+    const msg = document.getElementById("backupMessage");
+    msg.style.display = "none";
+    btn.disabled = true;
+    btn.textContent = "⏳ DESCARGANDO...";
+
+    try{
+        const r = await fetch("/api/admin/download-db",{
+            headers:{ "x-admin-key": adminKeyValue }
+        });
+
+        if(!r.ok){
+            showMsg("backupMessage", "Error al descargar. Verifica que el endpoint existe en server.js.", false);
+            btn.disabled = false;
+            btn.textContent = "⬇️ DESCARGAR omeles.db";
+            return;
+        }
+
+        const blob = await r.blob();
+        const fecha = new Date().toISOString().slice(0,10);
+        const nombre = `omeles-backup-${fecha}.db`;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = nombre;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+
+        showMsg("backupMessage", `✅ Backup descargado: ${nombre}`, true);
+        toast("Backup descargado correctamente", "success");
+    } catch(e){
+        console.error(e);
+        showMsg("backupMessage", "Error de conexión con el servidor", false);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = "⬇️ DESCARGAR omeles.db";
+    }
 }
 
 /* ============================================================
