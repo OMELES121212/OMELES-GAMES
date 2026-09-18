@@ -366,11 +366,47 @@ header{padding:0 20px;height:70px}.status{display:none}.session-timer{display:no
 <div id="loginScreen">
     <div class="login-box">
         <div class="login-logo">OMELES <span>GAMES</span></div>
-        <div class="login-sub">Introduce tu KEY para continuar</div>
-        <input id="keyInput" class="key-input" type="text" placeholder="OMELES-XXXXXX-XXXXXX" autocomplete="off">
-        <button id="loginBtn" class="login-btn" onclick="iniciarSesion()">ENTRAR</button>
-        <div id="loginMessage"></div>
-        <div class="login-hint">🔐 Pulsa <b>Ctrl+K</b> después de entrar para abrir el Command Palette</div>
+
+        <div class="login-tabs">
+            <button class="login-tab active" data-tab="login" onclick="setLoginTab('login')">👤 Iniciar sesión</button>
+            <button class="login-tab" data-tab="register" onclick="setLoginTab('register')">✨ Registrarse</button>
+        </div>
+
+        <!-- LOGIN -->
+        <div id="loginForm">
+            <div class="login-sub">Entra con tu usuario y contraseña</div>
+            <input id="userInput" class="key-input" type="text" placeholder="Usuario" autocomplete="username">
+            <input id="passInput" class="key-input" type="password" placeholder="Contraseña" autocomplete="current-password">
+            <button id="loginBtn" class="login-btn" onclick="iniciarSesion()">ENTRAR</button>
+            <div id="loginMessage"></div>
+            <div class="login-hint" style="margin-top:14px;">
+                <a href="#" onclick="setLoginTab('keyonly');return false;" style="color:#8b5cff;text-decoration:none;font-weight:700;">🔑 Entrar solo con KEY</a>
+            </div>
+        </div>
+
+        <!-- REGISTER -->
+        <div id="registerForm" style="display:none;">
+            <div class="login-sub">Crea tu cuenta con una KEY válida</div>
+            <input id="regKey" class="key-input" type="text" placeholder="OMELES-XXXXXX-XXXXXX" autocomplete="off">
+            <input id="regUser" class="key-input" type="text" placeholder="Usuario (3-20 caracteres)" autocomplete="off">
+            <input id="regPass" class="key-input" type="password" placeholder="Contraseña (min. 4)">
+            <input id="regPass2" class="key-input" type="password" placeholder="Repite la contraseña">
+            <button id="registerBtn" class="login-btn" onclick="registrarUsuario()">CREAR CUENTA</button>
+            <div id="registerMessage"></div>
+        </div>
+
+        <!-- KEY ONLY -->
+        <div id="keyOnlyForm" style="display:none;">
+            <div class="login-sub">Entrada directa con KEY (admins)</div>
+            <input id="keyInput" class="key-input" type="text" placeholder="OMELES-XXXXXX-XXXXXX" autocomplete="off">
+            <button id="loginBtn2" class="login-btn" onclick="iniciarSesionKey()">ENTRAR CON KEY</button>
+            <div id="loginMessage2"></div>
+            <div class="login-hint" style="margin-top:14px;">
+                <a href="#" onclick="setLoginTab('login');return false;" style="color:#8b5cff;text-decoration:none;font-weight:700;">← Volver al login normal</a>
+            </div>
+        </div>
+
+        <div class="login-hint">🔐 Pulsa <b>Ctrl+K</b> después de entrar</div>
     </div>
 </div>
 
@@ -404,7 +440,7 @@ header{padding:0 20px;height:70px}.status{display:none}.session-timer{display:no
         </div>
         <section id="games" class="games"></section>
     </main>
-    <footer>OMELES GAMES © 2026 · Hecho con 💜</footer>
+    <footer>OMELES GAMES © 2026 · Hecho con determinacion</footer>
 </div>
 
 <div id="gameModal" class="game-modal">
