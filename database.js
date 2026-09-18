@@ -2,10 +2,8 @@ const Database = require("better-sqlite3");
 const path = require("path");
 const fs = require("fs");
 
-// 🔑 Usa DB_PATH (volume de Railway), o cae al directorio del proyecto si no existe
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, "omeles.db");
 
-// Asegurar que la carpeta existe (por si es /data y aún no está creada)
 const dbDir = path.dirname(DB_PATH);
 if (!fs.existsSync(dbDir)) {
     fs.mkdirSync(dbDir, { recursive: true });
@@ -29,7 +27,8 @@ db.prepare(`
         last_ip TEXT,
         last_used_at TEXT,
         allowed_games TEXT DEFAULT NULL,
-        permissions TEXT DEFAULT NULL
+        permissions TEXT DEFAULT NULL,
+        massive INTEGER DEFAULT 0
     )
 `).run();
 
@@ -59,13 +58,15 @@ db.prepare(`
 
 try {
     const cols = db.prepare("PRAGMA table_info(keys)").all();
-    if (!cols.some(c => c.name === "allowed_games")) {
+    if (!cols.some(c => c.name === "allowed_games"))
         db.prepare("ALTER TABLE keys ADD COLUMN allowed_games TEXT DEFAULT NULL").run();
-    }
-    if (!cols.some(c => c.name === "permissions")) {
+    if (!cols.some(c => c.name === "permissions"))
         db.prepare("ALTER TABLE keys ADD COLUMN permissions TEXT DEFAULT NULL").run();
+    if (!cols.some(c => c.name === "massive")) {
+        db.prepare("ALTER TABLE keys ADD COLUMN massive INTEGER DEFAULT 0").run();
+        console.log("✅ Columna massive añadida a keys");
     }
-} catch (e) { console.error("Migración:", e.message); }
+} catch (e) { console.error("Migración keys:", e.message); }
 
 const ADMIN_KEY = process.env.ADMIN_KEY || "OMELES-ADMIN-2026";
 const exists = db.prepare("SELECT id FROM keys WHERE key = ?").get(ADMIN_KEY);
