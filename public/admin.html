@@ -6,203 +6,98 @@
 <title>OMELES GAMES - ADMIN</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
-:root{
-    --bg:#0a0a14;
-    --sidebar:#0d0d1a;
-    --card:#12121f;
-    --card-hover:#181826;
-    --border:#1e1e2e;
-    --border-light:#25253a;
-    --purple:#8b5cff;
-    --blue:#2563eb;
-    --green:#22c55e;
-    --orange:#ff8c00;
-    --red:#ff4567;
-    --yellow:#ffd166;
-    --cyan:#06b6d4;
-    --text:#fff;
-    --muted:#888;
-    --muted-dark:#555;
-}
-body{
-    margin:0;background:var(--bg);color:var(--text);
-    min-height:100vh;font-size:14px;
-    background-image:radial-gradient(circle at 20% 0%, rgba(139,92,255,.08), transparent 40%),
-                     radial-gradient(circle at 80% 100%, rgba(37,99,235,.06), transparent 40%);
-    background-attachment:fixed;
-}
+:root{--bg:#0a0a14;--sidebar:#0d0d1a;--card:#12121f;--border:#1e1e2e;--border-light:#25253a;
+--purple:#8b5cff;--blue:#2563eb;--green:#22c55e;--orange:#ff8c00;--red:#ff4567;--yellow:#ffd166;--cyan:#06b6d4;
+--text:#fff;--muted:#888;--muted-dark:#555}
+body{margin:0;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;
+background-image:radial-gradient(circle at 20% 0%,rgba(139,92,255,.08),transparent 40%),
+radial-gradient(circle at 80% 100%,rgba(37,99,235,.06),transparent 40%);background-attachment:fixed}
 
-/* ================= LAYOUT ================= */
+/* Ocultar sidebar hasta login */
+body:not(.logged-in) .sidebar,
+body:not(.logged-in) .mob-bar{display:none!important}
+body:not(.logged-in) .main{margin-left:0}
+
 .app{display:flex;min-height:100vh}
 
-/* ================= SIDEBAR ================= */
-.sidebar{
-    width:270px;background:var(--sidebar);
-    border-right:1px solid var(--border);
-    display:flex;flex-direction:column;
-    position:fixed;top:0;left:0;bottom:0;
-    z-index:100;transition:transform .3s ease;
-    overflow-y:auto;
-}
+/* SIDEBAR */
+.sidebar{width:270px;background:var(--sidebar);border-right:1px solid var(--border);
+display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;
+transition:transform .3s ease;overflow-y:auto}
 .sidebar::-webkit-scrollbar{width:6px}
 .sidebar::-webkit-scrollbar-thumb{background:#25253a;border-radius:3px}
-.brand{
-    padding:22px 20px;border-bottom:1px solid var(--border);
-    font-size:20px;font-weight:900;letter-spacing:2px;
-    background:linear-gradient(90deg,#00b7ff,#8b5cff,#00b7ff);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-    background-size:200% auto;animation:shine 4s linear infinite;
-}
+.brand{padding:22px 20px;border-bottom:1px solid var(--border);font-size:20px;font-weight:900;letter-spacing:2px;
+background:linear-gradient(90deg,#00b7ff,#8b5cff,#00b7ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+background-size:200% auto;animation:shine 4s linear infinite}
 .brand small{display:block;font-size:10px;color:var(--muted);font-weight:600;letter-spacing:1px;margin-top:4px;-webkit-text-fill-color:var(--muted)}
 @keyframes shine{0%{background-position:0% 50%}100%{background-position:200% 50%}}
-
 .nav{padding:14px 0;flex:1}
 .nav-section{margin-bottom:8px}
-.nav-title{
-    padding:10px 22px 6px;font-size:10px;color:var(--muted-dark);
-    font-weight:700;letter-spacing:2px;text-transform:uppercase;
-}
-.nav-item{
-    display:flex;align-items:center;gap:12px;
-    padding:11px 22px;cursor:pointer;color:#bbb;
-    font-size:13.5px;font-weight:600;transition:.15s;
-    border-left:3px solid transparent;
-    user-select:none;
-}
+.nav-title{padding:10px 22px 6px;font-size:10px;color:var(--muted-dark);font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 22px;cursor:pointer;color:#bbb;font-size:13.5px;font-weight:600;
+transition:.15s;border-left:3px solid transparent;user-select:none}
 .nav-item:hover{background:rgba(139,92,255,.07);color:#fff}
-.nav-item.active{
-    background:linear-gradient(90deg,rgba(139,92,255,.18),transparent);
-    color:#fff;border-left-color:var(--purple);
-}
+.nav-item.active{background:linear-gradient(90deg,rgba(139,92,255,.18),transparent);color:#fff;border-left-color:var(--purple)}
 .nav-item .ico{font-size:16px;width:20px;text-align:center}
-.nav-item .badge{
-    margin-left:auto;background:rgba(139,92,255,.15);
-    color:#b99cff;padding:1px 8px;border-radius:10px;
-    font-size:10.5px;font-weight:700;
-}
+.nav-item .badge{margin-left:auto;background:rgba(139,92,255,.15);color:#b99cff;padding:1px 8px;border-radius:10px;font-size:10.5px;font-weight:700}
 .nav-item .chevron{margin-left:auto;font-size:10px;transition:.2s;color:var(--muted)}
 .nav-item.expanded .chevron{transform:rotate(90deg)}
-.nav-submenu{
-    max-height:0;overflow:hidden;transition:max-height .35s ease;
-    background:rgba(0,0,0,.25);
-}
+.nav-submenu{max-height:0;overflow:hidden;transition:max-height .35s ease;background:rgba(0,0,0,.25)}
 .nav-submenu.open{max-height:2000px}
-.nav-sub-item{
-    display:flex;align-items:center;gap:10px;
-    padding:9px 22px 9px 44px;cursor:pointer;
-    color:#999;font-size:12.5px;font-weight:500;
-    border-left:3px solid transparent;
-}
+.nav-sub-item{display:flex;align-items:center;gap:10px;padding:9px 22px 9px 44px;cursor:pointer;color:#999;font-size:12.5px;
+font-weight:500;border-left:3px solid transparent}
 .nav-sub-item:hover{background:rgba(139,92,255,.06);color:#fff}
-.nav-sub-item.active{
-    background:rgba(139,92,255,.12);color:#fff;
-    border-left-color:var(--purple);
-}
-.nav-sub-item .dot{
-    width:6px;height:6px;border-radius:50%;
-    background:var(--purple);flex-shrink:0;
-    box-shadow:0 0 6px var(--purple);
-}
-.nav-sub-item .cnt{
-    margin-left:auto;font-size:10px;color:var(--muted);
-    background:rgba(255,255,255,.05);padding:1px 7px;border-radius:8px;
-}
-.logout-wrap{padding:14px;border-top:1px solid var(--border)}
-.logout-btn{
-    width:100%;padding:11px;border:1px solid var(--border-light);
-    background:transparent;color:#aaa;border-radius:10px;
-    cursor:pointer;font-weight:700;font-size:12px;letter-spacing:1px;
-    transition:.15s;
-}
+.nav-sub-item.active{background:rgba(139,92,255,.12);color:#fff;border-left-color:var(--purple)}
+.nav-sub-item .dot{width:6px;height:6px;border-radius:50%;background:var(--purple);flex-shrink:0;box-shadow:0 0 6px var(--purple)}
+.nav-sub-item .cnt{margin-left:auto;font-size:10px;color:var(--muted);background:rgba(255,255,255,.05);padding:1px 7px;border-radius:8px}
+.user-info{padding:14px 20px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(139,92,255,.04)}
+.user-name{font-size:13px;font-weight:700;color:#fff;margin-bottom:3px}
+.user-role{font-size:10.5px;color:#b99cff;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.logout-wrap{padding:14px}
+.logout-btn{width:100%;padding:11px;border:1px solid var(--border-light);background:transparent;color:#aaa;border-radius:10px;
+cursor:pointer;font-weight:700;font-size:12px;letter-spacing:1px;transition:.15s}
 .logout-btn:hover{background:rgba(255,69,103,.1);color:var(--red);border-color:rgba(255,69,103,.3)}
 
-/* ================= MAIN ================= */
-.main{
-    flex:1;margin-left:270px;
-    padding:28px 34px 60px;
-    min-height:100vh;
-}
+/* MAIN */
+.main{flex:1;margin-left:270px;padding:28px 34px 60px;min-height:100vh}
 .page{display:none;animation:fadeIn .25s ease}
 .page.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
 .page-head{margin-bottom:26px}
-.page-head h1{
-    font-size:26px;font-weight:900;letter-spacing:.5px;
-    background:linear-gradient(90deg,#fff,#b99cff);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-    margin-bottom:5px;
-}
+.page-head h1{font-size:26px;font-weight:900;background:linear-gradient(90deg,#fff,#b99cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:5px}
 .page-head p{color:var(--muted);font-size:13px}
 
-/* ================= CARDS ================= */
-.card{
-    background:var(--card);border:1px solid var(--border);
-    border-radius:16px;padding:24px;margin-bottom:22px;
-    box-shadow:0 8px 30px rgba(0,0,0,.35);
-}
-.card-title{
-    font-size:15px;font-weight:800;color:#fff;
-    margin-bottom:5px;display:flex;align-items:center;gap:10px;
-}
+/* LOGIN */
+.login-wrap{max-width:460px;margin:80px auto 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:22px;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+.card-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:5px}
 .card-sub{color:var(--muted);font-size:12.5px;margin-bottom:18px}
 
-/* ================= STATS ================= */
-.stats-grid{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:16px;margin-bottom:26px;
-}
-.stat-card{
-    background:linear-gradient(145deg,rgba(25,25,40,.9),rgba(15,15,25,.9));
-    border:1px solid var(--border);border-radius:16px;
-    padding:22px;position:relative;overflow:hidden;
-    transition:.25s;
-}
-.stat-card::before{
-    content:"";position:absolute;top:0;right:0;width:100px;height:100px;
-    background:radial-gradient(circle, rgba(139,92,255,.15), transparent 70%);
-    pointer-events:none;
-}
-.stat-card:hover{transform:translateY(-3px);border-color:rgba(139,92,255,.35);box-shadow:0 12px 40px rgba(0,0,0,.4)}
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:26px}
+.stat-card{background:linear-gradient(145deg,rgba(25,25,40,.9),rgba(15,15,25,.9));border:1px solid var(--border);border-radius:16px;
+padding:22px;position:relative;overflow:hidden;transition:.25s}
+.stat-card:hover{transform:translateY(-3px);border-color:rgba(139,92,255,.35)}
 .stat-ico{font-size:26px;margin-bottom:10px;display:block}
 .stat-label{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
 .stat-val{font-size:30px;font-weight:900;color:#fff;line-height:1}
 .stat-sub{font-size:11.5px;color:var(--muted);margin-top:6px}
-.stat-card.purple .stat-ico{filter:drop-shadow(0 0 10px var(--purple))}
 .stat-card.green .stat-val{color:var(--green)}
-.stat-card.green .stat-ico{filter:drop-shadow(0 0 10px var(--green))}
-.stat-card.orange .stat-val{color:var(--orange)}
-.stat-card.orange .stat-ico{filter:drop-shadow(0 0 10px var(--orange))}
 .stat-card.red .stat-val{color:var(--red)}
-.stat-card.red .stat-ico{filter:drop-shadow(0 0 10px var(--red))}
 .stat-card.cyan .stat-val{color:var(--cyan)}
-.stat-card.cyan .stat-ico{filter:drop-shadow(0 0 10px var(--cyan))}
 
-/* ================= INPUTS ================= */
-input,select,textarea{
-    width:100%;padding:13px 15px;border-radius:11px;
-    border:1px solid var(--border-light);background:#08080e;
-    color:#fff;outline:none;font-size:14px;
-    font-family:inherit;transition:.15s;
-}
-input:focus,select:focus,textarea:focus{
-    border-color:var(--purple);
-    box-shadow:0 0 0 3px rgba(139,92,255,.12);
-}
+/* INPUTS */
+input,select{width:100%;padding:13px 15px;border-radius:11px;border:1px solid var(--border-light);background:#08080e;color:#fff;
+outline:none;font-size:14px;font-family:inherit;transition:.15s}
+input:focus,select:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(139,92,255,.12)}
 label{font-size:11px;color:#9d7cff;font-weight:700;letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:7px}
 .field{margin-bottom:15px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 
-/* ================= BUTTONS ================= */
-.btn{
-    border:0;border-radius:11px;padding:12px 20px;
-    color:#fff;cursor:pointer;font-weight:700;font-size:13.5px;
-    transition:.2s;letter-spacing:.3px;
-    display:inline-flex;align-items:center;gap:8px;
-    background:linear-gradient(135deg,#0077ff,#7b2cff);
-}
+/* BUTTONS */
+.btn{border:0;border-radius:11px;padding:12px 20px;color:#fff;cursor:pointer;font-weight:700;font-size:13.5px;transition:.2s;
+letter-spacing:.3px;display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#0077ff,#7b2cff)}
 .btn:hover{transform:translateY(-1px);filter:brightness(1.12)}
-.btn:active{transform:translateY(0)}
 .btn.small{padding:8px 13px;font-size:12px;border-radius:9px}
 .btn.full{width:100%;justify-content:center}
 .btn.danger{background:linear-gradient(135deg,#ff1744,#a00025)}
@@ -211,204 +106,122 @@ label{font-size:11px;color:#9d7cff;font-weight:700;letter-spacing:1px;text-trans
 .btn.ghost{background:transparent;border:1px solid var(--border-light);color:#aaa}
 .btn.ghost:hover{background:rgba(255,255,255,.05);color:#fff;border-color:#3a3a55}
 
-/* ================= GENERATOR TYPES ================= */
+/* TYPE GRID */
 .type-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:18px}
-.type-btn{
-    padding:16px 12px;border-radius:13px;
-    border:2px solid var(--border-light);
-    background:rgba(255,255,255,.02);
-    color:#ccc;cursor:pointer;text-align:center;
-    transition:.2s;font-family:inherit;
-}
+.type-btn{padding:16px 12px;border-radius:13px;border:2px solid var(--border-light);background:rgba(255,255,255,.02);
+color:#ccc;cursor:pointer;text-align:center;transition:.2s;font-family:inherit}
 .type-btn:hover{border-color:rgba(139,92,255,.5);background:rgba(139,92,255,.06);color:#fff;transform:translateY(-2px)}
-.type-btn.active{
-    border-color:var(--purple);
-    background:linear-gradient(145deg,rgba(139,92,255,.15),rgba(37,99,235,.1));
-    color:#fff;box-shadow:0 0 20px rgba(139,92,255,.2);
-}
+.type-btn.active{border-color:var(--purple);background:linear-gradient(145deg,rgba(139,92,255,.15),rgba(37,99,235,.1));color:#fff}
 .type-btn .tb-ico{font-size:22px;display:block;margin-bottom:6px}
-.type-btn .tb-name{font-size:12.5px;font-weight:800;letter-spacing:.5px}
-.type-btn .tb-sub{font-size:10.5px;color:var(--muted);margin-top:3px;font-weight:500}
+.type-btn .tb-name{font-size:12.5px;font-weight:800}
+.type-btn .tb-sub{font-size:10.5px;color:var(--muted);margin-top:3px}
 .type-btn.admin{border-color:rgba(255,140,0,.3)}
-.type-btn.admin.active{border-color:var(--orange);background:linear-gradient(145deg,rgba(255,140,0,.15),rgba(255,69,103,.1));box-shadow:0 0 20px rgba(255,140,0,.2)}
+.type-btn.admin.active{border-color:var(--orange);background:linear-gradient(145deg,rgba(255,140,0,.15),rgba(255,69,103,.1))}
 
-/* ================= KEY PREVIEW ================= */
-.key-preview{
-    background:linear-gradient(145deg,rgba(8,8,14,.9),rgba(15,15,25,.9));
-    border:1px dashed rgba(139,92,255,.35);
-    border-radius:14px;padding:22px;text-align:center;
-    margin-top:18px;
-}
+/* KEY PREVIEW */
+.key-preview{background:linear-gradient(145deg,rgba(8,8,14,.9),rgba(15,15,25,.9));border:1px dashed rgba(139,92,255,.35);
+border-radius:14px;padding:22px;text-align:center;margin-top:18px}
 .key-preview-label{font-size:11px;color:var(--muted);letter-spacing:2px;font-weight:700;margin-bottom:12px}
-.key-preview-value{
-    font-size:22px;font-weight:900;color:#00c8ff;
-    word-break:break-all;letter-spacing:1px;
-    font-family:'Courier New',monospace;
-    padding:14px;border-radius:10px;
-    background:rgba(0,200,255,.05);
-    border:1px solid rgba(0,200,255,.15);
-    margin-bottom:14px;
-    animation:glow 2s ease-in-out infinite;
-}
-@keyframes glow{0%,100%{box-shadow:0 0 0 rgba(0,200,255,0)}50%{box-shadow:0 0 22px rgba(0,200,255,.25)}}
+.key-preview-value{font-size:22px;font-weight:900;color:#00c8ff;word-break:break-all;font-family:'Courier New',monospace;
+padding:14px;border-radius:10px;background:rgba(0,200,255,.05);border:1px solid rgba(0,200,255,.15);margin-bottom:14px}
 .key-preview-meta{font-size:12px;color:var(--muted)}
-.key-preview-meta b{color:#b99cff}
 
-/* ================= TABLE ================= */
+/* TABLE */
 .table-wrap{overflow-x:auto;border-radius:14px;border:1px solid var(--border)}
 table{width:100%;border-collapse:collapse;min-width:1000px;font-size:13px}
 th,td{padding:13px 15px;text-align:left;border-bottom:1px solid var(--border)}
-th{
-    background:#0b0b13;color:#9d7cff;font-size:11px;
-    letter-spacing:1px;text-transform:uppercase;font-weight:800;
-    position:sticky;top:0;
-}
-tbody tr{transition:.15s}
+th{background:#0b0b13;color:#9d7cff;font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:800;position:sticky;top:0}
 tbody tr:hover{background:rgba(139,92,255,.05)}
-tbody tr:last-child td{border-bottom:none}
 .nickname{color:#00c8ff;font-weight:700}
 .key-code{font-family:'Courier New',monospace;font-size:12.5px;word-break:break-all;color:#ddd}
-.tag{display:inline-block;padding:3px 9px;border-radius:7px;font-size:11px;font-weight:800;letter-spacing:.3px}
+.tag{display:inline-block;padding:3px 9px;border-radius:7px;font-size:11px;font-weight:800}
 .tag.active{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.25)}
 .tag.inactive{background:rgba(255,69,103,.1);color:var(--red);border:1px solid rgba(255,69,103,.25)}
 .tag.warn{background:rgba(255,209,102,.1);color:var(--yellow);border:1px solid rgba(255,209,102,.25)}
 .tag.admin{background:rgba(255,140,0,.12);color:var(--orange);border:1px solid rgba(255,140,0,.3)}
-.tag.admin-life{background:linear-gradient(90deg,rgba(255,23,68,.15),rgba(255,140,0,.15));color:#ff8c00;border:1px solid rgba(255,140,0,.4)}
-.badge-games{display:inline-block;padding:3px 9px;border-radius:7px;font-size:11px;font-weight:700;cursor:help}
+.badge-games{display:inline-block;padding:3px 9px;border-radius:7px;font-size:11px;font-weight:700}
 .badge-games.all{background:rgba(0,255,157,.08);color:var(--green);border:1px solid rgba(0,255,157,.22)}
 .badge-games.none{background:rgba(255,69,103,.08);color:var(--red);border:1px solid rgba(255,69,103,.22)}
 .badge-games.limited{background:rgba(255,209,102,.08);color:var(--yellow);border:1px solid rgba(255,209,102,.22)}
 
-/* ================= SEARCH / FILTERS ================= */
+/* FILTERS */
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
-.filter-btn{
-    padding:9px 16px;border-radius:10px;
-    border:1px solid var(--border-light);background:rgba(255,255,255,.02);
-    color:#aaa;cursor:pointer;font-size:12.5px;font-weight:700;
-    transition:.2s;display:inline-flex;align-items:center;gap:7px;
-}
+.filter-btn{padding:9px 16px;border-radius:10px;border:1px solid var(--border-light);background:rgba(255,255,255,.02);color:#aaa;
+cursor:pointer;font-size:12.5px;font-weight:700;transition:.2s;display:inline-flex;align-items:center;gap:7px}
 .filter-btn:hover{border-color:rgba(139,92,255,.4);color:#fff}
-.filter-btn.active{
-    background:linear-gradient(135deg,rgba(139,92,255,.25),rgba(37,99,235,.2));
-    border-color:var(--purple);color:#fff;
-    box-shadow:0 0 15px rgba(139,92,255,.15);
-}
-.filter-btn .fc{
-    background:rgba(0,0,0,.35);padding:1px 8px;border-radius:8px;
-    font-size:10.5px;font-weight:800;
-}
+.filter-btn.active{background:linear-gradient(135deg,rgba(139,92,255,.25),rgba(37,99,235,.2));border-color:var(--purple);color:#fff}
+.filter-btn .fc{background:rgba(0,0,0,.35);padding:1px 8px;border-radius:8px;font-size:10.5px;font-weight:800}
 .search-w{position:relative;margin-bottom:16px}
 .search-w input{padding-left:44px}
 .search-w::before{content:"🔍";position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:15px;opacity:.6;pointer-events:none}
 
-/* ================= GAME CARD ================= */
+/* GAME CARDS */
 .games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
-.game-card{
-    background:linear-gradient(145deg,rgba(25,25,40,.7),rgba(15,15,25,.85));
-    border:1px solid var(--border);border-radius:16px;
-    padding:20px;position:relative;transition:.25s;
-    overflow:hidden;
-}
-.game-card:hover{border-color:rgba(139,92,255,.4);transform:translateY(-3px);box-shadow:0 15px 45px rgba(0,0,0,.4)}
+.game-card{background:linear-gradient(145deg,rgba(25,25,40,.7),rgba(15,15,25,.85));border:1px solid var(--border);border-radius:16px;
+padding:20px;position:relative;transition:.25s;overflow:hidden}
+.game-card:hover{border-color:rgba(139,92,255,.4);transform:translateY(-3px)}
 .game-card-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
-.game-card-img{
-    width:64px;height:64px;border-radius:13px;object-fit:cover;
-    border:1px solid var(--border-light);flex-shrink:0;
-    background:linear-gradient(135deg,#6d28d9,#2563eb);
-    display:flex;align-items:center;justify-content:center;font-size:28px;
-}
+.game-card-img{width:64px;height:64px;border-radius:13px;object-fit:cover;border:1px solid var(--border-light);flex-shrink:0;
+background:linear-gradient(135deg,#6d28d9,#2563eb);display:flex;align-items:center;justify-content:center;font-size:28px}
 .game-card-info{flex:1;min-width:0}
 .game-card-name{font-size:16px;font-weight:800;color:#fff;margin-bottom:3px;word-break:break-word}
 .game-card-id{font-size:11px;color:var(--muted);font-family:monospace}
 .game-card-body{font-size:12px;color:#aaa;line-height:1.7;margin-bottom:14px}
-.game-card-body b{color:#b99cff;font-weight:700}
+.game-card-body b{color:#b99cff}
 .game-card-actions{display:flex;gap:8px;flex-wrap:wrap}
 
-/* ================= MODAL ================= */
-.modal-overlay{
-    display:none;position:fixed;inset:0;
-    background:rgba(0,0,0,.8);backdrop-filter:blur(8px);
-    z-index:1000;align-items:center;justify-content:center;
-    padding:20px;overflow-y:auto;
-}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);z-index:1000;
+align-items:center;justify-content:center;padding:20px;overflow-y:auto}
 .modal-overlay.open{display:flex}
-.modal-box{
-    width:100%;max-width:620px;
-    background:linear-gradient(145deg,rgba(25,25,40,.98),rgba(12,12,20,.98));
-    border:1px solid rgba(139,92,255,.35);
-    border-radius:20px;padding:30px;
-    box-shadow:0 30px 100px rgba(0,0,0,.8),0 0 60px rgba(139,92,255,.15);
-    max-height:92vh;overflow-y:auto;
-    animation:modalIn .25s cubic-bezier(.34,1.56,.64,1);
-}
+.modal-box{width:100%;max-width:620px;background:linear-gradient(145deg,rgba(25,25,40,.98),rgba(12,12,20,.98));
+border:1px solid rgba(139,92,255,.35);border-radius:20px;padding:30px;box-shadow:0 30px 100px rgba(0,0,0,.8);
+max-height:92vh;overflow-y:auto;animation:modalIn .25s cubic-bezier(.34,1.56,.64,1)}
 @keyframes modalIn{from{opacity:0;transform:translateY(30px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
-.modal-head{
-    display:flex;justify-content:space-between;align-items:center;
-    margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--border);
-}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--border)}
 .modal-head h2{font-size:19px;font-weight:900;color:#fff}
-.modal-close{
-    background:transparent;border:0;color:#888;font-size:24px;
-    cursor:pointer;width:36px;height:36px;border-radius:9px;
-    display:flex;align-items:center;justify-content:center;
-    transition:.15s;
-}
+.modal-close{background:transparent;border:0;color:#888;font-size:24px;cursor:pointer;width:36px;height:36px;border-radius:9px;
+display:flex;align-items:center;justify-content:center;transition:.15s}
 .modal-close:hover{background:rgba(255,255,255,.07);color:#fff}
-.modal-actions{
-    display:flex;justify-content:flex-end;gap:10px;
-    margin-top:20px;padding-top:18px;border-top:1px solid var(--border);
-}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:18px;border-top:1px solid var(--border)}
 
-/* ================= KEY GAMES MODAL ================= */
+/* KEY GAMES MODAL */
 .kg-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.kg-list{
-    max-height:400px;overflow-y:auto;
-    background:#08080e;border:1px solid var(--border-light);
-    border-radius:12px;padding:10px;margin-bottom:14px;
-}
-.kg-item{
-    display:flex;align-items:center;gap:12px;
-    padding:10px 14px;border-radius:9px;cursor:pointer;
-    transition:.15s;user-select:none;
-}
+.kg-list{max-height:400px;overflow-y:auto;background:#08080e;border:1px solid var(--border-light);border-radius:12px;padding:10px;margin-bottom:14px}
+.kg-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:9px;cursor:pointer;transition:.15s;user-select:none}
 .kg-item:hover{background:rgba(139,92,255,.1)}
-.kg-item input[type="checkbox"]{
-    width:19px;height:19px;accent-color:var(--green);
-    cursor:pointer;flex-shrink:0;padding:0;
-}
+.kg-item input[type="checkbox"]{width:19px;height:19px;accent-color:var(--green);cursor:pointer;flex-shrink:0;padding:0}
 .kg-item label{flex:1;cursor:pointer;font-size:13.5px;color:#fff;margin:0;text-transform:none;letter-spacing:0;font-weight:500}
 .kg-mode{padding:11px 15px;border-radius:11px;font-size:13px;margin-bottom:15px;font-weight:800}
 .kg-mode.all{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.22);color:var(--green)}
 .kg-mode.limited{background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.22);color:var(--yellow)}
 .kg-mode.none{background:rgba(255,69,103,.08);border:1px solid rgba(255,69,103,.22);color:var(--red)}
 
-/* ================= MESSAGES ================= */
-.msg{
-    padding:12px 15px;border-radius:11px;margin-top:15px;
-    font-size:13px;font-weight:600;display:none;
-}
-.msg.show{display:block;animation:fadeIn .3s ease}
+/* PERMISSIONS MODAL */
+.perm-list{background:#08080e;border:1px solid var(--border-light);border-radius:12px;padding:14px;margin-bottom:14px}
+.perm-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:9px;cursor:pointer;transition:.15s;user-select:none;border:1px solid transparent}
+.perm-item:hover{background:rgba(139,92,255,.08);border-color:rgba(139,92,255,.15)}
+.perm-item input[type="checkbox"]{width:19px;height:19px;accent-color:var(--purple);cursor:pointer;flex-shrink:0;padding:0;margin:0}
+.perm-item-info{flex:1}
+.perm-item-name{font-size:13.5px;font-weight:700;color:#fff;margin-bottom:2px}
+.perm-item-desc{font-size:11px;color:var(--muted)}
+.perm-item.all-warn{background:rgba(255,140,0,.05);border-color:rgba(255,140,0,.2);margin-bottom:8px}
+
+/* MSG */
+.msg{padding:12px 15px;border-radius:11px;margin-top:15px;font-size:13px;font-weight:600;display:none}
+.msg.show{display:block}
 .msg.success{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:var(--green)}
 .msg.error{background:rgba(255,69,103,.1);border:1px solid rgba(255,69,103,.25);color:var(--red)}
 
-/* ================= EMPTY ================= */
-.empty{
-    padding:50px 30px;text-align:center;color:var(--muted);
-    border:2px dashed rgba(139,92,255,.15);
-    border-radius:16px;background:rgba(20,20,35,.3);
-}
+/* EMPTY */
+.empty{padding:50px 30px;text-align:center;color:var(--muted);border:2px dashed rgba(139,92,255,.15);border-radius:16px;background:rgba(20,20,35,.3)}
 .empty-ico{font-size:48px;margin-bottom:14px;opacity:.5;display:block}
 
-/* ================= TOAST ================= */
+/* TOAST */
 #toasts{position:fixed;bottom:24px;right:24px;z-index:10000;display:flex;flex-direction:column;gap:10px;pointer-events:none;max-width:calc(100vw - 48px)}
-.toast{
-    padding:14px 20px;border-radius:12px;font-size:13.5px;font-weight:600;
-    color:#fff;box-shadow:0 15px 45px rgba(0,0,0,.55);
-    display:flex;align-items:center;gap:12px;min-width:260px;
-    opacity:0;transform:translateX(420px);
-    transition:.4s cubic-bezier(.34,1.56,.64,1);
-    pointer-events:auto;position:relative;overflow:hidden;
-}
+.toast{padding:14px 20px;border-radius:12px;font-size:13.5px;font-weight:600;color:#fff;box-shadow:0 15px 45px rgba(0,0,0,.55);
+display:flex;align-items:center;gap:12px;min-width:260px;opacity:0;transform:translateX(420px);transition:.4s cubic-bezier(.34,1.56,.64,1);
+pointer-events:auto;position:relative}
 .toast.show{opacity:1;transform:translateX(0)}
 .toast.success{background:linear-gradient(135deg,#16a34a,#22c55e)}
 .toast.error{background:linear-gradient(135deg,#ff1744,#a00025)}
@@ -416,17 +229,11 @@ tbody tr:last-child td{border-bottom:none}
 .toast.warning{background:linear-gradient(135deg,#ff8c00,#ff1744)}
 .toast-ico{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
 
-/* ================= MOBILE ================= */
-.mob-bar{
-    display:none;position:fixed;top:0;left:0;right:0;height:60px;
-    background:var(--sidebar);border-bottom:1px solid var(--border);
-    z-index:99;align-items:center;padding:0 20px;gap:14px;
-}
-.mob-toggle{
-    width:42px;height:42px;border-radius:10px;border:1px solid var(--border-light);
-    background:transparent;color:#fff;font-size:18px;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;
-}
+/* MOBILE */
+.mob-bar{display:none;position:fixed;top:0;left:0;right:0;height:60px;background:var(--sidebar);border-bottom:1px solid var(--border);
+z-index:99;align-items:center;padding:0 20px;gap:14px}
+.mob-toggle{width:42px;height:42px;border-radius:10px;border:1px solid var(--border-light);background:transparent;color:#fff;font-size:18px;cursor:pointer;
+display:flex;align-items:center;justify-content:center}
 .mob-brand{font-size:16px;font-weight:900;letter-spacing:1.5px;background:linear-gradient(90deg,#00b7ff,#8b5cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99}
 .mob-overlay.show{display:block}
@@ -443,7 +250,7 @@ tbody tr:last-child td{border-bottom:none}
 </head>
 <body>
 
-<!-- MOBILE TOP BAR -->
+<!-- MOBILE BAR -->
 <div class="mob-bar">
     <button class="mob-toggle" onclick="toggleSidebar()">☰</button>
     <div class="mob-brand">OMELES GAMES</div>
@@ -452,287 +259,182 @@ tbody tr:last-child td{border-bottom:none}
 
 <div class="app">
 
-    <!-- ================= SIDEBAR ================= -->
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
-        <div class="brand">
-            OMELES GAMES
-            <small>PANEL DE ADMIN</small>
-        </div>
+        <div class="brand">OMELES GAMES<small>PANEL DE ADMIN</small></div>
 
         <nav class="nav">
             <div class="nav-section">
                 <div class="nav-title">Principal</div>
-                <div class="nav-item active" data-page="dashboard" onclick="navigateTo('dashboard')">
-                    <span class="ico">📊</span> Dashboard
-                </div>
-                <div class="nav-item" data-page="generate" onclick="navigateTo('generate')">
-                    <span class="ico">🔑</span> Generar Keys
-                </div>
+                <div class="nav-item" data-page="dashboard" onclick="navigateTo('dashboard')"><span class="ico">📊</span>Dashboard</div>
+                <div class="nav-item" data-page="generate" onclick="navigateTo('generate')"><span class="ico">🔑</span>Generar Keys</div>
             </div>
 
             <div class="nav-section">
                 <div class="nav-title">Gestión de Keys</div>
-                <div class="nav-item" data-page="keys-all" onclick="navigateTo('keys-all')">
-                    <span class="ico">📋</span> Todas las Keys
-                    <span class="badge" id="badgeKeysAll">0</span>
-                </div>
-                <div class="nav-item" data-page="keys-global" onclick="navigateTo('keys-global')">
-                    <span class="ico">🌐</span> Keys Globales
-                    <span class="badge" id="badgeKeysGlobal">0</span>
-                </div>
-                <div class="nav-item" data-page="keys-exhausted" onclick="navigateTo('keys-exhausted')">
-                    <span class="ico">⚠️</span> Keys Agotadas
-                    <span class="badge" id="badgeKeysExhausted">0</span>
-                </div>
-                <div class="nav-item" id="navGamesParent" onclick="toggleGamesSubmenu()">
-                    <span class="ico">🎮</span> Keys por Juego
-                    <span class="chevron">▸</span>
-                </div>
-                <div class="nav-submenu" id="gamesSubmenu">
-                    <div style="padding:14px 20px;color:var(--muted);font-size:11.5px;">Cargando juegos...</div>
-                </div>
+                <div class="nav-item" data-page="keys-all" onclick="navigateTo('keys-all')"><span class="ico">📋</span>Todas las Keys<span class="badge" id="badgeKeysAll">0</span></div>
+                <div class="nav-item" data-page="keys-global" onclick="navigateTo('keys-global')"><span class="ico">🌐</span>Keys Globales<span class="badge" id="badgeKeysGlobal">0</span></div>
+                <div class="nav-item" data-page="keys-exhausted" onclick="navigateTo('keys-exhausted')"><span class="ico">⚠️</span>Keys Agotadas<span class="badge" id="badgeKeysExhausted">0</span></div>
+                <div class="nav-item" id="navGamesParent" onclick="toggleGamesSubmenu()"><span class="ico">🎮</span>Keys por Juego<span class="chevron">▸</span></div>
+                <div class="nav-submenu" id="gamesSubmenu"></div>
             </div>
 
             <div class="nav-section">
                 <div class="nav-title">Sistema</div>
-                <div class="nav-item" data-page="games" onclick="navigateTo('games')">
-                    <span class="ico">🕹️</span> Gestionar Juegos
-                </div>
-                <div class="nav-item" data-page="stats" onclick="navigateTo('stats')">
-                    <span class="ico">📈</span> Estadísticas
-                </div>
+                <div class="nav-item" data-page="games" onclick="navigateTo('games')"><span class="ico">🕹️</span>Gestionar Juegos</div>
+                <div class="nav-item" data-page="stats" onclick="navigateTo('stats')"><span class="ico">📈</span>Estadísticas</div>
             </div>
         </nav>
+
+        <div class="user-info">
+            <div class="user-name" id="userName">-</div>
+            <div class="user-role" id="userRole">-</div>
+        </div>
 
         <div class="logout-wrap">
             <button class="logout-btn" onclick="logoutAdmin()">CERRAR SESIÓN</button>
         </div>
     </aside>
 
-    <!-- ================= MAIN ================= -->
+    <!-- MAIN -->
     <main class="main">
 
-        <!-- =============== LOGIN SCREEN (ocupa todo el main) =============== -->
-        <div id="loginScreen" class="page active" style="max-width:480px;margin:80px auto 0;">
-            <div class="card" style="text-align:center;padding:40px 32px;">
-                <div style="font-size:36px;margin-bottom:10px;">🔐</div>
-                <h2 style="font-size:20px;color:#9d7cff;margin-bottom:6px;">Acceso administrador</h2>
-                <p style="color:var(--muted);font-size:13px;margin-bottom:22px;">Introduce la Admin Key para entrar</p>
-                <input id="adminKey" type="password" placeholder="OMELES-ADMIN-XXXX" style="text-align:center;letter-spacing:1.5px;margin-bottom:14px;">
-                <button class="btn full success" onclick="entrarAdmin()" id="loginBtnAdmin">ENTRAR AL PANEL</button>
-                <div id="loginMessage" class="msg"></div>
+        <!-- LOGIN -->
+        <div id="loginScreen" class="page active">
+            <div class="login-wrap">
+                <div class="card" style="text-align:center;padding:40px 32px;">
+                    <div style="font-size:36px;margin-bottom:10px;">🔐</div>
+                    <h2 style="font-size:20px;color:#9d7cff;margin-bottom:6px;">Acceso administrador</h2>
+                    <p style="color:var(--muted);font-size:13px;margin-bottom:22px;">Introduce la Admin Key para entrar</p>
+                    <input id="adminKey" type="password" placeholder="OMELES-ADMIN-XXXX" style="text-align:center;letter-spacing:1.5px;margin-bottom:14px;">
+                    <button class="btn full success" onclick="entrarAdmin()" id="loginBtnAdmin">ENTRAR AL PANEL</button>
+                    <div id="loginMessage" class="msg"></div>
+                </div>
             </div>
         </div>
 
-        <!-- =============== DASHBOARD =============== -->
+        <!-- DASHBOARD -->
         <div id="page-dashboard" class="page">
-            <div class="page-head">
-                <h1>📊 Dashboard</h1>
-                <p>Resumen general del sistema de keys y juegos</p>
-            </div>
-
+            <div class="page-head"><h1>📊 Dashboard</h1><p>Resumen general del sistema</p></div>
             <div class="stats-grid" id="dashboardStats"></div>
-
-            <div class="card">
-                <div class="card-title">🎮 Juegos con más keys</div>
-                <div class="card-sub">Ranking de juegos por número de keys generadas</div>
-                <div id="dashboardTopGames"></div>
-            </div>
-
-            <div class="card">
-                <div class="card-title">🕒 Últimas keys creadas</div>
-                <div class="card-sub">Las 5 keys más recientes</div>
-                <div id="dashboardRecent"></div>
-            </div>
+            <div class="card"><div class="card-title">🎮 Juegos con más keys</div><div id="dashboardTopGames"></div></div>
+            <div class="card"><div class="card-title">🕒 Últimas keys creadas</div><div id="dashboardRecent"></div></div>
         </div>
 
-        <!-- =============== GENERAR KEYS =============== -->
+        <!-- GENERATE -->
         <div id="page-generate" class="page">
-            <div class="page-head">
-                <h1>🔑 Generar Keys</h1>
-                <p>Crea keys de usuario, de admin, o específicas para un juego</p>
-            </div>
+            <div class="page-head"><h1>🔑 Generar Keys</h1><p>Crea keys de usuario, admin o específicas de un juego</p></div>
 
             <div class="card">
                 <div class="card-title">1️⃣ Tipo de Key</div>
-                <div class="card-sub">Elige la duración y el rol de la key</div>
+                <div class="card-sub">Elige la duración y el rol</div>
 
                 <div style="font-size:11px;color:var(--muted);letter-spacing:1.5px;font-weight:700;margin-bottom:10px;">👤 USUARIO</div>
                 <div class="type-grid" id="typeGridUser">
-                    <button class="type-btn" data-type="24H" onclick="selectType(this)">
-                        <span class="tb-ico">⏰</span>
-                        <div class="tb-name">24 HORAS</div>
-                        <div class="tb-sub">Duración corta</div>
-                    </button>
-                    <button class="type-btn" data-type="7D" onclick="selectType(this)">
-                        <span class="tb-ico">📅</span>
-                        <div class="tb-name">7 DÍAS</div>
-                        <div class="tb-sub">Una semana</div>
-                    </button>
-                    <button class="type-btn" data-type="30D" onclick="selectType(this)">
-                        <span class="tb-ico">🗓️</span>
-                        <div class="tb-name">30 DÍAS</div>
-                        <div class="tb-sub">Un mes</div>
-                    </button>
-                    <button class="type-btn" data-type="LIFETIME" onclick="selectType(this)">
-                        <span class="tb-ico">♾️</span>
-                        <div class="tb-name">LIFETIME</div>
-                        <div class="tb-sub">Para siempre</div>
-                    </button>
-                    <button class="type-btn" data-type="ONE_USE" onclick="selectType(this)">
-                        <span class="tb-ico">1️⃣</span>
-                        <div class="tb-name">1 SOLO USO</div>
-                        <div class="tb-sub">Se desactiva al usar</div>
-                    </button>
+                    <button class="type-btn" data-type="24H" onclick="selectType(this)"><span class="tb-ico">⏰</span><div class="tb-name">24 HORAS</div><div class="tb-sub">Duración corta</div></button>
+                    <button class="type-btn" data-type="7D" onclick="selectType(this)"><span class="tb-ico">📅</span><div class="tb-name">7 DÍAS</div><div class="tb-sub">Una semana</div></button>
+                    <button class="type-btn" data-type="30D" onclick="selectType(this)"><span class="tb-ico">🗓️</span><div class="tb-name">30 DÍAS</div><div class="tb-sub">Un mes</div></button>
+                    <button class="type-btn" data-type="LIFETIME" onclick="selectType(this)"><span class="tb-ico">♾️</span><div class="tb-name">LIFETIME</div><div class="tb-sub">Para siempre</div></button>
+                    <button class="type-btn" data-type="ONE_USE" onclick="selectType(this)"><span class="tb-ico">1️⃣</span><div class="tb-name">1 SOLO USO</div><div class="tb-sub">Se desactiva al usar</div></button>
                 </div>
 
-                <div style="font-size:11px;color:var(--muted);letter-spacing:1.5px;font-weight:700;margin:18px 0 10px;">👑 ADMIN</div>
+                <div id="adminTypesBlock" style="font-size:11px;color:var(--muted);letter-spacing:1.5px;font-weight:700;margin:18px 0 10px;">👑 ADMIN</div>
                 <div class="type-grid" id="typeGridAdmin">
-                    <button class="type-btn admin" data-type="ADMIN_24H" onclick="selectType(this)">
-                        <span class="tb-ico">⏰</span>
-                        <div class="tb-name">ADMIN 24H</div>
-                        <div class="tb-sub">Acceso 1 día</div>
-                    </button>
-                    <button class="type-btn admin" data-type="ADMIN_7D" onclick="selectType(this)">
-                        <span class="tb-ico">📅</span>
-                        <div class="tb-name">ADMIN 7D</div>
-                        <div class="tb-sub">Acceso 1 semana</div>
-                    </button>
-                    <button class="type-btn admin" data-type="ADMIN_30D" onclick="selectType(this)">
-                        <span class="tb-ico">🗓️</span>
-                        <div class="tb-name">ADMIN 30D</div>
-                        <div class="tb-sub">Acceso 1 mes</div>
-                    </button>
-                    <button class="type-btn admin" data-type="ADMIN_ONE_USE" onclick="selectType(this)">
-                        <span class="tb-ico">1️⃣</span>
-                        <div class="tb-name">ADMIN 1 USO</div>
-                        <div class="tb-sub">Un solo login</div>
-                    </button>
-                    <button class="type-btn admin" data-type="ADMIN_LIFETIME" onclick="selectType(this)">
-                        <span class="tb-ico">♾️</span>
-                        <div class="tb-name">ADMIN LIFETIME</div>
-                        <div class="tb-sub">Acceso total</div>
-                    </button>
+                    <button class="type-btn admin" data-type="ADMIN_24H" onclick="selectType(this)"><span class="tb-ico">⏰</span><div class="tb-name">ADMIN 24H</div><div class="tb-sub">1 día</div></button>
+                    <button class="type-btn admin" data-type="ADMIN_7D" onclick="selectType(this)"><span class="tb-ico">📅</span><div class="tb-name">ADMIN 7D</div><div class="tb-sub">1 semana</div></button>
+                    <button class="type-btn admin" data-type="ADMIN_30D" onclick="selectType(this)"><span class="tb-ico">🗓️</span><div class="tb-name">ADMIN 30D</div><div class="tb-sub">1 mes</div></button>
+                    <button class="type-btn admin" data-type="ADMIN_ONE_USE" onclick="selectType(this)"><span class="tb-ico">1️⃣</span><div class="tb-name">ADMIN 1 USO</div><div class="tb-sub">Un login</div></button>
+                    <button class="type-btn admin" data-type="ADMIN_LIFETIME" onclick="selectType(this)"><span class="tb-ico">♾️</span><div class="tb-name">ADMIN LIFETIME</div><div class="tb-sub">Acceso total</div></button>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-title">2️⃣ Asignar juego <span style="color:var(--muted);font-weight:500;font-size:12px;">(opcional)</span></div>
-                <div class="card-sub">Si seleccionas un juego, la key solo dará acceso a ese juego y llevará su ID en el código</div>
-
+                <div class="card-sub">Si seleccionas un juego, la key solo dará acceso a ese juego</div>
                 <label>Juego específico</label>
-                <select id="genGameSelect">
-                    <option value="">🌐 Ninguno (todos los juegos)</option>
-                </select>
-
-                <div id="genFormatHint" style="margin-top:14px;padding:12px 15px;border-radius:11px;background:rgba(139,92,255,.06);border:1px solid rgba(139,92,255,.2);font-size:12.5px;color:#bbb;line-height:1.6;">
-                    <b style="color:#b99cff;">Formato:</b>
-                    <code id="genFormatCode" style="color:#00c8ff;font-family:'Courier New',monospace;">OMELES-XXXXXX-XXXXXX</code>
-                    <div style="margin-top:6px;font-size:11.5px;color:var(--muted);">Sin juego → key global. Con juego → el ID se añade al inicio.</div>
+                <select id="genGameSelect"><option value="">🌐 Ninguno (todos los juegos)</option></select>
+                <div style="margin-top:14px;padding:12px 15px;border-radius:11px;background:rgba(139,92,255,.06);border:1px solid rgba(139,92,255,.2);font-size:12.5px;color:#bbb;">
+                    <b style="color:#b99cff;">Formato:</b> <code id="genFormatCode" style="color:#00c8ff;font-family:monospace;">OMELES-XXXXXX-XXXXXX</code>
                 </div>
             </div>
 
             <div class="card">
-                <div class="card-title">3️⃣ Confirmar y generar</div>
+                <div class="card-title">3️⃣ Generar</div>
                 <div class="card-sub" id="genSummary">Elige un tipo de key arriba</div>
-                <button class="btn full" onclick="generarKey()" id="genBtn" disabled style="opacity:.5;">
-                    ⚡ GENERAR KEY
-                </button>
-
+                <button class="btn full" onclick="generarKey()" id="genBtn" disabled style="opacity:.5;">⚡ GENERAR KEY</button>
                 <div id="keyPreviewBox" style="display:none;">
                     <div class="key-preview">
-                        <div class="key-preview-label">✅ KEY GENERADA CORRECTAMENTE</div>
-                        <div class="key-preview-value" id="keyPreviewValue">OMELES-XXXXXX-XXXXXX</div>
+                        <div class="key-preview-label">✅ KEY GENERADA</div>
+                        <div class="key-preview-value" id="keyPreviewValue"></div>
                         <div class="key-preview-meta" id="keyPreviewMeta"></div>
-                        <button class="btn success small" onclick="copiarKeyGenerada()" style="margin-top:14px;">📋 COPIAR KEY</button>
+                        <button class="btn success small" onclick="copiarKeyGenerada()" style="margin-top:14px;">📋 COPIAR</button>
                     </div>
                 </div>
-
                 <div id="genMessage" class="msg"></div>
             </div>
         </div>
 
-        <!-- =============== TODAS LAS KEYS =============== -->
+        <!-- KEYS ALL -->
         <div id="page-keys-all" class="page">
-            <div class="page-head">
-                <h1>📋 Todas las Keys</h1>
-                <p>Vista completa de todas las keys del sistema</p>
-            </div>
+            <div class="page-head"><h1>📋 Todas las Keys</h1><p>Vista completa</p></div>
             <div class="card">
-                <div class="search-w"><input id="searchAll" placeholder="Buscar por key, mote, tipo, IP..." oninput="renderKeysPage('all')"></div>
+                <div class="search-w"><input id="searchAll" placeholder="Buscar..." oninput="renderKeysPage('all')"></div>
                 <div class="filters" id="filtersAll">
-                    <button class="filter-btn active" data-f="all" onclick="setKeysFilter('all','all',this)">🔄 Todas</button>
-                    <button class="filter-btn" data-f="active" onclick="setKeysFilter('all','active',this)">✅ Activas</button>
-                    <button class="filter-btn" data-f="inactive" onclick="setKeysFilter('all','inactive',this)">❌ Inactivas</button>
-                    <button class="filter-btn" data-f="global" onclick="setKeysFilter('all','global',this)">🌐 Globales</button>
-                    <button class="filter-btn" data-f="game" onclick="setKeysFilter('all','game',this)">🎮 Por Juego</button>
-                    <button class="filter-btn" data-f="admin" onclick="setKeysFilter('all','admin',this)">👑 Admin</button>
+                    <button class="filter-btn active" onclick="setKeysFilter('all','all',this)">🔄 Todas</button>
+                    <button class="filter-btn" onclick="setKeysFilter('all','active',this)">✅ Activas</button>
+                    <button class="filter-btn" onclick="setKeysFilter('all','inactive',this)">❌ Inactivas</button>
+                    <button class="filter-btn" onclick="setKeysFilter('all','global',this)">🌐 Globales</button>
+                    <button class="filter-btn" onclick="setKeysFilter('all','game',this)">🎮 Por Juego</button>
+                    <button class="filter-btn" onclick="setKeysFilter('all','admin',this)">👑 Admin</button>
                 </div>
                 <div id="keysTableAll"></div>
             </div>
         </div>
 
-        <!-- =============== KEYS GLOBALES =============== -->
+        <!-- KEYS GLOBAL -->
         <div id="page-keys-global" class="page">
-            <div class="page-head">
-                <h1>🌐 Keys Globales</h1>
-                <p>Keys que dan acceso a TODOS los juegos del catálogo</p>
-            </div>
+            <div class="page-head"><h1>🌐 Keys Globales</h1><p>Keys que ven TODOS los juegos</p></div>
             <div class="card">
-                <div class="search-w"><input id="searchGlobal" placeholder="Buscar key global..." oninput="renderKeysPage('global')"></div>
+                <div class="search-w"><input id="searchGlobal" placeholder="Buscar..." oninput="renderKeysPage('global')"></div>
                 <div id="keysTableGlobal"></div>
             </div>
         </div>
 
-        <!-- =============== KEYS AGOTADAS =============== -->
+        <!-- KEYS EXHAUSTED -->
         <div id="page-keys-exhausted" class="page">
-            <div class="page-head">
-                <h1>⚠️ Keys Agotadas</h1>
-                <p>Keys revocadas, expiradas o ya usadas</p>
-            </div>
+            <div class="page-head"><h1>⚠️ Keys Agotadas</h1><p>Revocadas, expiradas o usadas</p></div>
             <div class="card">
-                <div class="search-w"><input id="searchExhausted" placeholder="Buscar key agotada..." oninput="renderKeysPage('exhausted')"></div>
+                <div class="search-w"><input id="searchExhausted" placeholder="Buscar..." oninput="renderKeysPage('exhausted')"></div>
                 <div id="keysTableExhausted"></div>
             </div>
         </div>
 
-        <!-- =============== KEYS POR JUEGO =============== -->
+        <!-- KEYS GAME -->
         <div id="page-keys-game" class="page">
-            <div class="page-head">
-                <h1 id="gameKeysTitle">🎮 Keys por Juego</h1>
-                <p id="gameKeysSub">Selecciona un juego del menú lateral</p>
-            </div>
+            <div class="page-head"><h1 id="gameKeysTitle">🎮 Keys por Juego</h1><p id="gameKeysSub">Selecciona un juego del menú</p></div>
             <div class="card">
-                <div class="search-w"><input id="searchGameKeys" placeholder="Buscar key de este juego..." oninput="renderKeysPage('game')"></div>
+                <div class="search-w"><input id="searchGameKeys" placeholder="Buscar..." oninput="renderKeysPage('game')"></div>
                 <div id="keysTableGame"></div>
             </div>
         </div>
 
-        <!-- =============== GESTIONAR JUEGOS =============== -->
+        <!-- GAMES -->
         <div id="page-games" class="page">
-            <div class="page-head">
-                <h1>🕹️ Gestionar Juegos</h1>
-                <p>Añade, edita y elimina juegos del catálogo</p>
-            </div>
-
+            <div class="page-head"><h1>🕹️ Gestionar Juegos</h1><p>Añade, edita y elimina juegos</p></div>
             <div class="card">
-                <div class="card-title">➕ Añadir nuevo juego</div>
-                <div class="card-sub">Rellena los campos y pulsa AÑADIR</div>
-
-                <div class="field"><label>Nombre del juego *</label><input id="gameName" placeholder="Ej: GTA V"></div>
+                <div class="card-title">➕ Añadir juego</div>
+                <div class="field"><label>Nombre *</label><input id="gameName" placeholder="Ej: GTA V"></div>
                 <div class="form-row">
-                    <div class="field"><label>Link de descarga</label><input id="gameDownload" placeholder="https://..."></div>
-                    <div class="field"><label>Link de reparación</label><input id="gameRepair" placeholder="https://..."></div>
+                    <div class="field"><label>Descarga</label><input id="gameDownload" placeholder="https://..."></div>
+                    <div class="field"><label>Reparación</label><input id="gameRepair" placeholder="https://..."></div>
                 </div>
                 <div class="form-row">
-                    <div class="field"><label>Contraseña</label><input id="gamePassword" placeholder="Password del juego"></div>
-                    <div class="field"><label>URL de imagen</label><input id="gameImage" placeholder="https://i.imgur.com/..."></div>
+                    <div class="field"><label>Password</label><input id="gamePassword" placeholder="..."></div>
+                    <div class="field"><label>Imagen URL</label><input id="gameImage" placeholder="https://..."></div>
                 </div>
-
                 <button class="btn success" onclick="crearJuego()">➕ AÑADIR JUEGO</button>
                 <div id="gameMessage" class="msg"></div>
             </div>
-
             <div class="card">
                 <div class="card-title">📚 Juegos actuales</div>
                 <div class="card-sub" id="gamesCountLabel">Cargando...</div>
@@ -741,38 +443,26 @@ tbody tr:last-child td{border-bottom:none}
             </div>
         </div>
 
-        <!-- =============== ESTADÍSTICAS =============== -->
+        <!-- STATS -->
         <div id="page-stats" class="page">
-            <div class="page-head">
-                <h1>📈 Estadísticas</h1>
-                <p>Análisis detallado del uso de keys</p>
-            </div>
-            <div class="card">
-                <div class="card-title">🔢 Distribución por tipo</div>
-                <div id="statsByType"></div>
-            </div>
-            <div class="card">
-                <div class="card-title">🎮 Keys por juego</div>
-                <div id="statsByGame"></div>
-            </div>
-            <div class="card">
-                <div class="card-title">🌐 IPs más frecuentes</div>
-                <div id="statsByIp"></div>
-            </div>
+            <div class="page-head"><h1>📈 Estadísticas</h1><p>Análisis detallado</p></div>
+            <div class="card"><div class="card-title">🔢 Por tipo</div><div id="statsByType"></div></div>
+            <div class="card"><div class="card-title">🎮 Por juego</div><div id="statsByGame"></div></div>
+            <div class="card"><div class="card-title">🌐 IPs</div><div id="statsByIp"></div></div>
         </div>
 
     </main>
 </div>
 
-<!-- =============== MODALES =============== -->
+<!-- MODALES -->
 <div id="editModal" class="modal-overlay">
     <div class="modal-box">
         <div class="modal-head"><h2>✏️ Editar juego</h2><button class="modal-close" onclick="cerrarModalEditar()">✕</button></div>
-        <div class="field"><label>Nombre</label><input id="editName" type="text"></div>
-        <div class="field"><label>Descarga</label><input id="editDownload" type="text"></div>
-        <div class="field"><label>Reparación</label><input id="editRepair" type="text"></div>
-        <div class="field"><label>Contraseña</label><input id="editPassword" type="text"></div>
-        <div class="field"><label>URL de imagen</label><input id="editImage" type="text"></div>
+        <div class="field"><label>Nombre</label><input id="editName"></div>
+        <div class="field"><label>Descarga</label><input id="editDownload"></div>
+        <div class="field"><label>Reparación</label><input id="editRepair"></div>
+        <div class="field"><label>Password</label><input id="editPassword"></div>
+        <div class="field"><label>Imagen URL</label><input id="editImage"></div>
         <div class="modal-actions">
             <button class="btn ghost" onclick="cerrarModalEditar()">CANCELAR</button>
             <button class="btn success" onclick="guardarEdicion()">💾 GUARDAR</button>
@@ -784,7 +474,7 @@ tbody tr:last-child td{border-bottom:none}
 <div id="nickModal" class="modal-overlay">
     <div class="modal-box" style="max-width:460px;">
         <div class="modal-head"><h2>✏️ Editar mote</h2><button class="modal-close" onclick="cerrarModalMote()">✕</button></div>
-        <div class="field"><label>Mote</label><input id="editNickname" type="text" placeholder="Ej: Juan, Pedro..."></div>
+        <div class="field"><label>Mote</label><input id="editNickname"></div>
         <div class="modal-actions">
             <button class="btn ghost" onclick="cerrarModalMote()">CANCELAR</button>
             <button class="btn success" onclick="guardarMote()">💾 GUARDAR</button>
@@ -796,9 +486,7 @@ tbody tr:last-child td{border-bottom:none}
 <div id="keyGamesModal" class="modal-overlay">
     <div class="modal-box" style="max-width:660px;">
         <div class="modal-head"><h2>🎮 Juegos permitidos</h2><button class="modal-close" onclick="cerrarModalJuegosKey()">✕</button></div>
-        <p style="color:#888;font-size:12.5px;margin-bottom:14px;">
-            <b style="color:#00c8ff;">MODO:</b> <span id="keyGamesMode">Cargando...</span>
-        </p>
+        <p style="color:#888;font-size:12.5px;margin-bottom:14px;"><b style="color:#00c8ff;">MODO:</b> <span id="keyGamesMode">...</span></p>
         <div class="kg-toolbar">
             <button class="btn ghost small" onclick="marcarTodosJuegos(true)">✅ Todos</button>
             <button class="btn ghost small" onclick="marcarTodosJuegos(false)">❌ Ninguno</button>
@@ -808,9 +496,26 @@ tbody tr:last-child td{border-bottom:none}
         <div id="keyGamesList" class="kg-list"></div>
         <div class="modal-actions">
             <button class="btn ghost" onclick="cerrarModalJuegosKey()">CANCELAR</button>
-            <button class="btn success" onclick="guardarJuegosKey()">💾 GUARDAR JUEGOS</button>
+            <button class="btn success" onclick="guardarJuegosKey()">💾 GUARDAR</button>
         </div>
         <div id="keyGamesMessage" class="msg"></div>
+    </div>
+</div>
+
+<div id="permsModal" class="modal-overlay">
+    <div class="modal-box" style="max-width:560px;">
+        <div class="modal-head"><h2>🔐 Permisos del admin</h2><button class="modal-close" onclick="cerrarModalPerms()">✕</button></div>
+        <p style="color:#888;font-size:12.5px;margin-bottom:14px;">Selecciona a qué secciones del panel puede acceder este admin.</p>
+        <div class="perm-list" id="permsList"></div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+            <button class="btn ghost small" onclick="toggleAllPerms(true)">✅ Todos</button>
+            <button class="btn ghost small" onclick="toggleAllPerms(false)">❌ Ninguno</button>
+        </div>
+        <div class="modal-actions">
+            <button class="btn ghost" onclick="cerrarModalPerms()">CANCELAR</button>
+            <button class="btn success" onclick="guardarPerms()">💾 GUARDAR PERMISOS</button>
+        </div>
+        <div id="permsMessage" class="msg"></div>
     </div>
 </div>
 
@@ -819,9 +524,11 @@ tbody tr:last-child td{border-bottom:none}
 <script src="/socket.io/socket.io.js"></script>
 <script>
 /* ============================================================
-   ESTADO GLOBAL
+   ESTADO
 ============================================================ */
 let adminKeyValue = "";
+let adminPermissions = [];
+let isRootAdmin = false;
 let todasLasKeys = [];
 let todosLosJuegos = [];
 let socket = null;
@@ -831,20 +538,33 @@ let keyEditandoId = null;
 let keyGamesEditandoId = null;
 let keyGamesSelected = [];
 let keyGamesAll = [];
+let permsEditandoId = null;
+let permsSelected = [];
 
 let tipoKeySeleccionado = null;
-let juegoKeySeleccionado = "";   // "" = global
+let juegoKeySeleccionado = "";
 let ultimaKeyGenerada = "";
 
-// Estado por página
-const keysFilterState = { all:"all", global:"", exhausted:"", game:"", gameId:null };
+const keysFilterState = { all:"all", gameId:null };
+
+/* Lista de permisos disponibles */
+const PERMISOS_DISPONIBLES = [
+    { id:"dashboard",       icon:"📊", name:"Dashboard",         desc:"Ver resumen general" },
+    { id:"generate",        icon:"🔑", name:"Generar Keys",      desc:"Crear nuevas keys" },
+    { id:"keys-all",        icon:"📋", name:"Todas las Keys",    desc:"Ver todas las keys" },
+    { id:"keys-global",     icon:"🌐", name:"Keys Globales",     desc:"Ver keys globales" },
+    { id:"keys-exhausted",  icon:"⚠️", name:"Keys Agotadas",     desc:"Ver keys revocadas/expiradas" },
+    { id:"keys-game",       icon:"🎮", name:"Keys por Juego",    desc:"Ver keys por juego" },
+    { id:"games",           icon:"🕹️", name:"Gestionar Juegos",  desc:"Añadir, editar, eliminar juegos" },
+    { id:"stats",           icon:"📈", name:"Estadísticas",      desc:"Ver estadísticas" },
+    { id:"manage_permissions", icon:"🔐", name:"Gestionar permisos", desc:"Puede editar permisos de otros admins" }
+];
 
 /* ============================================================
    UTILIDADES
 ============================================================ */
 function escapeHTML(v){
-    return String(v ?? "")
-        .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
         .replaceAll('"',"&quot;").replaceAll("'","&#039;");
 }
 function formatearFecha(f){
@@ -859,7 +579,7 @@ function extraerGameIdDeKey(k){
 }
 function gameNameById(id){
     const g = todosLosJuegos.find(x => Number(x.id) === Number(id));
-    return g ? g.name : `Juego #${id} (eliminado)`;
+    return g ? g.name : `Juego #${id}`;
 }
 function toast(msg, tipo="info", dur=3000){
     const cont = document.getElementById("toasts");
@@ -876,13 +596,25 @@ function showMsg(id, texto, ok){
     if(!el) return;
     el.textContent = texto;
     el.className = "msg show " + (ok ? "success" : "error");
-    setTimeout(()=>{ el.classList.remove("show"); }, 4000);
+    setTimeout(()=>el.classList.remove("show"), 4000);
+}
+function tengoPermiso(perm){
+    if(isRootAdmin) return true;
+    if(adminPermissions.includes("*")) return true;
+    return adminPermissions.includes(perm);
 }
 
 /* ============================================================
    NAVEGACIÓN
 ============================================================ */
 function navigateTo(page){
+    // Verificar permiso
+    const checkPage = page.startsWith("keys-game-") ? "keys-game" : page;
+    if(!tengoPermiso(checkPage)){
+        toast("No tienes permiso para esa sección","warning");
+        return;
+    }
+
     document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
     document.querySelectorAll(".nav-item, .nav-sub-item").forEach(n => n.classList.remove("active"));
 
@@ -893,7 +625,6 @@ function navigateTo(page){
         || document.querySelector(`.nav-sub-item[data-page="${page}"]`);
     if(navEl) navEl.classList.add("active");
 
-    // Render dinámico
     if(page === "dashboard") renderDashboard();
     if(page === "keys-all") renderKeysPage("all");
     if(page === "keys-global") renderKeysPage("global");
@@ -913,13 +644,34 @@ function closeSidebar(){
     document.getElementById("mobOverlay").classList.remove("show");
 }
 function toggleGamesSubmenu(){
+    if(!tengoPermiso("keys-game")){ toast("No tienes permiso","warning"); return; }
     document.getElementById("navGamesParent").classList.toggle("expanded");
     document.getElementById("gamesSubmenu").classList.toggle("open");
 }
+
+function aplicarPermisosUI(){
+    // Mostrar/ocultar items del menú
+    document.querySelectorAll(".nav-item, .nav-sub-item").forEach(el => {
+        const page = el.dataset.page;
+        if(!page) return;
+        const checkPage = page.startsWith("keys-game-") ? "keys-game" : page;
+        if(tengoPermiso(checkPage)){
+            el.style.display = "";
+        } else {
+            el.style.display = "none";
+        }
+    });
+
+    // Bloque ADMIN en generar: solo si puede gestionar permisos
+    const canGrant = isRootAdmin || adminPermissions.includes("*") || adminPermissions.includes("manage_permissions");
+    document.getElementById("adminTypesBlock").style.display = canGrant ? "" : "none";
+    document.getElementById("typeGridAdmin").style.display = canGrant ? "" : "none";
+}
+
 function renderGamesSubmenu(){
     const sub = document.getElementById("gamesSubmenu");
     if(!todosLosJuegos.length){
-        sub.innerHTML = `<div style="padding:14px 20px;color:var(--muted);font-size:11.5px;">Sin juegos creados</div>`;
+        sub.innerHTML = `<div style="padding:14px 20px;color:var(--muted);font-size:11.5px;">Sin juegos</div>`;
         return;
     }
     sub.innerHTML = todosLosJuegos.map(g => {
@@ -930,6 +682,13 @@ function renderGamesSubmenu(){
             <span class="cnt">${cnt}</span>
         </div>`;
     }).join("");
+    // Aplicar permisos a los items nuevos
+    document.querySelectorAll(".nav-sub-item").forEach(el => {
+        const page = el.dataset.page;
+        if(page && page.startsWith("keys-game-") && !tengoPermiso("keys-game")){
+            el.style.display = "none";
+        }
+    });
 }
 
 /* ============================================================
@@ -937,14 +696,13 @@ function renderGamesSubmenu(){
 ============================================================ */
 async function entrarAdmin(){
     const key = document.getElementById("adminKey").value.trim();
-    const msg = document.getElementById("loginMessage");
     const btn = document.getElementById("loginBtnAdmin");
 
     if(!key){ showMsg("loginMessage","Introduce la Admin Key.",false); return; }
 
     btn.disabled = true; btn.textContent = "COMPROBANDO...";
     try{
-        const r = await fetch("/api/admin/keys",{ headers:{"x-admin-key":key} });
+        const r = await fetch("/api/admin/me",{ headers:{"x-admin-key":key} });
         const d = await r.json();
 
         if(!r.ok || !d.success){
@@ -954,13 +712,29 @@ async function entrarAdmin(){
         }
 
         adminKeyValue = key;
+        adminPermissions = d.permissions || [];
+        isRootAdmin = d.isRoot || false;
+
+        document.getElementById("userName").textContent = d.nickname || "Admin";
+        document.getElementById("userRole").textContent = isRootAdmin ? "Root Admin" : "Admin";
+
+        document.body.classList.add("logged-in");
         document.getElementById("loginScreen").classList.remove("active");
+        document.getElementById("loginScreen").style.display = "none";
+
+        aplicarPermisosUI();
         conectarSocket();
         await cargarJuegos();
-        todasLasKeys = d.keys || [];
+        await cargarKeys();
         actualizarTodo();
-        navigateTo("dashboard");
-        toast("¡Bienvenido al panel admin!","success");
+
+        // Navegar a la primera sección permitida
+        const inicio = ["dashboard","generate","keys-all","keys-global","keys-exhausted","keys-game","games","stats"]
+            .find(p => tengoPermiso(p));
+        if(inicio) navigateTo(inicio);
+        else document.getElementById("page-dashboard").classList.add("active");
+
+        toast("¡Bienvenido!","success");
     } catch(e){
         console.error(e);
         showMsg("loginMessage","Error de conexión con el servidor.",false);
@@ -969,9 +743,8 @@ async function entrarAdmin(){
 }
 
 function logoutAdmin(){
-    if(!confirm("¿Cerrar sesión del panel admin?")) return;
+    if(!confirm("¿Cerrar sesión?")) return;
     if(socket){ socket.disconnect(); socket = null; }
-    adminKeyValue = "";
     location.reload();
 }
 
@@ -980,41 +753,33 @@ document.getElementById("adminKey").addEventListener("keydown", e => {
 });
 
 /* ============================================================
-   SOCKET.IO
+   SOCKET
 ============================================================ */
 function conectarSocket(){
     if(socket){ socket.disconnect(); socket = null; }
     socket = io({ auth:{ key: adminKeyValue } });
-    socket.on("connect", ()=>console.log("✅ Socket admin conectado"));
+    socket.on("connect", ()=>console.log("✅ Socket admin"));
     socket.on("key-revoked", (d)=>{
         if(d.key === adminKeyValue){ alert("⚠️ Tu Admin Key ha sido revocada."); location.reload(); return; }
-        if(adminKeyValue){ recargarTodo(); }
+        if(adminKeyValue) recargarTodo();
     });
     socket.on("games-updated", ()=>{ if(adminKeyValue) recargarTodo(); });
     socket.on("key-updated", ()=>{ if(adminKeyValue) recargarTodo(); });
 }
 
 /* ============================================================
-   CARGA DE DATOS
+   CARGA
 ============================================================ */
 async function cargarKeys(){
-    if(!adminKeyValue) return;
     const r = await fetch("/api/admin/keys",{ headers:{"x-admin-key":adminKeyValue} });
     const d = await r.json();
-    if(!r.ok || !d.success){
-        if(r.status === 401){ alert("⚠️ Tu Admin Key ya no es válida."); location.reload(); return; }
-        throw new Error(d.message || "Error cargando keys");
-    }
+    if(!r.ok || !d.success){ if(r.status === 401){ location.reload(); return; } throw new Error(); }
     todasLasKeys = d.keys || [];
 }
 async function cargarJuegos(){
-    if(!adminKeyValue) return;
     const r = await fetch("/api/admin/games",{ headers:{"x-admin-key":adminKeyValue} });
     const d = await r.json();
-    if(!r.ok || !d.success){
-        if(r.status === 401){ alert("⚠️ Tu Admin Key ya no es válida."); location.reload(); return; }
-        throw new Error(d.message || "Error cargando juegos");
-    }
+    if(!r.ok || !d.success){ if(r.status === 401){ location.reload(); return; } throw new Error(); }
     todosLosJuegos = d.games || [];
 }
 async function recargarTodo(){
@@ -1022,33 +787,23 @@ async function recargarTodo(){
         await cargarJuegos();
         await cargarKeys();
         actualizarTodo();
-        // Repintar página activa
-        const activePage = document.querySelector(".page.active");
-        if(activePage){
-            const id = activePage.id.replace("page-","");
-            if(id === "dashboard") renderDashboard();
-            if(id === "keys-all") renderKeysPage("all");
-            if(id === "keys-global") renderKeysPage("global");
-            if(id === "keys-exhausted") renderKeysPage("exhausted");
-            if(id === "keys-game") renderKeysPage("game");
-            if(id === "games") renderGamesList();
-            if(id === "stats") renderStats();
-        }
+        const activePage = document.querySelector(".page.active")?.id.replace("page-","");
+        if(activePage === "dashboard") renderDashboard();
+        if(activePage === "keys-all") renderKeysPage("all");
+        if(activePage === "keys-global") renderKeysPage("global");
+        if(activePage === "keys-exhausted") renderKeysPage("exhausted");
+        if(activePage === "keys-game") renderKeysPage("game");
+        if(activePage === "games") renderGamesList();
+        if(activePage === "stats") renderStats();
     } catch(e){ console.error(e); }
 }
 function actualizarTodo(){
-    const total = todasLasKeys.length;
-    const globales = todasLasKeys.filter(k => !extraerGameIdDeKey(k.key)).length;
-    const agotadas = todasLasKeys.filter(k => estaAgotada(k)).length;
-
-    document.getElementById("badgeKeysAll").textContent = total;
-    document.getElementById("badgeKeysGlobal").textContent = globales;
-    document.getElementById("badgeKeysExhausted").textContent = agotadas;
-
+    document.getElementById("badgeKeysAll").textContent = todasLasKeys.length;
+    document.getElementById("badgeKeysGlobal").textContent = todasLasKeys.filter(k => !extraerGameIdDeKey(k.key)).length;
+    document.getElementById("badgeKeysExhausted").textContent = todasLasKeys.filter(k => estaAgotada(k)).length;
     renderGamesSubmenu();
     actualizarSelectJuegos();
 }
-
 function estaAgotada(k){
     if(!k.active) return true;
     if(k.expires_at && new Date(k.expires_at) <= new Date()) return true;
@@ -1072,63 +827,46 @@ function selectType(el){
 function actualizarSelectJuegos(){
     const sel = document.getElementById("genGameSelect");
     if(!sel) return;
-    const valorActual = sel.value;
+    const v = sel.value;
     sel.innerHTML = `<option value="">🌐 Ninguno (todos los juegos)</option>` +
         todosLosJuegos.map(g => `<option value="${g.id}">🎮 ${escapeHTML(g.name)} (ID ${g.id})</option>`).join("");
-    sel.value = valorActual;
-
-    // Solo recalcular preview si ya estaba iniciado
+    sel.value = v;
     if(tipoKeySeleccionado) actualizarPreviewGenerador();
 }
-
-document.getElementById("genGameSelect").addEventListener("change", (e)=>{
+document.getElementById("genGameSelect").addEventListener("change", e => {
     juegoKeySeleccionado = e.target.value;
     actualizarPreviewGenerador();
 });
-
 function actualizarPreviewGenerador(){
     const btn = document.getElementById("genBtn");
     const hint = document.getElementById("genFormatCode");
     const summary = document.getElementById("genSummary");
-    const box = document.getElementById("keyPreviewBox");
-
-    if(!tipoKeySeleccionado){
-        btn.disabled = true; btn.style.opacity = .5;
-        summary.textContent = "Elige un tipo de key arriba";
-        return;
-    }
-
+    if(!tipoKeySeleccionado){ btn.disabled = true; btn.style.opacity = .5; summary.textContent = "Elige un tipo"; return; }
     btn.disabled = false; btn.style.opacity = 1;
-
     const tipoTexto = {
-        "24H":"24 horas","7D":"7 días","30D":"30 días","LIFETIME":"Lifetime","ONE_USE":"Un solo uso",
+        "24H":"24h","7D":"7 días","30D":"30 días","LIFETIME":"Lifetime","ONE_USE":"1 uso",
         "ADMIN_24H":"Admin 24h","ADMIN_7D":"Admin 7d","ADMIN_30D":"Admin 30d",
         "ADMIN_ONE_USE":"Admin 1 uso","ADMIN_LIFETIME":"Admin lifetime"
     }[tipoKeySeleccionado] || tipoKeySeleccionado;
-
     const esAdmin = tipoKeySeleccionado.startsWith("ADMIN");
-
     if(juegoKeySeleccionado){
-        const gid = Number(juegoKeySeleccionado);
-        const gname = gameNameById(gid);
-        hint.textContent = `OMELES-${gid}-XXXXXX-XXXXXX`;
-        summary.innerHTML = `Vas a generar una key <b style="color:#b99cff;">${tipoTexto}</b> ${esAdmin?"👑 (ADMIN)":""} para el juego <b style="color:#00c8ff;">${escapeHTML(gname)}</b> (ID ${gid})`;
+        hint.textContent = `OMELES-${juegoKeySeleccionado}-XXXXXX-XXXXXX`;
+        summary.innerHTML = `Vas a generar <b style="color:#b99cff;">${tipoTexto}</b> ${esAdmin?"👑":""} para <b style="color:#00c8ff;">${escapeHTML(gameNameById(Number(juegoKeySeleccionado)))}</b>`;
     } else {
         hint.textContent = "OMELES-XXXXXX-XXXXXX";
-        summary.innerHTML = `Vas a generar una key <b style="color:#b99cff;">${tipoTexto}</b> ${esAdmin?"👑 (ADMIN)":""} para <b style="color:#22c55e;">TODOS los juegos</b>`;
+        summary.innerHTML = `Vas a generar <b style="color:#b99cff;">${tipoTexto}</b> ${esAdmin?"👑":""} para <b style="color:#22c55e;">TODOS los juegos</b>`;
     }
-    box.style.display = "none";
+    document.getElementById("keyPreviewBox").style.display = "none";
 }
-
 async function generarKey(){
-    if(!tipoKeySeleccionado){ toast("Selecciona un tipo de key primero","warning"); return; }
-
+    if(!tipoKeySeleccionado){ toast("Selecciona un tipo","warning"); return; }
     const btn = document.getElementById("genBtn");
     btn.disabled = true; btn.textContent = "GENERANDO...";
-
     try{
         const body = { type: tipoKeySeleccionado };
         if(juegoKeySeleccionado) body.gameId = Number(juegoKeySeleccionado);
+        // Si es admin, el default es todos los permisos
+        if(tipoKeySeleccionado.startsWith("ADMIN")) body.permissions = ["*"];
 
         const r = await fetch("/api/keys",{
             method:"POST",
@@ -1136,147 +874,98 @@ async function generarKey(){
             body: JSON.stringify(body)
         });
         const d = await r.json();
-
         if(!r.ok || !d.success){
-            showMsg("genMessage", d.message || "No se pudo generar la key.", false);
+            showMsg("genMessage", d.message || "Error", false);
             btn.disabled = false; btn.textContent = "⚡ GENERAR KEY";
             return;
         }
-
         ultimaKeyGenerada = d.key;
         document.getElementById("keyPreviewValue").textContent = d.key;
         document.getElementById("keyPreviewMeta").innerHTML = juegoKeySeleccionado
-            ? `🎮 Juego: <b>${escapeHTML(gameNameById(Number(juegoKeySeleccionado)))}</b> · Tipo: <b>${escapeHTML(tipoKeySeleccionado)}</b>`
-            : `🌐 Global (todos los juegos) · Tipo: <b>${escapeHTML(tipoKeySeleccionado)}</b>`;
+            ? `🎮 ${escapeHTML(gameNameById(Number(juegoKeySeleccionado)))} · ${escapeHTML(tipoKeySeleccionado)}`
+            : `🌐 Global · ${escapeHTML(tipoKeySeleccionado)}`;
         document.getElementById("keyPreviewBox").style.display = "block";
-
-        showMsg("genMessage","✅ Key generada correctamente.", true);
-        toast("Key generada con éxito","success");
+        showMsg("genMessage","✅ Key generada.", true);
+        toast("Key generada","success");
         await cargarKeys();
         actualizarTodo();
     } catch(e){
-        console.error(e);
-        showMsg("genMessage","Error de conexión con el servidor.", false);
+        showMsg("genMessage","Error de conexión", false);
     } finally {
         btn.disabled = false; btn.textContent = "⚡ GENERAR KEY";
     }
 }
-
 function copiarKeyGenerada(){
     if(!ultimaKeyGenerada) return;
-    navigator.clipboard.writeText(ultimaKeyGenerada)
-        .then(()=> toast("Key copiada al portapapeles","success"))
-        .catch(()=> toast("No se pudo copiar","error"));
+    navigator.clipboard.writeText(ultimaKeyGenerada).then(()=>toast("Copiada","success")).catch(()=>toast("Error","error"));
 }
 
 /* ============================================================
-   RENDERIZADO DE KEYS
+   RENDER KEYS
 ============================================================ */
 function renderKeysPage(pagina){
     let keys = [...todasLasKeys];
-    let tituloDestino = "";
+    let destino = "";
 
     if(pagina === "all"){
-        const busqueda = (document.getElementById("searchAll").value||"").toLowerCase().trim();
-        const filtro = keysFilterState.all;
-
-        if(filtro === "active") keys = keys.filter(k => estaActiva(k));
-        else if(filtro === "inactive") keys = keys.filter(k => !estaActiva(k));
-        else if(filtro === "global") keys = keys.filter(k => !extraerGameIdDeKey(k.key));
-        else if(filtro === "game") keys = keys.filter(k => extraerGameIdDeKey(k.key) !== null);
-        else if(filtro === "admin") keys = keys.filter(k => String(k.type).startsWith("ADMIN"));
-
-        if(busqueda){
-            keys = keys.filter(k =>
-                String(k.key||"").toLowerCase().includes(busqueda) ||
-                String(k.nickname||"").toLowerCase().includes(busqueda) ||
-                String(k.type||"").toLowerCase().includes(busqueda) ||
-                String(k.last_ip||"").toLowerCase().includes(busqueda)
-            );
-        }
-        tituloDestino = "keysTableAll";
-    }
-    else if(pagina === "global"){
+        const busq = (document.getElementById("searchAll").value||"").toLowerCase().trim();
+        const f = keysFilterState.all;
+        if(f === "active") keys = keys.filter(k => estaActiva(k));
+        else if(f === "inactive") keys = keys.filter(k => !estaActiva(k));
+        else if(f === "global") keys = keys.filter(k => !extraerGameIdDeKey(k.key));
+        else if(f === "game") keys = keys.filter(k => extraerGameIdDeKey(k.key) !== null);
+        else if(f === "admin") keys = keys.filter(k => String(k.type).startsWith("ADMIN"));
+        if(busq) keys = keys.filter(k => String(k.key).toLowerCase().includes(busq) || String(k.nickname||"").toLowerCase().includes(busq) || String(k.type).toLowerCase().includes(busq));
+        destino = "keysTableAll";
+    } else if(pagina === "global"){
         keys = keys.filter(k => !extraerGameIdDeKey(k.key));
-        const busqueda = (document.getElementById("searchGlobal").value||"").toLowerCase().trim();
-        if(busqueda) keys = keys.filter(k =>
-            String(k.key||"").toLowerCase().includes(busqueda) ||
-            String(k.nickname||"").toLowerCase().includes(busqueda)
-        );
-        tituloDestino = "keysTableGlobal";
-    }
-    else if(pagina === "exhausted"){
+        const b = (document.getElementById("searchGlobal").value||"").toLowerCase().trim();
+        if(b) keys = keys.filter(k => String(k.key).toLowerCase().includes(b) || String(k.nickname||"").toLowerCase().includes(b));
+        destino = "keysTableGlobal";
+    } else if(pagina === "exhausted"){
         keys = keys.filter(k => estaAgotada(k));
-        const busqueda = (document.getElementById("searchExhausted").value||"").toLowerCase().trim();
-        if(busqueda) keys = keys.filter(k =>
-            String(k.key||"").toLowerCase().includes(busqueda) ||
-            String(k.nickname||"").toLowerCase().includes(busqueda)
-        );
-        tituloDestino = "keysTableExhausted";
-    }
-    else if(pagina === "game"){
+        const b = (document.getElementById("searchExhausted").value||"").toLowerCase().trim();
+        if(b) keys = keys.filter(k => String(k.key).toLowerCase().includes(b) || String(k.nickname||"").toLowerCase().includes(b));
+        destino = "keysTableExhausted";
+    } else if(pagina === "game"){
         const gid = keysFilterState.gameId;
-        if(gid === null){ document.getElementById("keysTableGame").innerHTML = ""; return; }
+        if(gid === null) return;
         keys = keys.filter(k => extraerGameIdDeKey(k.key) === Number(gid));
-        const busqueda = (document.getElementById("searchGameKeys").value||"").toLowerCase().trim();
-        if(busqueda) keys = keys.filter(k =>
-            String(k.key||"").toLowerCase().includes(busqueda) ||
-            String(k.nickname||"").toLowerCase().includes(busqueda)
-        );
-        tituloDestino = "keysTableGame";
+        const b = (document.getElementById("searchGameKeys").value||"").toLowerCase().trim();
+        if(b) keys = keys.filter(k => String(k.key).toLowerCase().includes(b) || String(k.nickname||"").toLowerCase().includes(b));
+        destino = "keysTableGame";
     }
 
-    const cont = document.getElementById(tituloDestino);
+    const cont = document.getElementById(destino);
     if(!cont) return;
-
     if(!keys.length){
-        cont.innerHTML = `<div class="empty"><span class="empty-ico">🔑</span>No hay keys en esta sección</div>`;
+        cont.innerHTML = `<div class="empty"><span class="empty-ico">🔑</span>Sin keys</div>`;
         return;
     }
-
-    // Orden: más recientes primero
     keys.sort((a,b)=> Number(b.id) - Number(a.id));
-
-    cont.innerHTML = `<div class="table-wrap"><table>
-        <thead><tr>
-            <th>MOTE</th><th>KEY</th><th>TIPO</th><th>ESTADO</th><th>JUEGO</th>
-            <th>CREADA</th><th>EXPIRA</th><th>ÚLTIMO USO</th><th>USOS</th><th>ACCIÓN</th>
-        </tr></thead>
-        <tbody>
-            ${keys.map(k => renderKeyRow(k)).join("")}
-        </tbody>
-    </table></div>`;
+    cont.innerHTML = `<div class="table-wrap"><table><thead><tr>
+        <th>MOTE</th><th>KEY</th><th>TIPO</th><th>ESTADO</th><th>JUEGO</th>
+        <th>CREADA</th><th>EXPIRA</th><th>ÚLTIMO USO</th><th>USOS</th><th>ACCIÓN</th>
+    </tr></thead><tbody>${keys.map(k => renderKeyRow(k)).join("")}</tbody></table></div>`;
 }
 
 function renderKeyRow(key){
     let estadoHTML, claseEstado;
     if(estaActiva(key)){ estadoHTML = "ACTIVA"; claseEstado = "active"; }
-    else if(!key.active && (key.type === "ONE_USE" || key.type === "ADMIN_ONE_USE") && Number(key.use_count)>0){
-        estadoHTML = "USADA"; claseEstado = "warn";
-    }
-    else if(key.expires_at && new Date(key.expires_at) <= new Date()){
-        estadoHTML = "EXPIRADA"; claseEstado = "inactive";
-    }
+    else if(!key.active && (key.type === "ONE_USE" || key.type === "ADMIN_ONE_USE") && Number(key.use_count)>0){ estadoHTML = "USADA"; claseEstado = "warn"; }
+    else if(key.expires_at && new Date(key.expires_at) <= new Date()){ estadoHTML = "EXPIRADA"; claseEstado = "inactive"; }
     else if(!key.active){ estadoHTML = "REVOCADA"; claseEstado = "inactive"; }
     else { estadoHTML = "INACTIVA"; claseEstado = "inactive"; }
 
-    // Tipo
-    let tipoHTML = "";
     const t = String(key.type);
+    let tipoHTML;
     if(t === "ONE_USE") tipoHTML = `<span class="tag warn">1 USO</span>`;
-    else if(t === "ADMIN") tipoHTML = `<span class="tag admin">👑 ADMIN</span>`;
-    else if(t === "ADMIN_24H") tipoHTML = `<span class="tag admin">👑 ADMIN 24H</span>`;
-    else if(t === "ADMIN_7D") tipoHTML = `<span class="tag admin">👑 ADMIN 7D</span>`;
-    else if(t === "ADMIN_30D") tipoHTML = `<span class="tag admin">👑 ADMIN 30D</span>`;
-    else if(t === "ADMIN_ONE_USE") tipoHTML = `<span class="tag admin">👑 ADMIN 1 USO</span>`;
-    else if(t === "ADMIN_LIFETIME") tipoHTML = `<span class="tag admin-life">👑 ADMIN LIFETIME</span>`;
+    else if(t.startsWith("ADMIN")) tipoHTML = `<span class="tag admin">👑 ${escapeHTML(t.replace("ADMIN_","").replace("ADMIN","ALL"))}</span>`;
     else tipoHTML = `<span style="color:#aaa;font-weight:700;">${escapeHTML(t)}</span>`;
 
-    // Juego
     const gid = extraerGameIdDeKey(key.key);
     let juegoHTML;
     if(gid === null){
-        // Sin ID en key → mirar allowed_games
         if(!key.allowed_games){
             juegoHTML = `<span class="badge-games all">🌐 TODOS</span>`;
         } else {
@@ -1287,17 +976,19 @@ function renderKeyRow(key){
                     const nombres = arr.map(id => gameNameById(id));
                     juegoHTML = `<span class="badge-games limited" title="${escapeHTML(nombres.join(", "))}">🎯 ${escapeHTML(nombres[0])}${nombres.length>1?" +"+(nombres.length-1):""}</span>`;
                 }
-            } catch {
-                juegoHTML = `<span class="badge-games all">🌐 TODOS</span>`;
-            }
+            } catch { juegoHTML = `<span class="badge-games all">🌐 TODOS</span>`; }
         }
     } else {
-        juegoHTML = `<span class="badge-games limited" title="ID ${gid}">🎮 ${escapeHTML(gameNameById(gid))}</span>`;
+        juegoHTML = `<span class="badge-games limited">🎮 ${escapeHTML(gameNameById(gid))}</span>`;
     }
+
+    // Acciones
+    const esAdmin = t.startsWith("ADMIN");
+    const canManagePerms = isRootAdmin || adminPermissions.includes("*") || adminPermissions.includes("manage_permissions");
 
     return `<tr>
         <td><span class="nickname">${key.nickname ? escapeHTML(key.nickname) : "Sin mote"}</span></td>
-        <td><span class="key-code">${escapeHTML(key.key)}</strong></td>
+        <td><span class="key-code">${escapeHTML(key.key)}</span></td>
         <td>${tipoHTML}</td>
         <td><span class="tag ${claseEstado}">${estadoHTML}</span></td>
         <td>${juegoHTML}</td>
@@ -1307,8 +998,9 @@ function renderKeyRow(key){
         <td style="text-align:center;font-weight:700;color:#b99cff;">${Number(key.use_count)||0}</td>
         <td>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                <button class="btn ghost small" onclick="abrirModalMote(${key.id})" title="Editar mote">✏️</button>
-                <button class="btn small" style="background:linear-gradient(135deg,#16a34a,#22c55e)" onclick="abrirModalJuegosKey(${key.id})" title="Juegos permitidos">🎮</button>
+                <button class="btn ghost small" onclick="abrirModalMote(${key.id})" title="Mote">✏️</button>
+                ${esAdmin && canManagePerms ? `<button class="btn small" style="background:linear-gradient(135deg,#8b5cff,#ec4899)" onclick="abrirModalPerms(${key.id})" title="Permisos">🔐</button>` : ""}
+                <button class="btn small" style="background:linear-gradient(135deg,#16a34a,#22c55e)" onclick="abrirModalJuegosKey(${key.id})" title="Juegos">🎮</button>
                 ${key.active ? `<button class="btn ghost small" onclick="revocarKey(${key.id})" title="Revocar">🚫</button>` : ""}
                 <button class="btn danger small" onclick="eliminarKey(${key.id})" title="Eliminar">🗑️</button>
             </div>
@@ -1322,18 +1014,16 @@ function setKeysFilter(pagina, filtro, btn){
     btn.classList.add("active");
     renderKeysPage(pagina);
 }
-
 function verKeysDeJuego(gid){
+    if(!tengoPermiso("keys-game")){ toast("Sin permiso","warning"); return; }
     keysFilterState.gameId = gid;
     document.getElementById("gameKeysTitle").textContent = `🎮 ${gameNameById(gid)}`;
     document.getElementById("gameKeysSub").textContent = `Keys que dan acceso a este juego`;
-
     document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
     document.querySelectorAll(".nav-item, .nav-sub-item").forEach(n => n.classList.remove("active"));
     document.getElementById("page-keys-game").classList.add("active");
     const navItem = document.querySelector(`.nav-sub-item[data-page="keys-game-${gid}"]`);
     if(navItem) navItem.classList.add("active");
-
     renderKeysPage("game");
     if(window.innerWidth <= 900) closeSidebar();
 }
@@ -1349,56 +1039,29 @@ function renderDashboard(){
     const porJuego = total - globales;
 
     document.getElementById("dashboardStats").innerHTML = `
-        <div class="stat-card purple">
-            <span class="stat-ico">🔑</span>
-            <div class="stat-label">Total Keys</div>
-            <div class="stat-val">${total}</div>
-            <div class="stat-sub">Creadas en total</div>
-        </div>
-        <div class="stat-card green">
-            <span class="stat-ico">✅</span>
-            <div class="stat-label">Activas</div>
-            <div class="stat-val">${activas}</div>
-            <div class="stat-sub">Listas para usar</div>
-        </div>
-        <div class="stat-card red">
-            <span class="stat-ico">⚠️</span>
-            <div class="stat-label">Agotadas</div>
-            <div class="stat-val">${agotadas}</div>
-            <div class="stat-sub">Revocadas / expiradas / usadas</div>
-        </div>
-        <div class="stat-card cyan">
-            <span class="stat-ico">🎮</span>
-            <div class="stat-label">Por Juego</div>
-            <div class="stat-val">${porJuego}</div>
-            <div class="stat-sub">${globales} globales</div>
-        </div>
+        <div class="stat-card"><span class="stat-ico">🔑</span><div class="stat-label">Total Keys</div><div class="stat-val">${total}</div><div class="stat-sub">Creadas</div></div>
+        <div class="stat-card green"><span class="stat-ico">✅</span><div class="stat-label">Activas</div><div class="stat-val">${activas}</div><div class="stat-sub">Listas</div></div>
+        <div class="stat-card red"><span class="stat-ico">⚠️</span><div class="stat-label">Agotadas</div><div class="stat-val">${agotadas}</div><div class="stat-sub">Inactivas</div></div>
+        <div class="stat-card cyan"><span class="stat-ico">🎮</span><div class="stat-label">Por Juego</div><div class="stat-val">${porJuego}</div><div class="stat-sub">${globales} globales</div></div>
     `;
 
-    // Top juegos
     const counts = {};
-    todasLasKeys.forEach(k => {
-        const gid = extraerGameIdDeKey(k.key);
-        if(gid !== null) counts[gid] = (counts[gid] || 0) + 1;
-    });
+    todasLasKeys.forEach(k => { const gid = extraerGameIdDeKey(k.key); if(gid !== null) counts[gid] = (counts[gid]||0)+1; });
     const top = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
     document.getElementById("dashboardTopGames").innerHTML = top.length
-        ? top.map(([gid,cnt],i) => `
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 15px;border-radius:11px;background:rgba(255,255,255,.02);margin-bottom:8px;">
-                <span><b style="color:#b99cff;">#${i+1}</b> &nbsp;🎮 ${escapeHTML(gameNameById(gid))}</span>
-                <span style="background:rgba(139,92,255,.15);color:#b99cff;padding:4px 11px;border-radius:8px;font-weight:800;font-size:12px;">${cnt} keys</span>
-            </div>`).join("")
-        : `<div class="empty"><span class="empty-ico">📊</span>Aún no hay keys por juego</div>`;
+        ? top.map(([gid,cnt],i) => `<div style="display:flex;justify-content:space-between;padding:12px 15px;border-radius:11px;background:rgba(255,255,255,.02);margin-bottom:8px;">
+            <span><b style="color:#b99cff;">#${i+1}</b> 🎮 ${escapeHTML(gameNameById(gid))}</span>
+            <span style="background:rgba(139,92,255,.15);color:#b99cff;padding:4px 11px;border-radius:8px;font-weight:800;font-size:12px;">${cnt} keys</span>
+        </div>`).join("")
+        : `<div class="empty"><span class="empty-ico">📊</span>Sin keys por juego</div>`;
 
-    // Recientes
     const recientes = [...todasLasKeys].sort((a,b)=>b.id-a.id).slice(0,5);
     document.getElementById("dashboardRecent").innerHTML = recientes.length
-        ? recientes.map(k => `
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 15px;border-radius:11px;background:rgba(255,255,255,.02);margin-bottom:8px;gap:10px;flex-wrap:wrap;">
-                <span class="key-code" style="flex:1;min-width:200px;">${escapeHTML(k.key)}</span>
-                <span style="color:#888;font-size:11.5px;">${formatearFecha(k.created_at)}</span>
-            </div>`).join("")
-        : `<div class="empty"><span class="empty-ico">🕒</span>Aún no hay keys</div>`;
+        ? recientes.map(k => `<div style="display:flex;justify-content:space-between;padding:11px 15px;border-radius:11px;background:rgba(255,255,255,.02);margin-bottom:8px;gap:10px;flex-wrap:wrap;">
+            <span class="key-code" style="flex:1;min-width:200px;">${escapeHTML(k.key)}</span>
+            <span style="color:#888;font-size:11.5px;">${formatearFecha(k.created_at)}</span>
+        </div>`).join("")
+        : `<div class="empty"><span class="empty-ico">🕒</span>Sin keys</div>`;
 }
 
 /* ============================================================
@@ -1406,44 +1069,34 @@ function renderDashboard(){
 ============================================================ */
 function renderGamesList(){
     const cont = document.getElementById("gamesList");
-    const busqueda = (document.getElementById("gameSearch").value||"").toLowerCase().trim();
-
+    const busq = (document.getElementById("gameSearch").value||"").toLowerCase().trim();
     let lista = todosLosJuegos;
-    if(busqueda) lista = lista.filter(g => String(g.name).toLowerCase().includes(busqueda));
-
-    document.getElementById("gamesCountLabel").textContent = `${todosLosJuegos.length} juego${todosLosJuegos.length===1?"":"s"} en el catálogo`;
-
-    if(!lista.length){
-        cont.innerHTML = `<div class="empty" style="grid-column:1/-1;"><span class="empty-ico">🎮</span>${busqueda ? "Sin resultados" : "Aún no hay juegos"}</div>`;
-        return;
-    }
-
+    if(busq) lista = lista.filter(g => String(g.name).toLowerCase().includes(busq));
+    document.getElementById("gamesCountLabel").textContent = `${todosLosJuegos.length} juego${todosLosJuegos.length===1?"":"s"}`;
+    if(!lista.length){ cont.innerHTML = `<div class="empty" style="grid-column:1/-1;"><span class="empty-ico">🎮</span>Sin juegos</div>`; return; }
     cont.innerHTML = lista.map(g => {
         const keysCount = todasLasKeys.filter(k => extraerGameIdDeKey(k.key) === Number(g.id)).length;
         return `<div class="game-card">
             <div class="game-card-head">
-                ${g.image
-                    ? `<img class="game-card-img" src="${escapeHTML(g.image)}" onerror="this.outerHTML='<div class=\\'game-card-img\\'>🎮</div>'">`
-                    : `<div class="game-card-img">🎮</div>`}
+                ${g.image ? `<img class="game-card-img" src="${escapeHTML(g.image)}" onerror="this.outerHTML='<div class=\\'game-card-img\\'>🎮</div>'">` : `<div class="game-card-img">🎮</div>`}
                 <div class="game-card-info">
                     <div class="game-card-name">${escapeHTML(g.name)}</div>
-                    <div class="game-card-id">ID: ${g.id} · ${keysCount} key${keysCount===1?"":"s"}</div>
+                    <div class="game-card-id">ID: ${g.id} · ${keysCount} keys</div>
                 </div>
             </div>
             <div class="game-card-body">
-                <div>⬇️ Descarga: <b>${g.download ? "Sí" : "No"}</b></div>
-                <div>🔧 Reparación: <b>${g.repair ? "Sí" : "No"}</b></div>
-                <div>🔑 Password: <b>${g.password ? escapeHTML(g.password) : "-"}</b></div>
+                <div>⬇️ Descarga: <b>${g.download?"Sí":"No"}</b></div>
+                <div>🔧 Reparación: <b>${g.repair?"Sí":"No"}</b></div>
+                <div>🔑 Password: <b>${g.password?escapeHTML(g.password):"-"}</b></div>
             </div>
             <div class="game-card-actions">
                 <button class="btn small" onclick="abrirModalEditar(${g.id})">✏️ EDITAR</button>
-                <button class="btn small" style="background:linear-gradient(135deg,#16a34a,#22c55e)" onclick="verKeysDeJuego(${g.id})">🔑 ${keysCount} KEYS</button>
+                <button class="btn small" style="background:linear-gradient(135deg,#16a34a,#22c55e)" onclick="verKeysDeJuego(${g.id})">🔑 ${keysCount}</button>
                 <button class="btn danger small" onclick="eliminarJuego(${g.id})">🗑️</button>
             </div>
         </div>`;
     }).join("");
 }
-
 async function crearJuego(){
     const name = document.getElementById("gameName").value.trim();
     if(!name){ showMsg("gameMessage","El nombre es obligatorio.",false); return; }
@@ -1460,20 +1113,16 @@ async function crearJuego(){
             })
         });
         const d = await r.json();
-        if(!r.ok || !d.success){ showMsg("gameMessage", d.message||"Error creando juego.", false); return; }
-
+        if(!r.ok || !d.success){ showMsg("gameMessage", d.message||"Error", false); return; }
         ["gameName","gameDownload","gameRepair","gamePassword","gameImage"].forEach(id => document.getElementById(id).value = "");
-        showMsg("gameMessage","✅ Juego añadido correctamente.", true);
+        showMsg("gameMessage","✅ Juego añadido.", true);
         toast("Juego añadido","success");
-        await cargarJuegos();
-        actualizarTodo();
-        renderGamesList();
-    } catch(e){ showMsg("gameMessage","Error de conexión.", false); }
+        await cargarJuegos(); actualizarTodo(); renderGamesList();
+    } catch(e){ showMsg("gameMessage","Error de conexión", false); }
 }
-
 function abrirModalEditar(id){
     const j = todosLosJuegos.find(g => Number(g.id) === Number(id));
-    if(!j){ alert("Juego no encontrado"); return; }
+    if(!j) return;
     juegoEditandoId = id;
     document.getElementById("editName").value = j.name||"";
     document.getElementById("editDownload").value = j.download||"";
@@ -1486,7 +1135,7 @@ function cerrarModalEditar(){ document.getElementById("editModal").classList.rem
 async function guardarEdicion(){
     if(!juegoEditandoId) return;
     const name = document.getElementById("editName").value.trim();
-    if(!name){ showMsg("modalMessage","Nombre obligatorio.",false); return; }
+    if(!name){ showMsg("modalMessage","Nombre obligatorio",false); return; }
     try{
         const r = await fetch("/api/admin/update-game",{
             method:"POST",
@@ -1500,17 +1149,16 @@ async function guardarEdicion(){
             })
         });
         const d = await r.json();
-        if(!r.ok || !d.success){ showMsg("modalMessage",d.message||"Error.",false); return; }
+        if(!r.ok || !d.success){ showMsg("modalMessage",d.message||"Error",false); return; }
         showMsg("modalMessage","✅ Guardado.",true);
         toast("Juego actualizado","success");
         await cargarJuegos(); actualizarTodo(); renderGamesList();
         setTimeout(cerrarModalEditar, 700);
-    } catch(e){ showMsg("modalMessage","Error de conexión.",false); }
+    } catch(e){ showMsg("modalMessage","Error de conexión",false); }
 }
-
 async function eliminarJuego(id){
     const j = todosLosJuegos.find(g => Number(g.id) === Number(id));
-    if(!confirm(`⚠️ BORRAR "${j?.name||"juego"}"\n\nLas keys asociadas quedarán huérfanas (con el ID en el nombre).`)) return;
+    if(!confirm(`⚠️ BORRAR "${j?.name||"juego"}"`)) return;
     try{
         const r = await fetch("/api/admin/delete-game",{
             method:"POST",
@@ -1521,15 +1169,15 @@ async function eliminarJuego(id){
         if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
         toast("Juego eliminado","info");
         await cargarJuegos(); actualizarTodo(); renderGamesList();
-    } catch(e){ alert("Error de conexión"); }
+    } catch(e){ alert("Error"); }
 }
 
 /* ============================================================
-   MODAL MOTE
+   MOTE
 ============================================================ */
 function abrirModalMote(id){
     const k = todasLasKeys.find(x => Number(x.id) === Number(id));
-    if(!k){ alert("Key no encontrada"); return; }
+    if(!k) return;
     keyEditandoId = id;
     document.getElementById("editNickname").value = k.nickname||"";
     document.getElementById("nickModal").classList.add("open");
@@ -1546,44 +1194,90 @@ async function guardarMote(){
             body: JSON.stringify({ id: keyEditandoId, nickname })
         });
         const d = await r.json();
-        if(!r.ok || !d.success){ showMsg("nickMessage",d.message||"Error.",false); return; }
-        showMsg("nickMessage","✅ Mote actualizado.",true);
-        await cargarKeys(); actualizarTodo();
-        const activePage = document.querySelector(".page.active")?.id.replace("page-","");
-        if(activePage === "keys-all") renderKeysPage("all");
-        if(activePage === "keys-global") renderKeysPage("global");
-        if(activePage === "keys-exhausted") renderKeysPage("exhausted");
-        if(activePage === "keys-game") renderKeysPage("game");
+        if(!r.ok || !d.success){ showMsg("nickMessage",d.message||"Error",false); return; }
+        showMsg("nickMessage","✅ Actualizado.",true);
+        await cargarKeys(); actualizarTodo(); refrescarPaginaActiva();
         setTimeout(cerrarModalMote, 500);
-    } catch(e){ showMsg("nickMessage","Error de conexión.",false); }
+    } catch(e){ showMsg("nickMessage","Error",false); }
 }
 
 /* ============================================================
-   MODAL JUEGOS POR KEY
+   PERMISOS
 ============================================================ */
-async function abrirModalJuegosKey(id){
+function abrirModalPerms(id){
     const k = todasLasKeys.find(x => Number(x.id) === Number(id));
     if(!k){ alert("Key no encontrada"); return; }
+    if(!k.type.startsWith("ADMIN")){ alert("Solo keys admin"); return; }
+    permsEditandoId = id;
+    let actuales = [];
+    try{ actuales = k.permissions ? JSON.parse(k.permissions) : ["*"]; } catch { actuales = ["*"]; }
+
+    // Si tiene "*", marcar todos
+    if(actuales.includes("*")) permsSelected = PERMISOS_DISPONIBLES.map(p => p.id);
+    else permsSelected = actuales;
+
+    renderPermsList();
+    document.getElementById("permsMessage").style.display = "none";
+    document.getElementById("permsModal").classList.add("open");
+}
+function cerrarModalPerms(){
+    document.getElementById("permsModal").classList.remove("open");
+    permsEditandoId = null; permsSelected = [];
+}
+function renderPermsList(){
+    const cont = document.getElementById("permsList");
+    cont.innerHTML = PERMISOS_DISPONIBLES.map(p => `
+        <label class="perm-item">
+            <input type="checkbox" ${permsSelected.includes(p.id)?"checked":""} onchange="togglePerm('${p.id}',this.checked)">
+            <div class="perm-item-info">
+                <div class="perm-item-name">${p.icon} ${escapeHTML(p.name)}</div>
+                <div class="perm-item-desc">${escapeHTML(p.desc)}</div>
+            </div>
+        </label>
+    `).join("");
+}
+function togglePerm(id, checked){
+    if(checked){ if(!permsSelected.includes(id)) permsSelected.push(id); }
+    else permsSelected = permsSelected.filter(x => x !== id);
+}
+function toggleAllPerms(marcar){
+    permsSelected = marcar ? PERMISOS_DISPONIBLES.map(p => p.id) : [];
+    renderPermsList();
+}
+async function guardarPerms(){
+    if(!permsEditandoId) return;
+    const todos = PERMISOS_DISPONIBLES.length === permsSelected.length;
+    const value = todos ? ["*"] : permsSelected;
+    try{
+        const r = await fetch("/api/admin/update-key-permissions",{
+            method:"POST",
+            headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
+            body: JSON.stringify({ id: permsEditandoId, permissions: value })
+        });
+        const d = await r.json();
+        if(!r.ok || !d.success){ showMsg("permsMessage",d.message||"Error",false); return; }
+        showMsg("permsMessage","✅ Permisos actualizados.",true);
+        toast("Permisos guardados","success");
+        await cargarKeys(); actualizarTodo(); refrescarPaginaActiva();
+        setTimeout(cerrarModalPerms, 700);
+    } catch(e){ showMsg("permsMessage","Error de conexión",false); }
+}
+
+/* ============================================================
+   JUEGOS POR KEY
+============================================================ */
+async function abrirModalJuegosKey(id){
     keyGamesEditandoId = id;
     document.getElementById("keyGamesList").innerHTML = `<div style="padding:20px;text-align:center;color:#666;">Cargando...</div>`;
     document.getElementById("keyGamesModal").classList.add("open");
-
     try{
         const r = await fetch(`/api/admin/key-games/${id}`,{ headers:{"x-admin-key":adminKeyValue} });
         const d = await r.json();
-        if(!r.ok || !d.success){
-            document.getElementById("keyGamesList").innerHTML = `<div style="padding:20px;text-align:center;color:#ff5672;">Error cargando.</div>`;
-            return;
-        }
+        if(!r.ok || !d.success){ document.getElementById("keyGamesList").innerHTML = `<div style="padding:20px;text-align:center;color:#ff5672;">Error</div>`; return; }
         keyGamesAll = d.allGames || [];
-        keyGamesSelected = d.allowed === null
-            ? keyGamesAll.map(g => Number(g.id))
-            : d.allowed.map(Number);
-        actualizarModoJuegosKey();
-        renderJuegosKey();
-    } catch(e){
-        document.getElementById("keyGamesList").innerHTML = `<div style="padding:20px;text-align:center;color:#ff5672;">Error de conexión.</div>`;
-    }
+        keyGamesSelected = d.allowed === null ? keyGamesAll.map(g => Number(g.id)) : d.allowed.map(Number);
+        actualizarModoJuegosKey(); renderJuegosKey();
+    } catch(e){ document.getElementById("keyGamesList").innerHTML = `<div style="padding:20px;text-align:center;color:#ff5672;">Error</div>`; }
 }
 function cerrarModalJuegosKey(){
     document.getElementById("keyGamesModal").classList.remove("open");
@@ -1594,39 +1288,30 @@ function actualizarModoJuegosKey(){
     const total = keyGamesAll.length, sel = keyGamesSelected.length;
     if(sel === 0){ el.className = "kg-mode none"; el.textContent = "⚠️ SIN JUEGOS"; }
     else if(sel === total){ el.className = "kg-mode all"; el.textContent = `🌐 TODOS (${total})`; }
-    else { el.className = "kg-mode limited"; el.textContent = `🎯 ${sel} de ${total} juegos`; }
+    else { el.className = "kg-mode limited"; el.textContent = `🎯 ${sel} de ${total}`; }
 }
 function renderJuegosKey(){
     const list = document.getElementById("keyGamesList");
-    const filtro = document.getElementById("keyGamesSearch").value.toLowerCase().trim();
-    const visibles = keyGamesAll.filter(g => !filtro || g.name.toLowerCase().includes(filtro));
-    if(!visibles.length){
-        list.innerHTML = `<div style="padding:20px;text-align:center;color:#666;">Sin resultados</div>`;
-        return;
-    }
-    list.innerHTML = visibles.map(g => {
+    const f = document.getElementById("keyGamesSearch").value.toLowerCase().trim();
+    const vis = keyGamesAll.filter(g => !f || g.name.toLowerCase().includes(f));
+    if(!vis.length){ list.innerHTML = `<div style="padding:20px;text-align:center;color:#666;">Sin resultados</div>`; return; }
+    list.innerHTML = vis.map(g => {
         const checked = keyGamesSelected.includes(Number(g.id)) ? "checked" : "";
-        return `<div class="kg-item">
-            <input type="checkbox" id="kg_${g.id}" ${checked} onchange="toggleJuegoKey(${g.id},this.checked)">
-            <label for="kg_${g.id}">${escapeHTML(g.name)} <span style="color:#666;font-size:11px;">#${g.id}</span></label>
-        </div>`;
+        return `<div class="kg-item"><input type="checkbox" id="kg_${g.id}" ${checked} onchange="toggleJuegoKey(${g.id},this.checked)"><label for="kg_${g.id}">${escapeHTML(g.name)} <span style="color:#666;font-size:11px;">#${g.id}</span></label></div>`;
     }).join("");
 }
 function filtrarJuegosKey(){ renderJuegosKey(); }
 function toggleJuegoKey(id, checked){
     id = Number(id);
     if(checked){ if(!keyGamesSelected.includes(id)) keyGamesSelected.push(id); }
-    else { keyGamesSelected = keyGamesSelected.filter(x => x !== id); }
+    else keyGamesSelected = keyGamesSelected.filter(x => x !== id);
     actualizarModoJuegosKey();
 }
 function marcarTodosJuegos(modo){
     if(modo === true) keyGamesSelected = keyGamesAll.map(g => Number(g.id));
     else if(modo === false) keyGamesSelected = [];
-    else if(modo === "invert"){
-        keyGamesSelected = keyGamesAll.filter(g => !keyGamesSelected.includes(Number(g.id))).map(g => Number(g.id));
-    }
-    actualizarModoJuegosKey();
-    renderJuegosKey();
+    else if(modo === "invert") keyGamesSelected = keyGamesAll.filter(g => !keyGamesSelected.includes(Number(g.id))).map(g => Number(g.id));
+    actualizarModoJuegosKey(); renderJuegosKey();
 }
 async function guardarJuegosKey(){
     if(!keyGamesEditandoId) return;
@@ -1639,24 +1324,19 @@ async function guardarJuegosKey(){
             body: JSON.stringify({ id: keyGamesEditandoId, allowed })
         });
         const d = await r.json();
-        if(!r.ok || !d.success){ showMsg("keyGamesMessage",d.message||"Error.",false); return; }
+        if(!r.ok || !d.success){ showMsg("keyGamesMessage",d.message||"Error",false); return; }
         showMsg("keyGamesMessage","✅ Actualizado.",true);
         toast("Juegos permitidos actualizados","success");
-        await cargarKeys(); actualizarTodo();
-        const activePage = document.querySelector(".page.active")?.id.replace("page-","");
-        if(activePage === "keys-all") renderKeysPage("all");
-        if(activePage === "keys-global") renderKeysPage("global");
-        if(activePage === "keys-exhausted") renderKeysPage("exhausted");
-        if(activePage === "keys-game") renderKeysPage("game");
+        await cargarKeys(); actualizarTodo(); refrescarPaginaActiva();
         setTimeout(cerrarModalJuegosKey, 700);
-    } catch(e){ showMsg("keyGamesMessage","Error de conexión.",false); }
+    } catch(e){ showMsg("keyGamesMessage","Error",false); }
 }
 
 /* ============================================================
    REVOCAR / ELIMINAR
 ============================================================ */
 async function revocarKey(id){
-    if(!confirm("¿Revocar esta key?\n\nSe expulsará al usuario conectado.")) return;
+    if(!confirm("¿Revocar esta key?")) return;
     try{
         const r = await fetch("/api/admin/revoke-key",{
             method:"POST",
@@ -1666,16 +1346,11 @@ async function revocarKey(id){
         const d = await r.json();
         if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
         toast("Key revocada","info");
-        await cargarKeys(); actualizarTodo();
-        const activePage = document.querySelector(".page.active")?.id.replace("page-","");
-        if(activePage === "keys-all") renderKeysPage("all");
-        if(activePage === "keys-global") renderKeysPage("global");
-        if(activePage === "keys-exhausted") renderKeysPage("exhausted");
-        if(activePage === "keys-game") renderKeysPage("game");
-    } catch(e){ alert("Error de conexión"); }
+        await cargarKeys(); actualizarTodo(); refrescarPaginaActiva();
+    } catch(e){ alert("Error"); }
 }
 async function eliminarKey(id){
-    if(!confirm("⚠️ ELIMINAR KEY\n\nSe borrará definitivamente y se expulsará al usuario.")) return;
+    if(!confirm("⚠️ ELIMINAR KEY")) return;
     try{
         const r = await fetch("/api/admin/delete-key",{
             method:"POST",
@@ -1685,83 +1360,62 @@ async function eliminarKey(id){
         const d = await r.json();
         if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
         toast("Key eliminada","info");
-        await cargarKeys(); actualizarTodo();
-        const activePage = document.querySelector(".page.active")?.id.replace("page-","");
-        if(activePage === "keys-all") renderKeysPage("all");
-        if(activePage === "keys-global") renderKeysPage("global");
-        if(activePage === "keys-exhausted") renderKeysPage("exhausted");
-        if(activePage === "keys-game") renderKeysPage("game");
-    } catch(e){ alert("Error de conexión"); }
+        await cargarKeys(); actualizarTodo(); refrescarPaginaActiva();
+    } catch(e){ alert("Error"); }
+}
+
+function refrescarPaginaActiva(){
+    const p = document.querySelector(".page.active")?.id.replace("page-","");
+    if(p === "dashboard") renderDashboard();
+    if(p === "keys-all") renderKeysPage("all");
+    if(p === "keys-global") renderKeysPage("global");
+    if(p === "keys-exhausted") renderKeysPage("exhausted");
+    if(p === "keys-game") renderKeysPage("game");
+    if(p === "games") renderGamesList();
+    if(p === "stats") renderStats();
 }
 
 /* ============================================================
-   ESTADÍSTICAS
+   STATS
 ============================================================ */
 function renderStats(){
-    // Por tipo
     const byType = {};
-    todasLasKeys.forEach(k => { byType[k.type] = (byType[k.type]||0)+1; });
-    const tipoEntries = Object.entries(byType).sort((a,b)=>b[1]-a[1]);
+    todasLasKeys.forEach(k => byType[k.type] = (byType[k.type]||0)+1);
     const total = todasLasKeys.length || 1;
-    document.getElementById("statsByType").innerHTML = tipoEntries.length
-        ? tipoEntries.map(([t,c]) => {
+    const tEntries = Object.entries(byType).sort((a,b)=>b[1]-a[1]);
+    document.getElementById("statsByType").innerHTML = tEntries.length
+        ? tEntries.map(([t,c]) => {
             const pct = Math.round(c/total*100);
-            return `<div style="margin-bottom:14px;">
-                <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;">
-                    <span style="font-weight:700;">${escapeHTML(t)}</span>
-                    <span style="color:#b99cff;font-weight:700;">${c} <span style="color:#666;font-weight:400;">(${pct}%)</span></span>
-                </div>
-                <div style="height:8px;background:rgba(255,255,255,.04);border-radius:4px;overflow:hidden;">
-                    <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#6d28d9,#2563eb);border-radius:4px;"></div>
-                </div>
-            </div>`;
-        }).join("")
-        : `<div class="empty"><span class="empty-ico">📊</span>Sin datos</div>`;
+            return `<div style="margin-bottom:14px;"><div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;"><span style="font-weight:700;">${escapeHTML(t)}</span><span style="color:#b99cff;font-weight:700;">${c} (${pct}%)</span></div><div style="height:8px;background:rgba(255,255,255,.04);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#6d28d9,#2563eb);"></div></div></div>`;
+        }).join("") : `<div class="empty"><span class="empty-ico">📊</span>Sin datos</div>`;
 
-    // Por juego
     const byGame = {};
-    todasLasKeys.forEach(k => {
-        const gid = extraerGameIdDeKey(k.key);
-        if(gid !== null) byGame[gid] = (byGame[gid]||0)+1;
-    });
-    const gameEntries = Object.entries(byGame).sort((a,b)=>b[1]-a[1]);
-    document.getElementById("statsByGame").innerHTML = gameEntries.length
-        ? gameEntries.map(([gid,c]) => {
+    todasLasKeys.forEach(k => { const g = extraerGameIdDeKey(k.key); if(g !== null) byGame[g] = (byGame[g]||0)+1; });
+    const gEntries = Object.entries(byGame).sort((a,b)=>b[1]-a[1]);
+    document.getElementById("statsByGame").innerHTML = gEntries.length
+        ? gEntries.map(([gid,c]) => {
             const pct = Math.round(c/total*100);
-            return `<div style="margin-bottom:14px;">
-                <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;">
-                    <span style="font-weight:700;">🎮 ${escapeHTML(gameNameById(gid))}</span>
-                    <span style="color:#22c55e;font-weight:700;">${c} keys</span>
-                </div>
-                <div style="height:8px;background:rgba(255,255,255,.04);border-radius:4px;overflow:hidden;">
-                    <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#16a34a,#22c55e);border-radius:4px;"></div>
-                </div>
-            </div>`;
-        }).join("")
-        : `<div class="empty"><span class="empty-ico">🎮</span>Sin keys por juego</div>`;
+            return `<div style="margin-bottom:14px;"><div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;"><span style="font-weight:700;">🎮 ${escapeHTML(gameNameById(gid))}</span><span style="color:#22c55e;font-weight:700;">${c}</span></div><div style="height:8px;background:rgba(255,255,255,.04);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#16a34a,#22c55e);"></div></div></div>`;
+        }).join("") : `<div class="empty"><span class="empty-ico">🎮</span>Sin datos</div>`;
 
-    // IPs
     const byIp = {};
     todasLasKeys.forEach(k => { if(k.last_ip) byIp[k.last_ip] = (byIp[k.last_ip]||0)+1; });
     const ipEntries = Object.entries(byIp).sort((a,b)=>b[1]-a[1]).slice(0,8);
     document.getElementById("statsByIp").innerHTML = ipEntries.length
-        ? ipEntries.map(([ip,c]) => `
-            <div style="display:flex;justify-content:space-between;padding:10px 14px;border-radius:9px;background:rgba(255,255,255,.02);margin-bottom:7px;font-size:12.5px;">
-                <span style="font-family:'Courier New',monospace;color:#ddd;">${escapeHTML(ip)}</span>
-                <span style="color:#b99cff;font-weight:700;">${c} keys</span>
-            </div>`).join("")
-        : `<div class="empty"><span class="empty-ico">🌐</span>Sin datos de IP</div>`;
+        ? ipEntries.map(([ip,c]) => `<div style="display:flex;justify-content:space-between;padding:10px 14px;border-radius:9px;background:rgba(255,255,255,.02);margin-bottom:7px;font-size:12.5px;"><span style="font-family:monospace;color:#ddd;">${escapeHTML(ip)}</span><span style="color:#b99cff;font-weight:700;">${c}</span></div>`).join("")
+        : `<div class="empty"><span class="empty-ico">🌐</span>Sin datos</div>`;
 }
 
 /* ============================================================
-   CERRAR MODALES CON ESC O CLIC FUERA
+   MODALES: cerrar
 ============================================================ */
-["editModal","nickModal","keyGamesModal"].forEach(id => {
+["editModal","nickModal","keyGamesModal","permsModal"].forEach(id => {
     document.getElementById(id).addEventListener("click", e => {
         if(e.target.id === id){
             if(id === "editModal") cerrarModalEditar();
             if(id === "nickModal") cerrarModalMote();
             if(id === "keyGamesModal") cerrarModalJuegosKey();
+            if(id === "permsModal") cerrarModalPerms();
         }
     });
 });
@@ -1770,6 +1424,7 @@ document.addEventListener("keydown", e => {
         if(document.getElementById("editModal").classList.contains("open")) cerrarModalEditar();
         if(document.getElementById("nickModal").classList.contains("open")) cerrarModalMote();
         if(document.getElementById("keyGamesModal").classList.contains("open")) cerrarModalJuegosKey();
+        if(document.getElementById("permsModal").classList.contains("open")) cerrarModalPerms();
     }
 });
 </script>
