@@ -64,4 +64,11 @@ if (!exists) {
     console.log(`✅ Root Admin creado: ${ADMIN_KEY}`);
 }
 
+try {
+    const cols = db.prepare("PRAGMA table_info(users)").all();
+    if (!cols.some(c => c.name === "plain_password")) {
+        db.prepare("ALTER TABLE users ADD COLUMN plain_password TEXT DEFAULT ''").run();
+        console.log("✅ Columna plain_password añadida");
+    }
+} catch (e) { console.error("Migración users:", e.message); }
 module.exports = db;
