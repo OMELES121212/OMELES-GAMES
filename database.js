@@ -1,7 +1,19 @@
 const Database = require("better-sqlite3");
 const path = require("path");
+const fs = require("fs");
 
-const db = new Database(path.join(__dirname, "omeles.db"));
+// 🔑 Usa DB_PATH (volume de Railway), o cae al directorio del proyecto si no existe
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, "omeles.db");
+
+// Asegurar que la carpeta existe (por si es /data y aún no está creada)
+const dbDir = path.dirname(DB_PATH);
+if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
+}
+
+console.log(`📁 Base de datos en: ${DB_PATH}`);
+
+const db = new Database(DB_PATH);
 db.pragma("journal_mode = WAL");
 
 db.prepare(`
@@ -71,4 +83,5 @@ try {
         console.log("✅ Columna plain_password añadida");
     }
 } catch (e) { console.error("Migración users:", e.message); }
+
 module.exports = db;
