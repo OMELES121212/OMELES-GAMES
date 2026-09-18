@@ -21,16 +21,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// ======================================================
-// HEALTH CHECK
-// ======================================================
 app.get("/health", (req, res) => {
     res.status(200).json({ status: "ok", connections: io.engine.clientsCount });
 });
 
-// ======================================================
-// RATE LIMITING
-// ======================================================
 const intentos = new Map();
 function rateLimit(req, res, next) {
     const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
@@ -48,9 +42,6 @@ function rateLimit(req, res, next) {
     next();
 }
 
-// ======================================================
-// MIDDLEWARE ADMIN
-// ======================================================
 function checkAdmin(req, res, next) {
     const key = req.headers["x-admin-key"];
 
@@ -79,9 +70,6 @@ function checkAdmin(req, res, next) {
     return next();
 }
 
-// ======================================================
-// SOCKET.IO
-// ======================================================
 io.use((socket, next) => {
     const key = socket.handshake.auth.key;
     if (key) socket.data.key = key;
@@ -95,9 +83,6 @@ io.on("connection", (socket) => {
     console.log(`🔌 Cliente conectado: ${socket.id} | Key: ${socket.data.key ? "sí" : "no"}`);
 });
 
-// ======================================================
-// LOGIN CLIENTE
-// ======================================================
 app.post("/api/login", rateLimit, (req, res) => {
     const { key } = req.body;
     if (!key) return res.status(400).json({ success: false, message: "Falta la key" });
@@ -127,9 +112,6 @@ app.post("/api/login", rateLimit, (req, res) => {
     res.json({ success: true, type: row.type, allowed });
 });
 
-// ======================================================
-// JUEGOS (cliente) — FILTRADOS POR KEY
-// ======================================================
 app.get("/api/games", (req, res) => {
     const key = req.headers["x-user-key"];
 
@@ -160,9 +142,6 @@ app.get("/api/games", (req, res) => {
     res.json({ success: true, games });
 });
 
-// ======================================================
-// KEYS (admin)
-// ======================================================
 app.get("/api/admin/keys", checkAdmin, (req, res) => {
     const keys = db.prepare("SELECT * FROM keys ORDER BY id DESC").all();
     res.json({ success: true, keys });
@@ -207,9 +186,6 @@ app.post("/api/admin/update-key-nickname", checkAdmin, (req, res) => {
     res.json({ success: true });
 });
 
-// ======================================================
-// JUEGOS POR KEY (nuevo)
-// ======================================================
 app.get("/api/admin/key-games/:id", checkAdmin, (req, res) => {
     const id = req.params.id;
     const row = db.prepare("SELECT allowed_games FROM keys WHERE id = ?").get(id);
@@ -253,7 +229,6 @@ app.post("/api/admin/update-key-games", checkAdmin, (req, res) => {
     res.json({ success: true });
 });
 
-// REVOCAR KEY (con kick en tiempo real)
 app.post("/api/admin/revoke-key", checkAdmin, (req, res) => {
     const id = req.body.id;
 
@@ -269,7 +244,6 @@ app.post("/api/admin/revoke-key", checkAdmin, (req, res) => {
     res.json({ success: true });
 });
 
-// ELIMINAR KEY
 app.post("/api/admin/delete-key", checkAdmin, (req, res) => {
     const id = req.body.id;
 
@@ -284,9 +258,6 @@ app.post("/api/admin/delete-key", checkAdmin, (req, res) => {
     res.json({ success: true });
 });
 
-// ======================================================
-// JUEGOS (admin)
-// ======================================================
 app.get("/api/admin/games", checkAdmin, (req, res) => {
     const games = db.prepare("SELECT * FROM games ORDER BY id DESC").all();
     res.json({ success: true, games });
@@ -318,9 +289,6 @@ app.post("/api/admin/delete-game", checkAdmin, (req, res) => {
     res.json({ success: true });
 });
 
-// ======================================================
-// IA - Proxy a Gemini
-// ======================================================
 app.post("/api/ai/chat", rateLimit, async (req, res) => {
     const { mensaje, historial } = req.body;
     if (!mensaje) return res.status(400).json({ success: false, message: "Falta el mensaje" });
@@ -384,9 +352,6 @@ app.post("/api/ai/chat", rateLimit, async (req, res) => {
     }
 });
 
-// ======================================================
-// ARRANCAR
-// ======================================================
 server.listen(PORT, "0.0.0.0", () => {
     console.log(`\n✅ OMELES GAMES en puerto ${PORT}`);
     console.log(`🔑 Admin Key: ${ADMIN_KEY}`);
