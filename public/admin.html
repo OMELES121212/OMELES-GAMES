@@ -199,6 +199,30 @@
 
     .empty { text-align: center; color: #666; padding: 30px; }
 
+    .games-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: bold;
+        cursor: help;
+    }
+    .games-badge.all {
+        background: rgba(0,255,157,.1);
+        color: #00ff9d;
+        border: 1px solid rgba(0,255,157,.25);
+    }
+    .games-badge.none {
+        background: rgba(255,50,80,.1);
+        color: #ff5672;
+        border: 1px solid rgba(255,50,80,.25);
+    }
+    .games-badge.limited {
+        background: rgba(255,215,102,.1);
+        color: #ffd166;
+        border: 1px solid rgba(255,215,102,.25);
+    }
+
     /* MODAL */
     .modal-overlay {
         display: none;
@@ -378,6 +402,12 @@
         background: rgba(255,215,102,.08);
         border: 1px solid rgba(255,215,102,.25);
         color: #ffd166;
+    }
+
+    .key-games-mode.none {
+        background: rgba(255,50,80,.08);
+        border: 1px solid rgba(255,50,80,.25);
+        color: #ff5672;
     }
 
     .key-games-count {
@@ -660,9 +690,12 @@ async function entrarAdmin() {
 
         conectarSocket();
 
+        // 🔹 PRIMERO cargamos juegos (para poder mostrar nombres en la tabla)
+        await cargarJuegos();
+
+        // 🔹 Luego las keys
         todasLasKeys = data.keys || [];
         mostrarKeys(todasLasKeys);
-        await cargarJuegos();
 
     } catch (error) {
         console.error(error);
@@ -783,7 +816,7 @@ async function cargarKeys() {
 }
 
 /* ======================================================
-   MOSTRAR KEYS
+   MOSTRAR KEYS (con nombres de juegos)
 ====================================================== */
 function mostrarKeys(keys) {
     const table = document.getElementById("keysTable");
@@ -825,15 +858,28 @@ function mostrarKeys(keys) {
         else if (key.type === "ADMIN_LIFETIME") tipo = `<span style="color:#ff8c00;font-weight:bold;">👑 ADMIN LIFETIME</span>`;
         else tipo = escapeHTML(key.type);
 
+        // ====== JUEGOS: mostramos nombres reales, no solo el número ======
         let juegosTxt;
         if (!key.allowed_games) {
-            juegosTxt = `<span style="color:#00ff9d;">🌐 TODOS</span>`;
+            juegosTxt = `<span class="games-badge all" title="Esta key ve TODOS los juegos">🌐 TODOS</span>`;
         } else {
             try {
                 const arr = JSON.parse(key.allowed_games);
-                juegosTxt = `<span style="color:#ffd166;">🎯 ${arr.length} juego${arr.length === 1 ? "" : "s"}</span>`;
+                if (!Array.isArray(arr) || arr.length === 0) {
+                    juegosTxt = `<span class="games-badge none" title="Esta key no puede ver ningún juego">⚠️ NINGUNO</span>`;
+                } else {
+                    const nombres = arr.map(id => {
+                        const g = todosLosJuegos.find(x => Number(x.id) === Number(id));
+                        return g ? g.name : `#${id}`;
+                    });
+                    const titulo = nombres.join(", ");
+                    const resumen = nombres.length <= 2
+                        ? nombres.join(", ")
+                        : `${nombres.slice(0,2).join(", ")} +${nombres.length-2}`;
+                    juegosTxt = `<span class="games-badge limited" title="${escapeHTML(titulo)}">🎯 ${arr.length}: ${escapeHTML(resumen)}</span>`;
+                }
             } catch {
-                juegosTxt = `<span style="color:#00ff9d;">🌐 TODOS</span>`;
+                juegosTxt = `<span class="games-badge all">🌐 TODOS</span>`;
             }
         }
 
@@ -967,7 +1013,7 @@ function actualizarModoJuegosKey() {
     const sel = keyGamesSelected.length;
 
     if (sel === 0) {
-        el.className = "key-games-mode limited";
+        el.className = "key-games-mode none";
         el.textContent = "⚠️ SIN JUEGOS — la key no podrá ver nada";
     } else if (sel === total) {
         el.className = "key-games-mode all";
@@ -1225,6 +1271,9 @@ async function cargarJuegos() {
 
         todosLosJuegos = data.games || [];
         mostrarJuegos(todosLosJuegos);
+
+        // Refrescar keys para que se vean los nombres actualizados
+        if (todasLasKeys.length) mostrarKeys(todasLasKeys);
 
     } catch (error) {
         console.error(error);
