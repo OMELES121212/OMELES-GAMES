@@ -89,6 +89,9 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
+    if (socket.data.key) {
+        socket.join(`key:${socket.data.key}`);
+    }
     console.log(`🔌 Cliente conectado: ${socket.id} | Key: ${socket.data.key ? "sí" : "no"}`);
 });
 
@@ -116,14 +119,44 @@ app.post("/api/login", rateLimit, (req, res) => {
     db.prepare(`UPDATE keys SET last_ip = ?, last_used_at = ?, use_count = ?, active = ? WHERE id = ?`)
       .run(ip, new Date().toISOString(), uses, active, row.id);
 
-    res.json({ success: true, type: row.type });
+    let allowed = null;
+    if (row.allowed_games) {
+        try { allowed = JSON.parse(row.allowed_games); } catch { allowed = []; }
+    }
+
+    res.json({ success: true, type: row.type, allowed });
 });
 
 // ======================================================
-// JUEGOS (cliente)
+// JUEGOS (cliente) — FILTRADOS POR KEY
 // ======================================================
 app.get("/api/games", (req, res) => {
-    const games = db.prepare("SELECT * FROM games WHERE active = 1 ORDER BY id DESC").all();
+    const key = req.headers["x-user-key"];
+
+    if (!key) {
+        return res.status(401).json({ success: false, message: "Falta la key de usuario" });
+    }
+
+    const row = db.prepare("SELECT * FROM keys WHERE key = ?").get(key);
+    if (!row) {
+        return res.status(401).json({ success: false, message: "Key no válida" });
+    }
+
+    let games;
+    if (row.allowed_games) {
+        let ids;
+        try { ids = JSON.parse(row.allowed_games); } catch { ids = []; }
+        if (!Array.isArray(ids) || ids.length === 0) {
+            return res.json({ success: true, games: [] });
+        }
+        const placeholders = ids.map(() => "?").join(",");
+        games = db.prepare(
+            `SELECT * FROM games WHERE active = 1 AND id IN (${placeholders}) ORDER BY id DESC`
+        ).all(...ids);
+    } else {
+        games = db.prepare("SELECT * FROM games WHERE active = 1 ORDER BY id DESC").all();
+    }
+
     res.json({ success: true, games });
 });
 
@@ -171,6 +204,52 @@ app.post("/api/keys", checkAdmin, (req, res) => {
 app.post("/api/admin/update-key-nickname", checkAdmin, (req, res) => {
     const { id, nickname } = req.body;
     db.prepare("UPDATE keys SET nickname = ? WHERE id = ?").run(nickname || "", id);
+    res.json({ success: true });
+});
+
+// ======================================================
+// JUEGOS POR KEY (nuevo)
+// ======================================================
+app.get("/api/admin/key-games/:id", checkAdmin, (req, res) => {
+    const id = req.params.id;
+    const row = db.prepare("SELECT allowed_games FROM keys WHERE id = ?").get(id);
+
+    if (!row) {
+        return res.status(404).json({ success: false, message: "Key no encontrada" });
+    }
+
+    const allGames = db.prepare("SELECT id, name FROM games WHERE active = 1 ORDER BY name").all();
+
+    let allowed = null;
+    if (row.allowed_games) {
+        try { allowed = JSON.parse(row.allowed_games); } catch { allowed = []; }
+    }
+
+    res.json({ success: true, allowed, allGames });
+});
+
+app.post("/api/admin/update-key-games", checkAdmin, (req, res) => {
+    const { id, allowed } = req.body;
+
+    if (!id) return res.status(400).json({ success: false, message: "Falta id" });
+
+    let value = null;
+    if (Array.isArray(allowed)) {
+        const totalGames = db.prepare("SELECT COUNT(*) as c FROM games WHERE active = 1").get().c;
+        if (allowed.length === totalGames) {
+            value = null;
+        } else {
+            value = JSON.stringify(allowed.map(Number));
+        }
+    }
+
+    db.prepare("UPDATE keys SET allowed_games = ? WHERE id = ?").run(value, id);
+
+    const row = db.prepare("SELECT key FROM keys WHERE id = ?").get(id);
+    if (row) {
+        io.to(`key:${row.key}`).emit("key-updated", { key: row.key });
+    }
+
     res.json({ success: true });
 });
 
@@ -241,7 +320,6 @@ app.post("/api/admin/delete-game", checkAdmin, (req, res) => {
 
 // ======================================================
 // IA - Proxy a Gemini
-// La API key vive en las variables de entorno del servidor
 // ======================================================
 app.post("/api/ai/chat", rateLimit, async (req, res) => {
     const { mensaje, historial } = req.body;
@@ -253,7 +331,6 @@ app.post("/api/ai/chat", rateLimit, async (req, res) => {
         return res.status(500).json({ success: false, message: "IA no configurada en el servidor" });
     }
 
-    // Contexto del catálogo
     const juegos = db.prepare("SELECT name FROM games WHERE active = 1").all();
     const listaNombres = juegos.map(j => j.name).join(", ") || "ninguno";
     const contexto = `Eres el asistente de OMELES GAMES, una plataforma de juegos. Respondes en español, de forma natural y cercana. Actualmente hay ${juegos.length} juegos en el catálogo: ${listaNombres}. Sé conciso pero amable. Usa emojis con moderación.`;
