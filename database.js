@@ -1,59 +1,57 @@
+const Database = require("better-sqlite3");
 const path = require("path");
-const fs = require("fs");
-const { DatabaseSync } = require("node:sqlite");
 
-const DB_PATH = process.env.DB_PATH || path.join(__dirname, "omeles_games.db");
+const db = new Database(path.join(__dirname, "omeles.db"));
 
-const dir = path.dirname(DB_PATH);
-if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-}
+db.pragma("journal_mode = WAL");
 
-const db = new DatabaseSync(DB_PATH);
-
-// =========================
-// TABLA KEYS
-// =========================
 db.prepare(`
     CREATE TABLE IF NOT EXISTS keys (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         key TEXT UNIQUE NOT NULL,
         type TEXT NOT NULL,
         nickname TEXT DEFAULT '',
-        created_at TEXT NOT NULL,
+        created_at TEXT,
         expires_at TEXT,
         active INTEGER DEFAULT 1,
+        use_count INTEGER DEFAULT 0,
         last_ip TEXT,
         last_used_at TEXT,
-        use_count INTEGER DEFAULT 0
+        allowed_games TEXT DEFAULT NULL
     )
 `).run();
 
-// =========================
-// TABLA JUEGOS
-// =========================
 db.prepare(`
     CREATE TABLE IF NOT EXISTS games (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        download TEXT,
-        repair TEXT,
-        password TEXT,
+        download TEXT DEFAULT '',
+        repair TEXT DEFAULT '',
+        password TEXT DEFAULT '',
         image TEXT DEFAULT '',
-        active INTEGER DEFAULT 1,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        active INTEGER DEFAULT 1
     )
 `).run();
 
-// =========================
-// MIGRACIÓN: añadir columna image si no existe
-// =========================
 try {
-    db.prepare("ALTER TABLE games ADD COLUMN image TEXT DEFAULT ''").run();
-    console.log("✅ Columna 'image' añadida a games");
+    const cols = db.prepare("PRAGMA table_info(keys)").all();
+    const hasAllowed = cols.some(c => c.name === "allowed_games");
+    if (!hasAllowed) {
+        db.prepare("ALTER TABLE keys ADD COLUMN allowed_games TEXT DEFAULT NULL").run();
+        console.log("✅ Columna allowed_games añadida a keys");
+    }
 } catch (e) {
-    // Ya existía, ignorar
+    console.error("Error migrando tabla keys:", e.message);
 }
 
-console.log(`✅ Base de datos OMELES GAMES lista en: ${DB_PATH}`);
+const ADMIN_KEY = process.env.ADMIN_KEY || "OMELES-ADMIN-2026";
+const exists = db.prepare("SELECT id FROM keys WHERE key = ?").get(ADMIN_KEY);
+if (!exists) {
+    db.prepare(`
+        INSERT INTO keys (key, type, created_at, expires_at, active, nickname)
+        VALUES (?, ?, ?, ?, 1, ?)
+    `).run(ADMIN_KEY, "ADMIN_LIFETIME", new Date().toISOString(), null, "Root Admin");
+    console.log(`✅ Admin key raíz creada: ${ADMIN_KEY}`);
+}
+
 module.exports = db;
