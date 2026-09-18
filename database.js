@@ -28,7 +28,8 @@ db.prepare(`
         last_used_at TEXT,
         allowed_games TEXT DEFAULT NULL,
         permissions TEXT DEFAULT NULL,
-        massive INTEGER DEFAULT 0
+        massive INTEGER DEFAULT 0,
+        game_mode TEXT DEFAULT 'all'
     )
 `).run();
 
@@ -40,7 +41,8 @@ db.prepare(`
         repair TEXT DEFAULT '',
         password TEXT DEFAULT '',
         image TEXT DEFAULT '',
-        active INTEGER DEFAULT 1
+        active INTEGER DEFAULT 1,
+        created_at TEXT
     )
 `).run();
 
@@ -66,14 +68,28 @@ try {
         db.prepare("ALTER TABLE keys ADD COLUMN massive INTEGER DEFAULT 0").run();
         console.log("✅ Columna massive añadida a keys");
     }
+    if (!cols.some(c => c.name === "game_mode")) {
+        db.prepare("ALTER TABLE keys ADD COLUMN game_mode TEXT DEFAULT 'all'").run();
+        console.log("✅ Columna game_mode añadida a keys");
+    }
 } catch (e) { console.error("Migración keys:", e.message); }
+
+try {
+    const gcols = db.prepare("PRAGMA table_info(games)").all();
+    if (!gcols.some(c => c.name === "created_at")) {
+        db.prepare("ALTER TABLE games ADD COLUMN created_at TEXT").run();
+        // Rellenar con fecha actual los existentes
+        db.prepare("UPDATE games SET created_at = ? WHERE created_at IS NULL").run(new Date().toISOString());
+        console.log("✅ Columna created_at añadida a games");
+    }
+} catch (e) { console.error("Migración games:", e.message); }
 
 const ADMIN_KEY = process.env.ADMIN_KEY || "OMELES-ADMIN-2026";
 const exists = db.prepare("SELECT id FROM keys WHERE key = ?").get(ADMIN_KEY);
 if (!exists) {
-    db.prepare(`INSERT INTO keys (key, type, created_at, expires_at, active, nickname, permissions)
-        VALUES (?, ?, ?, ?, 1, ?, ?)`)
-      .run(ADMIN_KEY, "ADMIN_LIFETIME", new Date().toISOString(), null, "Root Admin", JSON.stringify(["*"]));
+    db.prepare(`INSERT INTO keys (key, type, created_at, expires_at, active, nickname, permissions, game_mode)
+        VALUES (?, ?, ?, ?, 1, ?, ?, ?)`)
+      .run(ADMIN_KEY, "ADMIN_LIFETIME", new Date().toISOString(), null, "Root Admin", JSON.stringify(["*"]), "all");
     console.log(`✅ Root Admin creado: ${ADMIN_KEY}`);
 }
 
