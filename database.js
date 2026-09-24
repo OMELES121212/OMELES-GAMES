@@ -10,7 +10,7 @@ console.log(`📁 Base de datos en: ${DB_PATH}`);
 const db = new Database(DB_PATH);
 db.pragma("journal_mode = WAL");
 
-// === TABLAS EXISTENTES ===
+/* ============ TABLAS EXISTENTES ============ */
 db.prepare(`CREATE TABLE IF NOT EXISTS keys (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     key TEXT UNIQUE NOT NULL,
@@ -49,7 +49,6 @@ db.prepare(`CREATE TABLE IF NOT EXISTS users (
     FOREIGN KEY (key_id) REFERENCES keys(id) ON DELETE CASCADE
 )`).run();
 
-// === NUEVAS TABLAS ===
 db.prepare(`CREATE TABLE IF NOT EXISTS categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
@@ -93,7 +92,7 @@ db.prepare(`CREATE TABLE IF NOT EXISTS ticket_messages (
     FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE
 )`).run();
 
-// === MIGRACIONES ===
+/* ============ MIGRACIONES ============ */
 try {
     const cols = db.prepare("PRAGMA table_info(keys)").all();
     if (!cols.some(c => c.name === "allowed_games")) db.prepare("ALTER TABLE keys ADD COLUMN allowed_games TEXT DEFAULT NULL").run();
@@ -108,6 +107,22 @@ try {
         db.prepare("ALTER TABLE games ADD COLUMN created_at TEXT").run();
         db.prepare("UPDATE games SET created_at = ? WHERE created_at IS NULL").run(new Date().toISOString());
     }
+    if (!gcols.some(c => c.name === "type")) {
+        db.prepare("ALTER TABLE games ADD COLUMN type TEXT DEFAULT 'game'").run();
+        console.log("✅ Columna type añadida a games");
+    }
+    if (!gcols.some(c => c.name === "description")) {
+        db.prepare("ALTER TABLE games ADD COLUMN description TEXT DEFAULT ''").run();
+        console.log("✅ Columna description añadida a games");
+    }
+    if (!gcols.some(c => c.name === "content_url")) {
+        db.prepare("ALTER TABLE games ADD COLUMN content_url TEXT DEFAULT ''").run();
+        console.log("✅ Columna content_url añadida a games");
+    }
+    if (!gcols.some(c => c.name === "content_file")) {
+        db.prepare("ALTER TABLE games ADD COLUMN content_file TEXT DEFAULT ''").run();
+        console.log("✅ Columna content_file añadida a games");
+    }
 } catch (e) { console.error("Migración games:", e.message); }
 
 try {
@@ -116,7 +131,7 @@ try {
     if (!ucols.some(c => c.name === "pinned")) db.prepare("ALTER TABLE users ADD COLUMN pinned INTEGER DEFAULT 0").run();
 } catch (e) { console.error("Migración users:", e.message); }
 
-// === ROOT ADMIN ===
+/* ============ ROOT ADMIN ============ */
 const ADMIN_KEY = process.env.ADMIN_KEY || "OMELES-ADMIN-2026";
 const exists = db.prepare("SELECT id FROM keys WHERE key = ?").get(ADMIN_KEY);
 if (!exists) {
