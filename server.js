@@ -4,6 +4,7 @@ const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
+const multer = require("multer");
 const { Server } = require("socket.io");
 const Database = require("better-sqlite3");
 const db = require("./database");
@@ -18,9 +19,30 @@ const io = new Server(server, {
 const PORT = process.env.PORT || 3000;
 const ADMIN_KEY = process.env.ADMIN_KEY || "OMELES-ADMIN-2026";
 
+/* ============ UPLOADS ============ */
+const UPLOADS_DIR = process.env.DB_PATH
+    ? path.join(path.dirname(process.env.DB_PATH), "uploads")
+    : path.join(__dirname, "public", "uploads");
+if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+console.log(`📂 Uploads en: ${UPLOADS_DIR}`);
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, UPLOADS_DIR),
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        const name = Date.now() + "-" + crypto.randomBytes(4).toString("hex") + ext;
+        cb(null, name);
+    }
+});
+const upload = multer({
+    storage,
+    limits: { fileSize: 1024 * 1024 * 1024 } // 1 GB
+});
+
 app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/uploads", express.static(UPLOADS_DIR));
 
 /* ============ UTILS ============ */
 function hashPassword(pw) {
@@ -104,6 +126,20 @@ io.use((socket, next) => {
 io.on("connection", (socket) => {
     if (socket.data.key) socket.join(`key:${socket.data.key}`);
     console.log(`🔌 Cliente: ${socket.id}`);
+});
+
+/* ============================================================
+   SUBIR ARCHIVOS
+============================================================ */
+app.post("/api/admin/upload", checkAdmin, upload.single("file"), (req, res) => {
+    if (!req.file) return res.status(400).json({ success: false, message: "No se subió archivo" });
+    res.json({
+        success: true,
+        url: "/uploads/" + req.file.filename,
+        filename: req.file.filename,
+        originalname: req.file.originalname,
+        size: req.file.size
+    });
 });
 
 /* ============================================================
@@ -205,14 +241,13 @@ app.get("/api/admin/me", checkAdmin, (req, res) => {
     });
 });
 
-/* ============ JUEGOS DEL USUARIO ============ */
+/* ============ PRODUCTOS DEL USUARIO ============ */
 app.get("/api/games", (req, res) => {
     const key = req.headers["x-user-key"];
     if (!key) return res.status(401).json({ success: false, message: "Falta key" });
     const row = db.prepare("SELECT * FROM keys WHERE key = ?").get(key);
     if (!row) return res.status(401).json({ success: false, message: "Key no válida" });
     const games = resolverJuegosPermitidos(row);
-    // Añadir info de categorías
     const cats = db.prepare("SELECT * FROM categories ORDER BY position ASC, id ASC").all();
     const gc = db.prepare("SELECT * FROM game_categories").all();
     const map = {};
@@ -254,7 +289,7 @@ app.post("/api/keys", checkAdmin, (req, res) => {
     if (ids.length > 0) {
         const ph = ids.map(() => "?").join(",");
         const found = db.prepare(`SELECT id FROM games WHERE active = 1 AND id IN (${ph})`).all(...ids);
-        if (found.length !== ids.length) return res.status(404).json({ success: false, message: "Algún juego no existe" });
+        if (found.length !== ids.length) return res.status(404).json({ success: false, message: "Algún producto no existe" });
     }
 
     let allowed_games = null;
@@ -343,7 +378,6 @@ app.post("/api/admin/update-key-games", checkAdmin, (req, res) => {
     res.json({ success: true });
 });
 
-// 🆕 REACTIVAR KEY
 app.post("/api/admin/reactivate-key", checkAdmin, (req, res) => {
     const { id } = req.body;
     if (!id) return res.status(400).json({ success: false, message: "Falta id" });
@@ -352,11 +386,9 @@ app.post("/api/admin/reactivate-key", checkAdmin, (req, res) => {
     if (row.key === ADMIN_KEY) return res.status(403).json({ success: false, message: "No puedes tocar el Root" });
     db.prepare("UPDATE keys SET active = 1 WHERE id = ?").run(id);
     io.to(`key:${row.key}`).emit("key-updated", { key: row.key });
-    console.log(`♻️ Key reactivada: ${row.key}`);
     res.json({ success: true });
 });
 
-// 🆕 REACTIVAR TODAS LAS MASIVAS INACTIVAS
 app.post("/api/admin/reactivate-massive-keys", checkAdmin, (req, res) => {
     const canGrant = req.adminIsRoot || req.adminPermissions.includes("*") || req.adminPermissions.includes("manage_permissions");
     if (!canGrant) return res.status(403).json({ success: false, message: "Sin permiso" });
@@ -399,9 +431,7 @@ app.post("/api/admin/delete-massive-keys", checkAdmin, (req, res) => {
     res.json({ success: true, deleted: ids.length });
 });
 
-/* ============================================================
-   USUARIOS (admin)
-============================================================ */
+/* ============ USUARIOS (admin) ============ */
 app.get("/api/admin/users", checkAdmin, (req, res) => {
     const users = db.prepare(`
         SELECT u.id, u.username, u.created_at, u.last_login, u.key_id, u.plain_password, u.pinned,
@@ -414,7 +444,6 @@ app.get("/api/admin/users", checkAdmin, (req, res) => {
     res.json({ success: true, users });
 });
 
-// 🆕 ANCLAR USUARIO
 app.post("/api/admin/toggle-user-pin", checkAdmin, (req, res) => {
     const { id } = req.body;
     if (!id) return res.status(400).json({ success: false, message: "Falta id" });
@@ -442,7 +471,7 @@ app.post("/api/admin/reset-user-password", checkAdmin, (req, res) => {
 });
 
 /* ============================================================
-   JUEGOS
+   PRODUCTOS (admin)
 ============================================================ */
 app.get("/api/admin/games", checkAdmin, (req, res) => {
     const games = db.prepare("SELECT * FROM games ORDER BY id DESC").all();
@@ -454,18 +483,22 @@ app.get("/api/admin/games", checkAdmin, (req, res) => {
 });
 
 app.post("/api/games", checkAdmin, (req, res) => {
-    const { name, download, repair, password, image } = req.body;
+    const { name, download, repair, password, image, type, description, content_url, content_file } = req.body;
     if (!name) return res.status(400).json({ success: false, message: "Falta nombre" });
-    db.prepare(`INSERT INTO games (name, download, repair, password, image, active, created_at) VALUES (?, ?, ?, ?, ?, 1, ?)`)
-      .run(name, download || "", repair || "", password || "", image || "", new Date().toISOString());
+    const t = type || "game";
+    db.prepare(`INSERT INTO games (name, download, repair, password, image, active, created_at, type, description, content_url, content_file)
+        VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?)`)
+      .run(name, download || "", repair || "", password || "", image || "", new Date().toISOString(),
+           t, description || "", content_url || "", content_file || "");
     io.emit("games-updated", { action: "create", name });
     res.json({ success: true });
 });
 
 app.post("/api/admin/update-game", checkAdmin, (req, res) => {
-    const { id, name, download, repair, password, image } = req.body;
-    db.prepare(`UPDATE games SET name = ?, download = ?, repair = ?, password = ?, image = ? WHERE id = ?`)
-      .run(name, download, repair, password, image || "", id);
+    const { id, name, download, repair, password, image, type, description, content_url, content_file } = req.body;
+    db.prepare(`UPDATE games SET name = ?, download = ?, repair = ?, password = ?, image = ?, type = ?, description = ?, content_url = ?, content_file = ? WHERE id = ?`)
+      .run(name, download || "", repair || "", password || "", image || "",
+           type || "game", description || "", content_url || "", content_file || "", id);
     io.emit("games-updated", { action: "update", name });
     res.json({ success: true });
 });
@@ -477,7 +510,7 @@ app.post("/api/admin/delete-game", checkAdmin, (req, res) => {
 });
 
 /* ============================================================
-   🆕 CATEGORÍAS / APARTADOS
+   CATEGORÍAS
 ============================================================ */
 app.get("/api/admin/categories", checkAdmin, (req, res) => {
     const cats = db.prepare("SELECT * FROM categories ORDER BY position ASC, id ASC").all();
@@ -515,36 +548,21 @@ app.post("/api/admin/categories/delete", checkAdmin, (req, res) => {
     res.json({ success: true });
 });
 
-app.post("/api/admin/categories/reorder", checkAdmin, (req, res) => {
-    const { order } = req.body;
-    if (!Array.isArray(order)) return res.status(400).json({ success: false, message: "Orden inválido" });
-    const stmt = db.prepare("UPDATE categories SET position = ? WHERE id = ?");
+// Checklist: actualizar TODOS los productos de una categoría a la vez
+app.post("/api/admin/categories/set-games", checkAdmin, (req, res) => {
+    const { categoryId, gameIds } = req.body;
+    if (!categoryId) return res.status(400).json({ success: false, message: "Falta categoryId" });
+    if (!Array.isArray(gameIds)) return res.status(400).json({ success: false, message: "gameIds inválido" });
+
     const tx = db.transaction(() => {
-        order.forEach((id, idx) => stmt.run(idx, id));
+        db.prepare("DELETE FROM game_categories WHERE category_id = ?").run(categoryId);
+        const stmt = db.prepare("INSERT OR IGNORE INTO game_categories (game_id, category_id, position) VALUES (?, ?, 0)");
+        gameIds.map(Number).forEach(gid => stmt.run(gid, categoryId));
     });
     tx();
-    res.json({ success: true });
-});
 
-app.post("/api/admin/categories/add-game", checkAdmin, (req, res) => {
-    const { categoryId, gameId } = req.body;
-    if (!categoryId || !gameId) return res.status(400).json({ success: false, message: "Faltan datos" });
-    try {
-        db.prepare(`INSERT OR IGNORE INTO game_categories (game_id, category_id, position) VALUES (?, ?, 0)`)
-          .run(gameId, categoryId);
-        io.emit("categories-updated", { action: "add-game" });
-        res.json({ success: true });
-    } catch (e) {
-        res.status(500).json({ success: false, message: e.message });
-    }
-});
-
-app.post("/api/admin/categories/remove-game", checkAdmin, (req, res) => {
-    const { categoryId, gameId } = req.body;
-    if (!categoryId || !gameId) return res.status(400).json({ success: false, message: "Faltan datos" });
-    db.prepare("DELETE FROM game_categories WHERE category_id = ? AND game_id = ?").run(categoryId, gameId);
-    io.emit("categories-updated", { action: "remove-game" });
-    res.json({ success: true });
+    io.emit("categories-updated", { action: "set-games" });
+    res.json({ success: true, count: gameIds.length });
 });
 
 app.get("/api/admin/categories/:id/games", checkAdmin, (req, res) => {
@@ -559,10 +577,8 @@ app.get("/api/admin/categories/:id/games", checkAdmin, (req, res) => {
 });
 
 /* ============================================================
-   🆕 TICKETS
+   TICKETS
 ============================================================ */
-
-// USUARIO crea ticket
 app.post("/api/tickets/create", rateLimit, (req, res) => {
     const { userKey, username, subject, message, priority } = req.body;
     if (!username || !subject || !message)
@@ -589,7 +605,6 @@ app.post("/api/tickets/create", rateLimit, (req, res) => {
     res.json({ success: true, id: info.lastInsertRowid });
 });
 
-// USUARIO ve sus tickets
 app.get("/api/tickets/my", (req, res) => {
     const userKey = req.headers["x-user-key"];
     if (!userKey) return res.status(401).json({ success: false, message: "Falta key" });
@@ -597,28 +612,19 @@ app.get("/api/tickets/my", (req, res) => {
     res.json({ success: true, tickets });
 });
 
-// Obtener ticket con mensajes (user o admin)
 app.get("/api/tickets/:id", (req, res) => {
     const id = req.params.id;
     const adminKey = req.headers["x-admin-key"];
     const userKey = req.headers["x-user-key"];
-
     const t = db.prepare("SELECT * FROM tickets WHERE id = ?").get(id);
     if (!t) return res.status(404).json({ success: false, message: "Ticket no encontrado" });
-
-    // Verificar autorización
-    const isAdmin = adminKey && (
-        adminKey === ADMIN_KEY ||
-        db.prepare("SELECT id FROM keys WHERE key = ? AND type LIKE 'ADMIN%'").get(adminKey)
-    );
+    const isAdmin = adminKey && (adminKey === ADMIN_KEY || db.prepare("SELECT id FROM keys WHERE key = ? AND type LIKE 'ADMIN%'").get(adminKey));
     const isOwner = userKey && t.user_key === userKey;
     if (!isAdmin && !isOwner) return res.status(403).json({ success: false, message: "Sin acceso" });
-
     const messages = db.prepare("SELECT * FROM ticket_messages WHERE ticket_id = ? ORDER BY id ASC").all(id);
     res.json({ success: true, ticket: t, messages });
 });
 
-// Usuario responde
 app.post("/api/tickets/:id/reply", rateLimit, (req, res) => {
     const id = req.params.id;
     const { userKey, message } = req.body;
@@ -627,60 +633,48 @@ app.post("/api/tickets/:id/reply", rateLimit, (req, res) => {
     if (!t) return res.status(404).json({ success: false, message: "No encontrado" });
     if (t.user_key !== userKey) return res.status(403).json({ success: false, message: "Sin acceso" });
     if (t.status === "closed") return res.status(400).json({ success: false, message: "Ticket cerrado" });
-
     const now = new Date().toISOString();
     db.prepare(`INSERT INTO ticket_messages (ticket_id, sender_type, sender_name, message, created_at)
         VALUES (?, 'user', ?, ?, ?)`)
       .run(id, t.username, message.trim(), now);
     db.prepare("UPDATE tickets SET updated_at = ?, status = 'open', last_reply_by = 'user' WHERE id = ?").run(now, id);
-
     io.emit("ticket-reply", { id, from: "user" });
     res.json({ success: true });
 });
 
-// ADMIN lista tickets
 app.get("/api/admin/tickets", checkAdmin, (req, res) => {
-    const filtro = req.query.filter || "all"; // all, open, pending, closed
+    const filtro = req.query.filter || "all";
     let tickets;
     if (filtro === "all") tickets = db.prepare("SELECT * FROM tickets ORDER BY updated_at DESC").all();
     else tickets = db.prepare("SELECT * FROM tickets WHERE status = ? ORDER BY updated_at DESC").all(filtro);
-
-    // Contar mensajes y último
     const counts = {};
     db.prepare("SELECT ticket_id, COUNT(*) as c FROM ticket_messages GROUP BY ticket_id").all().forEach(x => counts[x.ticket_id] = x.c);
     tickets.forEach(t => t.message_count = counts[t.id] || 0);
-
-    // Stats
     const stats = {
         total: db.prepare("SELECT COUNT(*) as c FROM tickets").get().c,
         open: db.prepare("SELECT COUNT(*) as c FROM tickets WHERE status = 'open'").get().c,
         pending: db.prepare("SELECT COUNT(*) as c FROM tickets WHERE status = 'pending'").get().c,
         closed: db.prepare("SELECT COUNT(*) as c FROM tickets WHERE status = 'closed'").get().c
     };
-
     res.json({ success: true, tickets, stats });
 });
 
-// ADMIN responde ticket
 app.post("/api/admin/tickets/:id/reply", checkAdmin, (req, res) => {
     const id = req.params.id;
     const { message } = req.body;
     if (!message) return res.status(400).json({ success: false, message: "Falta mensaje" });
     const t = db.prepare("SELECT * FROM tickets WHERE id = ?").get(id);
     if (!t) return res.status(404).json({ success: false, message: "No encontrado" });
-
     const now = new Date().toISOString();
     const senderName = req.adminIsRoot ? "Soporte (Admin)" : (req.adminRow?.nickname || "Soporte");
     db.prepare(`INSERT INTO ticket_messages (ticket_id, sender_type, sender_name, message, created_at)
         VALUES (?, 'admin', ?, ?, ?)`)
       .run(id, senderName, message.trim(), now);
     db.prepare("UPDATE tickets SET updated_at = ?, status = 'pending', last_reply_by = 'admin' WHERE id = ?").run(now, id);
-
     if (t.user_key) io.to(`key:${t.user_key}`).emit("ticket-reply", { id, from: "admin" });
     res.json({ success: true });
 });
 
-// ADMIN cambia estado
 app.post("/api/admin/tickets/:id/status", checkAdmin, (req, res) => {
     const { status } = req.body;
     if (!["open","pending","closed"].includes(status)) return res.status(400).json({ success: false, message: "Estado inválido" });
@@ -691,7 +685,6 @@ app.post("/api/admin/tickets/:id/status", checkAdmin, (req, res) => {
     res.json({ success: true });
 });
 
-// ADMIN cambia prioridad
 app.post("/api/admin/tickets/:id/priority", checkAdmin, (req, res) => {
     const { priority } = req.body;
     if (!["low","normal","high","urgent"].includes(priority)) return res.status(400).json({ success: false, message: "Prioridad inválida" });
@@ -699,7 +692,6 @@ app.post("/api/admin/tickets/:id/priority", checkAdmin, (req, res) => {
     res.json({ success: true });
 });
 
-// ADMIN borra ticket
 app.post("/api/admin/tickets/:id/delete", checkAdmin, (req, res) => {
     const canGrant = req.adminIsRoot || req.adminPermissions.includes("*") || req.adminPermissions.includes("manage_permissions");
     if (!canGrant) return res.status(403).json({ success: false, message: "Sin permiso" });
@@ -716,7 +708,7 @@ app.post("/api/ai/chat", rateLimit, async (req, res) => {
     if (!GEMINI_API_KEY) return res.status(500).json({ success: false, message: "IA no configurada" });
     const juegos = db.prepare("SELECT name FROM games WHERE active = 1").all();
     const lista = juegos.map(j => j.name).join(", ") || "ninguno";
-    const contexto = `Eres el asistente de OMELES GAMES. Responde en español. Juegos: ${lista}.`;
+    const contexto = `Eres el asistente de OMELES GAMES. Responde en español. Productos: ${lista}.`;
     try {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
         const body = {
@@ -766,8 +758,10 @@ app.post("/api/admin/import-db", checkAdmin, (req, res) => {
                 try {
                     const exists = db.prepare("SELECT id FROM games WHERE name = ?").get(g.name);
                     if (!exists) {
-                        db.prepare(`INSERT INTO games (name, download, repair, password, image, active, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)`)
-                          .run(g.name, g.download || "", g.repair || "", g.password || "", g.image || "", g.active || 1, g.created_at || new Date().toISOString());
+                        db.prepare(`INSERT INTO games (name, download, repair, password, image, active, created_at, type, description, content_url, content_file)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+                          .run(g.name, g.download || "", g.repair || "", g.password || "", g.image || "", g.active || 1,
+                               g.created_at || new Date().toISOString(), g.type || "game", g.description || "", g.content_url || "", g.content_file || "");
                         gamesIn++;
                     }
                 } catch (e) {}
@@ -816,5 +810,6 @@ app.post("/api/admin/import-db", checkAdmin, (req, res) => {
 
 server.listen(PORT, "0.0.0.0", () => {
     console.log(`\n✅ OMELES GAMES en puerto ${PORT}`);
-    console.log(`🔑 Root Admin: ${ADMIN_KEY}\n`);
+    console.log(`🔑 Root Admin: ${ADMIN_KEY}`);
+    console.log(`📂 Uploads: ${UPLOADS_DIR}\n`);
 });
