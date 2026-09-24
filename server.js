@@ -44,7 +44,7 @@ function rateLimit(req, res, next) {
     if (ahora > d.reset) { d.count = 0; d.reset = ahora + 60000; }
     d.count++;
     intentos.set(ip, d);
-    if (d.count > 40) return res.status(429).json({ success: false, message: "Demasiados intentos." });
+    if (d.count > 60) return res.status(429).json({ success: false, message: "Demasiados intentos." });
     next();
 }
 
@@ -63,11 +63,9 @@ function checkAdmin(req, res, next) {
         return res.status(401).json({ success: false, message: "Admin Key expirada" });
     }
     if (!row.active) return res.status(401).json({ success: false, message: "Admin Key revocada" });
-
     const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "?";
     db.prepare(`UPDATE keys SET last_ip = ?, last_used_at = ?, use_count = use_count + 1 WHERE id = ?`)
       .run(ip, new Date().toISOString(), row.id);
-
     let perms = [];
     try { perms = row.permissions ? JSON.parse(row.permissions) : []; } catch {}
     req.adminIsRoot = false;
@@ -76,33 +74,24 @@ function checkAdmin(req, res, next) {
     next();
 }
 
-/* ============================================================
-   HELPER: Resolver juegos permitidos según game_mode
-============================================================ */
+/* ============ HELPER JUEGOS ============ */
 function resolverJuegosPermitidos(row) {
     const mode = row.game_mode || "all";
     const allActive = db.prepare("SELECT * FROM games WHERE active = 1 ORDER BY id DESC").all();
-
     if (mode === "none") return [];
     if (mode === "all") return allActive;
-
     let ids = [];
-    if (row.allowed_games) {
-        try { ids = JSON.parse(row.allowed_games); } catch { ids = []; }
-    }
-
+    if (row.allowed_games) { try { ids = JSON.parse(row.allowed_games); } catch { ids = []; } }
     if (mode === "whitelist") {
         if (!Array.isArray(ids) || ids.length === 0) return [];
         const ph = ids.map(() => "?").join(",");
         return db.prepare(`SELECT * FROM games WHERE active = 1 AND id IN (${ph}) ORDER BY id DESC`).all(...ids);
     }
-
     if (mode === "blacklist") {
         if (!Array.isArray(ids) || ids.length === 0) return allActive;
         const ph = ids.map(() => "?").join(",");
         return db.prepare(`SELECT * FROM games WHERE active = 1 AND id NOT IN (${ph}) ORDER BY id DESC`).all(...ids);
     }
-
     return allActive;
 }
 
@@ -118,19 +107,18 @@ io.on("connection", (socket) => {
 });
 
 /* ============================================================
-   REGISTRO DE USUARIO
+   REGISTRO / LOGIN
 ============================================================ */
 app.post("/api/register", rateLimit, (req, res) => {
     const { key, username, password } = req.body;
-
     if (!key || !username || !password)
         return res.status(400).json({ success: false, message: "Rellena todos los campos" });
     if (username.length < 3 || username.length > 20)
         return res.status(400).json({ success: false, message: "Usuario: entre 3 y 20 caracteres" });
     if (!/^[a-zA-Z0-9_.-]+$/.test(username))
-        return res.status(400).json({ success: false, message: "Usuario: solo letras, números, . _ -" });
+        return res.status(400).json({ success: false, message: "Usuario inválido" });
     if (password.length < 4)
-        return res.status(400).json({ success: false, message: "Contraseña: mínimo 4 caracteres" });
+        return res.status(400).json({ success: false, message: "Contraseña: mínimo 4" });
 
     const keyRow = db.prepare("SELECT * FROM keys WHERE key = ?").get(key.trim());
     if (!keyRow) return res.status(401).json({ success: false, message: "Key no válida" });
@@ -139,14 +127,10 @@ app.post("/api/register", rateLimit, (req, res) => {
         db.prepare("UPDATE keys SET active = 0 WHERE id = ?").run(keyRow.id);
         return res.status(401).json({ success: false, message: "Key expirada" });
     }
-
     const yaAsignada = db.prepare("SELECT id, username FROM users WHERE key_id = ?").get(keyRow.id);
-    if (yaAsignada)
-        return res.status(409).json({ success: false, message: `Esta key ya está registrada por "${yaAsignada.username}"` });
-
+    if (yaAsignada) return res.status(409).json({ success: false, message: `Key ya registrada por "${yaAsignada.username}"` });
     const yaExiste = db.prepare("SELECT id FROM users WHERE username = ?").get(username.trim());
-    if (yaExiste)
-        return res.status(409).json({ success: false, message: "Ese nombre de usuario ya está en uso" });
+    if (yaExiste) return res.status(409).json({ success: false, message: "Nombre en uso" });
 
     try {
         const hash = hashPassword(password);
@@ -154,16 +138,11 @@ app.post("/api/register", rateLimit, (req, res) => {
         db.prepare(`INSERT INTO users (username, password_hash, key_id, created_at, last_login, plain_password)
             VALUES (?, ?, ?, ?, ?, ?)`)
           .run(username.trim(), hash, keyRow.id, now, now, password);
-
         const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "?";
         db.prepare(`UPDATE keys SET last_ip = ?, last_used_at = ?, use_count = use_count + 1 WHERE id = ?`)
           .run(ip, now, keyRow.id);
-
         const juegosPermitidos = resolverJuegosPermitidos(keyRow);
-        const allowed = keyRow.game_mode === "all"
-            ? null
-            : juegosPermitidos.map(g => g.id);
-
+        const allowed = keyRow.game_mode === "all" ? null : juegosPermitidos.map(g => g.id);
         res.json({ success: true, user: { username: username.trim() }, key: keyRow.key, type: keyRow.type, allowed });
     } catch (e) {
         console.error(e);
@@ -171,46 +150,33 @@ app.post("/api/register", rateLimit, (req, res) => {
     }
 });
 
-/* ============================================================
-   LOGIN CON USUARIO + CONTRASEÑA
-============================================================ */
 app.post("/api/login-user", rateLimit, (req, res) => {
     const { username, password } = req.body;
-    if (!username || !password)
-        return res.status(400).json({ success: false, message: "Rellena usuario y contraseña" });
-
+    if (!username || !password) return res.status(400).json({ success: false, message: "Faltan datos" });
     const user = db.prepare("SELECT * FROM users WHERE username = ?").get(username.trim());
     if (!user) return res.status(401).json({ success: false, message: "Usuario o contraseña incorrectos" });
     if (!verifyPassword(password, user.password_hash))
         return res.status(401).json({ success: false, message: "Usuario o contraseña incorrectos" });
-
     const key = db.prepare("SELECT * FROM keys WHERE id = ?").get(user.key_id);
-    if (!key) return res.status(401).json({ success: false, message: "Key asociada no encontrada" });
+    if (!key) return res.status(401).json({ success: false, message: "Key no encontrada" });
     if (!key.active) return res.status(401).json({ success: false, message: "Tu key ha sido revocada" });
     if (key.expires_at && new Date(key.expires_at) <= new Date()) {
         db.prepare("UPDATE keys SET active = 0 WHERE id = ?").run(key.id);
         return res.status(401).json({ success: false, message: "Tu key ha expirado" });
     }
-
     const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "?";
     const now = new Date().toISOString();
     db.prepare("UPDATE users SET last_login = ? WHERE id = ?").run(now, user.id);
     db.prepare(`UPDATE keys SET last_ip = ?, last_used_at = ?, use_count = use_count + 1 WHERE id = ?`)
       .run(ip, now, key.id);
-
     const juegosPermitidos = resolverJuegosPermitidos(key);
     const allowed = key.game_mode === "all" ? null : juegosPermitidos.map(g => g.id);
-
     res.json({ success: true, user: { username: user.username }, key: key.key, type: key.type, allowed });
 });
 
-/* ============================================================
-   LOGIN DIRECTO CON KEY
-============================================================ */
 app.post("/api/login", rateLimit, (req, res) => {
     const { key } = req.body;
-    if (!key) return res.status(400).json({ success: false, message: "Falta la key" });
-
+    if (!key) return res.status(400).json({ success: false, message: "Falta key" });
     const row = db.prepare("SELECT * FROM keys WHERE key = ?").get(key);
     if (!row) return res.status(401).json({ success: false, message: "Key no válida" });
     if (!row.active) return res.status(401).json({ success: false, message: "Key revocada o ya usada" });
@@ -218,21 +184,18 @@ app.post("/api/login", rateLimit, (req, res) => {
         db.prepare("UPDATE keys SET active = 0 WHERE id = ?").run(row.id);
         return res.status(401).json({ success: false, message: "Key expirada" });
     }
-
     const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "?";
     const uses = (row.use_count || 0) + 1;
     const esUnSoloUso = row.type === "ONE_USE" || row.type === "ADMIN_ONE_USE";
     const active = esUnSoloUso ? 0 : 1;
     db.prepare(`UPDATE keys SET last_ip = ?, last_used_at = ?, use_count = ?, active = ? WHERE id = ?`)
       .run(ip, new Date().toISOString(), uses, active, row.id);
-
     const juegosPermitidos = resolverJuegosPermitidos(row);
     const allowed = row.game_mode === "all" ? null : juegosPermitidos.map(g => g.id);
-
     res.json({ success: true, type: row.type, allowed, game_mode: row.game_mode });
 });
 
-/* ============ INFO ADMIN ============ */
+/* ============ ADMIN INFO ============ */
 app.get("/api/admin/me", checkAdmin, (req, res) => {
     res.json({
         success: true,
@@ -245,16 +208,22 @@ app.get("/api/admin/me", checkAdmin, (req, res) => {
 /* ============ JUEGOS DEL USUARIO ============ */
 app.get("/api/games", (req, res) => {
     const key = req.headers["x-user-key"];
-    if (!key) return res.status(401).json({ success: false, message: "Falta la key" });
-
+    if (!key) return res.status(401).json({ success: false, message: "Falta key" });
     const row = db.prepare("SELECT * FROM keys WHERE key = ?").get(key);
     if (!row) return res.status(401).json({ success: false, message: "Key no válida" });
-
     const games = resolverJuegosPermitidos(row);
-    res.json({ success: true, games });
+    // Añadir info de categorías
+    const cats = db.prepare("SELECT * FROM categories ORDER BY position ASC, id ASC").all();
+    const gc = db.prepare("SELECT * FROM game_categories").all();
+    const map = {};
+    gc.forEach(x => { if (!map[x.game_id]) map[x.game_id] = []; map[x.game_id].push(x.category_id); });
+    games.forEach(g => { g.categories = map[g.id] || []; });
+    res.json({ success: true, games, categories: cats });
 });
 
-/* ============ KEYS (admin) ============ */
+/* ============================================================
+   KEYS
+============================================================ */
 app.get("/api/admin/keys", checkAdmin, (req, res) => {
     const keys = db.prepare("SELECT * FROM keys WHERE key != ? ORDER BY id DESC").all(ADMIN_KEY);
     res.json({ success: true, keys });
@@ -262,8 +231,7 @@ app.get("/api/admin/keys", checkAdmin, (req, res) => {
 
 app.post("/api/keys", checkAdmin, (req, res) => {
     const { type, gameId, gameIds, permissions, massive, count, gameMode } = req.body;
-    const validos = ["24H","7D","30D","LIFETIME","ONE_USE",
-        "ADMIN","ADMIN_24H","ADMIN_7D","ADMIN_30D","ADMIN_ONE_USE","ADMIN_LIFETIME"];
+    const validos = ["24H","7D","30D","LIFETIME","ONE_USE","ADMIN","ADMIN_24H","ADMIN_7D","ADMIN_30D","ADMIN_ONE_USE","ADMIN_LIFETIME"];
     if (!validos.includes(type)) return res.status(400).json({ success: false, message: "Tipo inválido" });
 
     let permsValue = null;
@@ -273,43 +241,31 @@ app.post("/api/keys", checkAdmin, (req, res) => {
         permsValue = Array.isArray(permissions) ? JSON.stringify(permissions) : JSON.stringify(["*"]);
     }
 
-    /* Modo de juegos */
     let mode = String(gameMode || "all").toLowerCase();
     if (!["all","none","whitelist","blacklist"].includes(mode)) mode = "all";
 
     let ids = [];
-    if (Array.isArray(gameIds) && gameIds.length > 0) {
-        ids = gameIds.map(Number).filter(n => Number.isFinite(n) && n > 0);
-    } else if (gameId !== undefined && gameId !== null && gameId !== "") {
+    if (Array.isArray(gameIds) && gameIds.length > 0) ids = gameIds.map(Number).filter(n => Number.isFinite(n) && n > 0);
+    else if (gameId !== undefined && gameId !== null && gameId !== "") {
         const gid = Number(gameId);
         if (Number.isFinite(gid) && gid > 0) ids = [gid];
     }
 
-    // Validar que los ids existen
     if (ids.length > 0) {
         const ph = ids.map(() => "?").join(",");
         const found = db.prepare(`SELECT id FROM games WHERE active = 1 AND id IN (${ph})`).all(...ids);
-        if (found.length !== ids.length)
-            return res.status(404).json({ success: false, message: "Algún juego no existe" });
+        if (found.length !== ids.length) return res.status(404).json({ success: false, message: "Algún juego no existe" });
     }
 
-    // Para modo "all" o "none" ignoramos los ids
     let allowed_games = null;
     let gameIdPrefix = "";
     if (mode === "whitelist" || mode === "blacklist") {
-        if (ids.length === 0 && mode === "whitelist") {
-            // Sin juegos seleccionados en whitelist = no verá nada
-            allowed_games = JSON.stringify([]);
-        } else {
-            allowed_games = JSON.stringify(ids);
-        }
-        // Prefijo solo si whitelist con 1 juego
+        allowed_games = JSON.stringify(ids);
         if (mode === "whitelist" && ids.length === 1) gameIdPrefix = `${ids[0]}-`;
     }
 
     const numCount = massive ? Math.min(Math.max(Number(count) || 1, 1), 500) : 1;
     const isMassiveFlag = massive ? 1 : 0;
-
     const rand = () => crypto.randomBytes(3).toString("hex").toUpperCase();
     const now = new Date();
     let expires = null;
@@ -321,7 +277,6 @@ app.post("/api/keys", checkAdmin, (req, res) => {
     try {
         const stmt = db.prepare(`INSERT INTO keys (key, type, created_at, expires_at, active, allowed_games, permissions, massive, game_mode) VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?)`);
         const checkStmt = db.prepare("SELECT id FROM keys WHERE key = ?");
-
         const doInsert = db.transaction(() => {
             for (let i = 0; i < numCount; i++) {
                 let keyStr, attempts = 0;
@@ -333,12 +288,11 @@ app.post("/api/keys", checkAdmin, (req, res) => {
         });
         doInsert();
     } catch (e) {
-        console.error("Error generando keys:", e);
-        return res.status(500).json({ success: false, message: "Error al generar keys" });
+        console.error(e);
+        return res.status(500).json({ success: false, message: "Error al generar" });
     }
 
     if (massive) io.emit("keys-massive-created", { count: generatedKeys.length });
-
     res.json({ success: true, key: generatedKeys[0], keys: generatedKeys, count: generatedKeys.length, massive: !!massive, gameMode: mode });
 });
 
@@ -348,7 +302,7 @@ app.post("/api/admin/update-key-permissions", checkAdmin, (req, res) => {
     if (!canGrant) return res.status(403).json({ success: false, message: "Sin permiso" });
     const row = db.prepare("SELECT * FROM keys WHERE id = ?").get(id);
     if (!row) return res.status(404).json({ success: false, message: "No encontrada" });
-    if (row.key === ADMIN_KEY) return res.status(403).json({ success: false, message: "No puedes tocar el Root Admin" });
+    if (row.key === ADMIN_KEY) return res.status(403).json({ success: false, message: "No puedes tocar el Root" });
     if (!row.type.startsWith("ADMIN")) return res.status(400).json({ success: false, message: "No es admin" });
     const value = Array.isArray(permissions) ? JSON.stringify(permissions) : JSON.stringify(["*"]);
     db.prepare("UPDATE keys SET permissions = ? WHERE id = ?").run(value, id);
@@ -358,7 +312,7 @@ app.post("/api/admin/update-key-permissions", checkAdmin, (req, res) => {
 app.post("/api/admin/update-key-nickname", checkAdmin, (req, res) => {
     const { id, nickname } = req.body;
     const row = db.prepare("SELECT key FROM keys WHERE id = ?").get(id);
-    if (row && row.key === ADMIN_KEY) return res.status(403).json({ success: false, message: "No puedes tocar el Root Admin" });
+    if (row && row.key === ADMIN_KEY) return res.status(403).json({ success: false, message: "No puedes tocar el Root" });
     db.prepare("UPDATE keys SET nickname = ? WHERE id = ?").run(nickname || "", id);
     res.json({ success: true });
 });
@@ -375,33 +329,49 @@ app.get("/api/admin/key-games/:id", checkAdmin, (req, res) => {
 app.post("/api/admin/update-key-games", checkAdmin, (req, res) => {
     const { id, allowed, gameMode } = req.body;
     if (!id) return res.status(400).json({ success: false, message: "Falta id" });
-
     const row = db.prepare("SELECT * FROM keys WHERE id = ?").get(id);
     if (!row) return res.status(404).json({ success: false, message: "No encontrada" });
-
     let mode = gameMode ? String(gameMode).toLowerCase() : (row.game_mode || "all");
     if (!["all","none","whitelist","blacklist"].includes(mode)) mode = "all";
-
     let value = null;
     if (Array.isArray(allowed)) {
-        if (mode === "whitelist" || mode === "blacklist") {
-            value = JSON.stringify(allowed.map(Number));
-        } else {
-            value = null;
-        }
+        if (mode === "whitelist" || mode === "blacklist") value = JSON.stringify(allowed.map(Number));
     }
-
     db.prepare("UPDATE keys SET allowed_games = ?, game_mode = ? WHERE id = ?").run(value, mode, id);
-
     const row2 = db.prepare("SELECT key FROM keys WHERE id = ?").get(id);
     if (row2) io.to(`key:${row2.key}`).emit("key-updated", { key: row2.key });
-
     res.json({ success: true });
+});
+
+// 🆕 REACTIVAR KEY
+app.post("/api/admin/reactivate-key", checkAdmin, (req, res) => {
+    const { id } = req.body;
+    if (!id) return res.status(400).json({ success: false, message: "Falta id" });
+    const row = db.prepare("SELECT * FROM keys WHERE id = ?").get(id);
+    if (!row) return res.status(404).json({ success: false, message: "No encontrada" });
+    if (row.key === ADMIN_KEY) return res.status(403).json({ success: false, message: "No puedes tocar el Root" });
+    db.prepare("UPDATE keys SET active = 1 WHERE id = ?").run(id);
+    io.to(`key:${row.key}`).emit("key-updated", { key: row.key });
+    console.log(`♻️ Key reactivada: ${row.key}`);
+    res.json({ success: true });
+});
+
+// 🆕 REACTIVAR TODAS LAS MASIVAS INACTIVAS
+app.post("/api/admin/reactivate-massive-keys", checkAdmin, (req, res) => {
+    const canGrant = req.adminIsRoot || req.adminPermissions.includes("*") || req.adminPermissions.includes("manage_permissions");
+    if (!canGrant) return res.status(403).json({ success: false, message: "Sin permiso" });
+    const info = db.prepare("SELECT id FROM keys WHERE massive = 1 AND active = 0").all();
+    if (info.length === 0) return res.json({ success: true, reactivated: 0 });
+    const ids = info.map(k => k.id);
+    const ph = ids.map(() => "?").join(",");
+    db.prepare(`UPDATE keys SET active = 1 WHERE id IN (${ph})`).run(...ids);
+    io.emit("keys-massive-created", { count: ids.length });
+    res.json({ success: true, reactivated: ids.length });
 });
 
 app.post("/api/admin/revoke-key", checkAdmin, (req, res) => {
     const row = db.prepare("SELECT key, type FROM keys WHERE id = ?").get(req.body.id);
-    if (row && row.key === ADMIN_KEY) return res.status(403).json({ success: false, message: "No puedes revocar el Root Admin" });
+    if (row && row.key === ADMIN_KEY) return res.status(403).json({ success: false, message: "No puedes revocar el Root" });
     db.prepare("UPDATE keys SET active = 0 WHERE id = ?").run(req.body.id);
     if (row) io.emit("key-revoked", { key: row.key, type: row.type });
     res.json({ success: true });
@@ -409,7 +379,7 @@ app.post("/api/admin/revoke-key", checkAdmin, (req, res) => {
 
 app.post("/api/admin/delete-key", checkAdmin, (req, res) => {
     const row = db.prepare("SELECT key, type FROM keys WHERE id = ?").get(req.body.id);
-    if (row && row.key === ADMIN_KEY) return res.status(403).json({ success: false, message: "No puedes borrar el Root Admin" });
+    if (row && row.key === ADMIN_KEY) return res.status(403).json({ success: false, message: "No puedes borrar el Root" });
     db.prepare("DELETE FROM users WHERE key_id = ?").run(req.body.id);
     db.prepare("DELETE FROM keys WHERE id = ?").run(req.body.id);
     if (row) io.emit("key-revoked", { key: row.key, type: row.type });
@@ -429,17 +399,30 @@ app.post("/api/admin/delete-massive-keys", checkAdmin, (req, res) => {
     res.json({ success: true, deleted: ids.length });
 });
 
-/* ============ USUARIOS (admin) ============ */
+/* ============================================================
+   USUARIOS (admin)
+============================================================ */
 app.get("/api/admin/users", checkAdmin, (req, res) => {
     const users = db.prepare(`
-        SELECT u.id, u.username, u.created_at, u.last_login, u.key_id, u.plain_password,
+        SELECT u.id, u.username, u.created_at, u.last_login, u.key_id, u.plain_password, u.pinned,
                k.key as key_value, k.type as key_type, k.nickname as key_nickname,
                k.active as key_active, k.expires_at as key_expires
         FROM users u
         LEFT JOIN keys k ON u.key_id = k.id
-        ORDER BY u.id DESC
+        ORDER BY u.pinned DESC, u.id DESC
     `).all();
     res.json({ success: true, users });
+});
+
+// 🆕 ANCLAR USUARIO
+app.post("/api/admin/toggle-user-pin", checkAdmin, (req, res) => {
+    const { id } = req.body;
+    if (!id) return res.status(400).json({ success: false, message: "Falta id" });
+    const row = db.prepare("SELECT * FROM users WHERE id = ?").get(id);
+    if (!row) return res.status(404).json({ success: false, message: "No encontrado" });
+    const nuevo = row.pinned ? 0 : 1;
+    db.prepare("UPDATE users SET pinned = ? WHERE id = ?").run(nuevo, id);
+    res.json({ success: true, pinned: nuevo });
 });
 
 app.post("/api/admin/delete-user", checkAdmin, (req, res) => {
@@ -452,15 +435,21 @@ app.post("/api/admin/delete-user", checkAdmin, (req, res) => {
 app.post("/api/admin/reset-user-password", checkAdmin, (req, res) => {
     const { id, newPassword } = req.body;
     if (!id || !newPassword || newPassword.length < 4)
-        return res.status(400).json({ success: false, message: "Contraseña mínimo 4 caracteres" });
+        return res.status(400).json({ success: false, message: "Mínimo 4 caracteres" });
     const hash = hashPassword(newPassword);
     db.prepare("UPDATE users SET password_hash = ?, plain_password = ? WHERE id = ?").run(hash, newPassword, id);
     res.json({ success: true });
 });
 
-/* ============ JUEGOS ============ */
+/* ============================================================
+   JUEGOS
+============================================================ */
 app.get("/api/admin/games", checkAdmin, (req, res) => {
     const games = db.prepare("SELECT * FROM games ORDER BY id DESC").all();
+    const gc = db.prepare("SELECT * FROM game_categories").all();
+    const map = {};
+    gc.forEach(x => { if (!map[x.game_id]) map[x.game_id] = []; map[x.game_id].push(x.category_id); });
+    games.forEach(g => { g.categories = map[g.id] || []; });
     res.json({ success: true, games });
 });
 
@@ -487,17 +476,247 @@ app.post("/api/admin/delete-game", checkAdmin, (req, res) => {
     res.json({ success: true });
 });
 
+/* ============================================================
+   🆕 CATEGORÍAS / APARTADOS
+============================================================ */
+app.get("/api/admin/categories", checkAdmin, (req, res) => {
+    const cats = db.prepare("SELECT * FROM categories ORDER BY position ASC, id ASC").all();
+    const gc = db.prepare("SELECT * FROM game_categories").all();
+    const map = {};
+    gc.forEach(x => { if (!map[x.category_id]) map[x.category_id] = []; map[x.category_id].push(x.game_id); });
+    cats.forEach(c => { c.games = map[c.id] || []; });
+    res.json({ success: true, categories: cats });
+});
+
+app.post("/api/admin/categories/create", checkAdmin, (req, res) => {
+    const { name, icon, color } = req.body;
+    if (!name) return res.status(400).json({ success: false, message: "Falta nombre" });
+    const maxPos = db.prepare("SELECT COALESCE(MAX(position), -1) as m FROM categories").get().m;
+    const info = db.prepare(`INSERT INTO categories (name, icon, color, position, created_at) VALUES (?, ?, ?, ?, ?)`)
+      .run(name.trim(), icon || "📁", color || "#8b5cff", maxPos + 1, new Date().toISOString());
+    io.emit("categories-updated", { action: "create" });
+    res.json({ success: true, id: info.lastInsertRowid });
+});
+
+app.post("/api/admin/categories/update", checkAdmin, (req, res) => {
+    const { id, name, icon, color } = req.body;
+    if (!id || !name) return res.status(400).json({ success: false, message: "Faltan datos" });
+    db.prepare("UPDATE categories SET name = ?, icon = ?, color = ? WHERE id = ?")
+      .run(name.trim(), icon || "📁", color || "#8b5cff", id);
+    io.emit("categories-updated", { action: "update" });
+    res.json({ success: true });
+});
+
+app.post("/api/admin/categories/delete", checkAdmin, (req, res) => {
+    const { id } = req.body;
+    if (!id) return res.status(400).json({ success: false, message: "Falta id" });
+    db.prepare("DELETE FROM categories WHERE id = ?").run(id);
+    io.emit("categories-updated", { action: "delete" });
+    res.json({ success: true });
+});
+
+app.post("/api/admin/categories/reorder", checkAdmin, (req, res) => {
+    const { order } = req.body;
+    if (!Array.isArray(order)) return res.status(400).json({ success: false, message: "Orden inválido" });
+    const stmt = db.prepare("UPDATE categories SET position = ? WHERE id = ?");
+    const tx = db.transaction(() => {
+        order.forEach((id, idx) => stmt.run(idx, id));
+    });
+    tx();
+    res.json({ success: true });
+});
+
+app.post("/api/admin/categories/add-game", checkAdmin, (req, res) => {
+    const { categoryId, gameId } = req.body;
+    if (!categoryId || !gameId) return res.status(400).json({ success: false, message: "Faltan datos" });
+    try {
+        db.prepare(`INSERT OR IGNORE INTO game_categories (game_id, category_id, position) VALUES (?, ?, 0)`)
+          .run(gameId, categoryId);
+        io.emit("categories-updated", { action: "add-game" });
+        res.json({ success: true });
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message });
+    }
+});
+
+app.post("/api/admin/categories/remove-game", checkAdmin, (req, res) => {
+    const { categoryId, gameId } = req.body;
+    if (!categoryId || !gameId) return res.status(400).json({ success: false, message: "Faltan datos" });
+    db.prepare("DELETE FROM game_categories WHERE category_id = ? AND game_id = ?").run(categoryId, gameId);
+    io.emit("categories-updated", { action: "remove-game" });
+    res.json({ success: true });
+});
+
+app.get("/api/admin/categories/:id/games", checkAdmin, (req, res) => {
+    const catId = req.params.id;
+    const games = db.prepare(`
+        SELECT g.* FROM games g
+        INNER JOIN game_categories gc ON gc.game_id = g.id
+        WHERE gc.category_id = ?
+        ORDER BY gc.position ASC, g.id DESC
+    `).all(catId);
+    res.json({ success: true, games });
+});
+
+/* ============================================================
+   🆕 TICKETS
+============================================================ */
+
+// USUARIO crea ticket
+app.post("/api/tickets/create", rateLimit, (req, res) => {
+    const { userKey, username, subject, message, priority } = req.body;
+    if (!username || !subject || !message)
+        return res.status(400).json({ success: false, message: "Rellena todos los campos" });
+    if (subject.length > 100) return res.status(400).json({ success: false, message: "Asunto muy largo" });
+    if (message.length > 2000) return res.status(400).json({ success: false, message: "Mensaje muy largo" });
+
+    let userId = null;
+    if (userKey) {
+        const u = db.prepare("SELECT id FROM users WHERE key_id = (SELECT id FROM keys WHERE key = ?)").get(userKey);
+        if (u) userId = u.id;
+    }
+
+    const now = new Date().toISOString();
+    const info = db.prepare(`INSERT INTO tickets (user_id, username, user_key, subject, status, priority, created_at, updated_at, last_reply_by)
+        VALUES (?, ?, ?, ?, 'open', ?, ?, ?, 'user')`)
+      .run(userId, username.trim(), userKey || null, subject.trim(), priority || "normal", now, now);
+
+    db.prepare(`INSERT INTO ticket_messages (ticket_id, sender_type, sender_name, message, created_at)
+        VALUES (?, 'user', ?, ?, ?)`)
+      .run(info.lastInsertRowid, username.trim(), message.trim(), now);
+
+    io.emit("ticket-created", { id: info.lastInsertRowid, username: username.trim(), subject: subject.trim() });
+    res.json({ success: true, id: info.lastInsertRowid });
+});
+
+// USUARIO ve sus tickets
+app.get("/api/tickets/my", (req, res) => {
+    const userKey = req.headers["x-user-key"];
+    if (!userKey) return res.status(401).json({ success: false, message: "Falta key" });
+    const tickets = db.prepare(`SELECT * FROM tickets WHERE user_key = ? ORDER BY updated_at DESC`).all(userKey);
+    res.json({ success: true, tickets });
+});
+
+// Obtener ticket con mensajes (user o admin)
+app.get("/api/tickets/:id", (req, res) => {
+    const id = req.params.id;
+    const adminKey = req.headers["x-admin-key"];
+    const userKey = req.headers["x-user-key"];
+
+    const t = db.prepare("SELECT * FROM tickets WHERE id = ?").get(id);
+    if (!t) return res.status(404).json({ success: false, message: "Ticket no encontrado" });
+
+    // Verificar autorización
+    const isAdmin = adminKey && (
+        adminKey === ADMIN_KEY ||
+        db.prepare("SELECT id FROM keys WHERE key = ? AND type LIKE 'ADMIN%'").get(adminKey)
+    );
+    const isOwner = userKey && t.user_key === userKey;
+    if (!isAdmin && !isOwner) return res.status(403).json({ success: false, message: "Sin acceso" });
+
+    const messages = db.prepare("SELECT * FROM ticket_messages WHERE ticket_id = ? ORDER BY id ASC").all(id);
+    res.json({ success: true, ticket: t, messages });
+});
+
+// Usuario responde
+app.post("/api/tickets/:id/reply", rateLimit, (req, res) => {
+    const id = req.params.id;
+    const { userKey, message } = req.body;
+    if (!userKey || !message) return res.status(400).json({ success: false, message: "Faltan datos" });
+    const t = db.prepare("SELECT * FROM tickets WHERE id = ?").get(id);
+    if (!t) return res.status(404).json({ success: false, message: "No encontrado" });
+    if (t.user_key !== userKey) return res.status(403).json({ success: false, message: "Sin acceso" });
+    if (t.status === "closed") return res.status(400).json({ success: false, message: "Ticket cerrado" });
+
+    const now = new Date().toISOString();
+    db.prepare(`INSERT INTO ticket_messages (ticket_id, sender_type, sender_name, message, created_at)
+        VALUES (?, 'user', ?, ?, ?)`)
+      .run(id, t.username, message.trim(), now);
+    db.prepare("UPDATE tickets SET updated_at = ?, status = 'open', last_reply_by = 'user' WHERE id = ?").run(now, id);
+
+    io.emit("ticket-reply", { id, from: "user" });
+    res.json({ success: true });
+});
+
+// ADMIN lista tickets
+app.get("/api/admin/tickets", checkAdmin, (req, res) => {
+    const filtro = req.query.filter || "all"; // all, open, pending, closed
+    let tickets;
+    if (filtro === "all") tickets = db.prepare("SELECT * FROM tickets ORDER BY updated_at DESC").all();
+    else tickets = db.prepare("SELECT * FROM tickets WHERE status = ? ORDER BY updated_at DESC").all(filtro);
+
+    // Contar mensajes y último
+    const counts = {};
+    db.prepare("SELECT ticket_id, COUNT(*) as c FROM ticket_messages GROUP BY ticket_id").all().forEach(x => counts[x.ticket_id] = x.c);
+    tickets.forEach(t => t.message_count = counts[t.id] || 0);
+
+    // Stats
+    const stats = {
+        total: db.prepare("SELECT COUNT(*) as c FROM tickets").get().c,
+        open: db.prepare("SELECT COUNT(*) as c FROM tickets WHERE status = 'open'").get().c,
+        pending: db.prepare("SELECT COUNT(*) as c FROM tickets WHERE status = 'pending'").get().c,
+        closed: db.prepare("SELECT COUNT(*) as c FROM tickets WHERE status = 'closed'").get().c
+    };
+
+    res.json({ success: true, tickets, stats });
+});
+
+// ADMIN responde ticket
+app.post("/api/admin/tickets/:id/reply", checkAdmin, (req, res) => {
+    const id = req.params.id;
+    const { message } = req.body;
+    if (!message) return res.status(400).json({ success: false, message: "Falta mensaje" });
+    const t = db.prepare("SELECT * FROM tickets WHERE id = ?").get(id);
+    if (!t) return res.status(404).json({ success: false, message: "No encontrado" });
+
+    const now = new Date().toISOString();
+    const senderName = req.adminIsRoot ? "Soporte (Admin)" : (req.adminRow?.nickname || "Soporte");
+    db.prepare(`INSERT INTO ticket_messages (ticket_id, sender_type, sender_name, message, created_at)
+        VALUES (?, 'admin', ?, ?, ?)`)
+      .run(id, senderName, message.trim(), now);
+    db.prepare("UPDATE tickets SET updated_at = ?, status = 'pending', last_reply_by = 'admin' WHERE id = ?").run(now, id);
+
+    if (t.user_key) io.to(`key:${t.user_key}`).emit("ticket-reply", { id, from: "admin" });
+    res.json({ success: true });
+});
+
+// ADMIN cambia estado
+app.post("/api/admin/tickets/:id/status", checkAdmin, (req, res) => {
+    const { status } = req.body;
+    if (!["open","pending","closed"].includes(status)) return res.status(400).json({ success: false, message: "Estado inválido" });
+    const now = new Date().toISOString();
+    const closedAt = status === "closed" ? now : null;
+    db.prepare("UPDATE tickets SET status = ?, closed_at = ?, updated_at = ? WHERE id = ?").run(status, closedAt, now, req.params.id);
+    io.emit("ticket-status", { id: req.params.id, status });
+    res.json({ success: true });
+});
+
+// ADMIN cambia prioridad
+app.post("/api/admin/tickets/:id/priority", checkAdmin, (req, res) => {
+    const { priority } = req.body;
+    if (!["low","normal","high","urgent"].includes(priority)) return res.status(400).json({ success: false, message: "Prioridad inválida" });
+    db.prepare("UPDATE tickets SET priority = ? WHERE id = ?").run(priority, req.params.id);
+    res.json({ success: true });
+});
+
+// ADMIN borra ticket
+app.post("/api/admin/tickets/:id/delete", checkAdmin, (req, res) => {
+    const canGrant = req.adminIsRoot || req.adminPermissions.includes("*") || req.adminPermissions.includes("manage_permissions");
+    if (!canGrant) return res.status(403).json({ success: false, message: "Sin permiso" });
+    db.prepare("DELETE FROM tickets WHERE id = ?").run(req.params.id);
+    io.emit("ticket-deleted", { id: req.params.id });
+    res.json({ success: true });
+});
+
 /* ============ IA ============ */
 app.post("/api/ai/chat", rateLimit, async (req, res) => {
     const { mensaje, historial } = req.body;
     if (!mensaje) return res.status(400).json({ success: false, message: "Falta mensaje" });
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
     if (!GEMINI_API_KEY) return res.status(500).json({ success: false, message: "IA no configurada" });
-
     const juegos = db.prepare("SELECT name FROM games WHERE active = 1").all();
     const lista = juegos.map(j => j.name).join(", ") || "ninguno";
     const contexto = `Eres el asistente de OMELES GAMES. Responde en español. Juegos: ${lista}.`;
-
     try {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
         const body = {
@@ -515,49 +734,33 @@ app.post("/api/ai/chat", rateLimit, async (req, res) => {
     } catch { res.status(500).json({ success: false, message: "Error IA" }); }
 });
 
-/* ============================================================
-   BACKUP - EXPORTAR
-============================================================ */
+/* ============ BACKUP ============ */
 app.get("/api/admin/download-db", checkAdmin, (req, res) => {
-    try {
-        db.pragma("wal_checkpoint(TRUNCATE)");
-        console.log("✅ Checkpoint WAL completado");
-    } catch (e) {
-        console.error("❌ Error en checkpoint:", e);
-    }
+    try { db.pragma("wal_checkpoint(TRUNCATE)"); } catch (e) {}
     const dbPath = process.env.DB_PATH || path.join(__dirname, "omeles.db");
-    console.log(`📥 Exportando DB desde: ${dbPath}`);
     res.download(dbPath, `omeles-backup-${new Date().toISOString().slice(0,10)}.db`);
 });
 
-/* ============================================================
-   BACKUP - IMPORTAR
-============================================================ */
 app.post("/api/admin/import-db", checkAdmin, (req, res) => {
     const { dbBase64 } = req.body;
-    if (!dbBase64) return res.status(400).json({ success: false, message: "Falta el archivo" });
-
+    if (!dbBase64) return res.status(400).json({ success: false, message: "Falta archivo" });
     const tmpPath = "/tmp/omeles-import-" + Date.now() + ".db";
     try {
         fs.writeFileSync(tmpPath, Buffer.from(dbBase64, "base64"));
-
         let oldDb;
         try {
             oldDb = new Database(tmpPath, { readonly: true });
             oldDb.prepare("SELECT name FROM sqlite_master WHERE type='table' LIMIT 1").get();
         } catch (e) {
             try { fs.unlinkSync(tmpPath); } catch {}
-            return res.status(400).json({ success: false, message: "El archivo no es una DB SQLite válida" });
+            return res.status(400).json({ success: false, message: "No es SQLite válido" });
         }
-
         let oldGames = [], oldKeys = [], oldUsers = [];
         try { oldGames = oldDb.prepare("SELECT * FROM games").all(); } catch {}
         try { oldKeys = oldDb.prepare("SELECT * FROM keys WHERE type NOT LIKE 'ADMIN%'").all(); } catch {}
         try { oldUsers = oldDb.prepare("SELECT * FROM users").all(); } catch {}
         oldDb.close();
-
         let gamesIn = 0, keysIn = 0, usersIn = 0;
-
         const tx = db.transaction(() => {
             for (const g of oldGames) {
                 try {
@@ -567,9 +770,8 @@ app.post("/api/admin/import-db", checkAdmin, (req, res) => {
                           .run(g.name, g.download || "", g.repair || "", g.password || "", g.image || "", g.active || 1, g.created_at || new Date().toISOString());
                         gamesIn++;
                     }
-                } catch (e) { console.error("Error importando juego:", g.name, e.message); }
+                } catch (e) {}
             }
-
             for (const k of oldKeys) {
                 try {
                     const exists = db.prepare("SELECT id FROM keys WHERE key = ?").get(k.key);
@@ -577,14 +779,12 @@ app.post("/api/admin/import-db", checkAdmin, (req, res) => {
                         db.prepare(`INSERT INTO keys (key, type, nickname, created_at, expires_at, active, use_count, last_ip, last_used_at, allowed_games, permissions, massive, game_mode)
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
                           .run(k.key, k.type, k.nickname || "", k.created_at, k.expires_at, k.active, k.use_count || 0,
-                               k.last_ip || null, k.last_used_at || null,
-                               k.allowed_games || null, k.permissions || null, k.massive || 0,
-                               k.game_mode || "all");
+                               k.last_ip || null, k.last_used_at || null, k.allowed_games || null, k.permissions || null,
+                               k.massive || 0, k.game_mode || "all");
                         keysIn++;
                     }
-                } catch (e) { console.error("Error importando key:", k.key, e.message); }
+                } catch (e) {}
             }
-
             for (const u of oldUsers) {
                 try {
                     const exists = db.prepare("SELECT id FROM users WHERE username = ?").get(u.username);
@@ -595,32 +795,22 @@ app.post("/api/admin/import-db", checkAdmin, (req, res) => {
                             if (kRow) keyId = kRow.id;
                         }
                         if (keyId) {
-                            db.prepare(`INSERT INTO users (username, password_hash, key_id, created_at, last_login, plain_password)
-                                VALUES (?, ?, ?, ?, ?, ?)`)
-                              .run(u.username, u.password_hash, keyId, u.created_at, u.last_login || null, u.plain_password || "");
+                            db.prepare(`INSERT INTO users (username, password_hash, key_id, created_at, last_login, plain_password, pinned)
+                                VALUES (?, ?, ?, ?, ?, ?, ?)`)
+                              .run(u.username, u.password_hash, keyId, u.created_at, u.last_login || null, u.plain_password || "", u.pinned || 0);
                             usersIn++;
                         }
                     }
-                } catch (e) { console.error("Error importando usuario:", u.username, e.message); }
+                } catch (e) {}
             }
         });
-
         tx();
-
         try { fs.unlinkSync(tmpPath); } catch {}
-
-        console.log(`✅ Import completado: ${gamesIn} juegos, ${keysIn} keys, ${usersIn} usuarios`);
         io.emit("games-updated", { action: "import" });
-
-        res.json({
-            success: true,
-            imported: { games: gamesIn, keys: keysIn, users: usersIn },
-            message: `Importados ${gamesIn} juegos, ${keysIn} keys, ${usersIn} usuarios`
-        });
+        res.json({ success: true, imported: { games: gamesIn, keys: keysIn, users: usersIn } });
     } catch (e) {
-        console.error("Error importando DB:", e);
         try { fs.unlinkSync(tmpPath); } catch {}
-        res.status(500).json({ success: false, message: "Error procesando el archivo: " + e.message });
+        res.status(500).json({ success: false, message: "Error: " + e.message });
     }
 });
 
