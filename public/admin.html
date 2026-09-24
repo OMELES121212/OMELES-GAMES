@@ -30,7 +30,6 @@ body:not(.logged-in) .main{margin-left:0}
 .nav-item .ico{font-size:16px;width:20px;text-align:center}
 .nav-item .badge{margin-left:auto;background:rgba(139,92,255,.15);color:#b99cff;padding:1px 8px;border-radius:10px;font-size:10.5px;font-weight:700}
 .nav-item .badge.red{background:rgba(255,69,103,.2);color:var(--red)}
-.nav-item .badge.green{background:rgba(34,197,94,.2);color:var(--green)}
 .user-info{padding:14px 20px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(139,92,255,.04)}
 .user-name{font-size:13px;font-weight:700;color:#fff;margin-bottom:3px}
 .user-role{font-size:10.5px;color:#b99cff;font-weight:700;letter-spacing:1px;text-transform:uppercase}
@@ -48,7 +47,7 @@ body:not(.logged-in) .main{margin-left:0}
 .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:22px;box-shadow:0 8px 30px rgba(0,0,0,.35)}
 .card-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:5px}
 .card-sub{color:var(--muted);font-size:12.5px;margin-bottom:18px}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:26px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:26px}
 .stat-card{background:linear-gradient(145deg,rgba(25,25,40,.9),rgba(15,15,25,.9));border:1px solid var(--border);border-radius:16px;padding:22px;transition:.25s}
 .stat-card:hover{transform:translateY(-3px);border-color:rgba(139,92,255,.35)}
 .stat-ico{font-size:26px;margin-bottom:10px;display:block}
@@ -81,7 +80,6 @@ label{font-size:11px;color:#9d7cff;font-weight:700;letter-spacing:1px;text-trans
 .type-btn.active{border-color:var(--purple);background:linear-gradient(145deg,rgba(139,92,255,.15),rgba(37,99,235,.1));color:#fff}
 .type-btn .tb-ico{font-size:22px;display:block;margin-bottom:6px}
 .type-btn .tb-name{font-size:12.5px;font-weight:800}
-.type-btn .tb-sub{font-size:10.5px;color:var(--muted);margin-top:3px}
 .type-btn.admin{border-color:rgba(255,140,0,.3)}
 .type-btn.admin.active{border-color:var(--orange);background:linear-gradient(145deg,rgba(255,140,0,.15),rgba(255,69,103,.1))}
 .mode-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:16px}
@@ -99,7 +97,7 @@ label{font-size:11px;color:#9d7cff;font-weight:700;letter-spacing:1px;text-trans
 .key-preview-label{font-size:11px;color:var(--muted);letter-spacing:2px;font-weight:700;margin-bottom:12px}
 .key-preview-value{font-size:22px;font-weight:900;color:#00c8ff;word-break:break-all;font-family:'Courier New',monospace;padding:14px;border-radius:10px;background:rgba(0,200,255,.05);border:1px solid rgba(0,200,255,.15);margin-bottom:14px}
 .key-preview-meta{font-size:12px;color:var(--muted)}
-.games-picker{background:#08080e;border:1px solid var(--border-light);border-radius:12px;max-height:300px;overflow-y:auto;padding:8px;margin-top:8px}
+.games-picker{background:#08080e;border:1px solid var(--border-light);border-radius:12px;max-height:340px;overflow-y:auto;padding:8px;margin-top:8px}
 .games-picker-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;cursor:pointer;transition:.15s;user-select:none}
 .games-picker-item:hover{background:rgba(139,92,255,.1)}
 .games-picker-item input[type="checkbox"]{width:18px;height:18px;accent-color:var(--purple);cursor:pointer;padding:0;margin:0;flex-shrink:0}
@@ -136,6 +134,10 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
 .tag.admin{background:rgba(255,140,0,.12);color:var(--orange);border:1px solid rgba(255,140,0,.3)}
 .tag.massive{background:rgba(255,140,0,.15);color:var(--orange);border:1px solid rgba(255,140,0,.35)}
 .tag.pin{background:rgba(255,209,102,.15);color:var(--yellow);border:1px solid rgba(255,209,102,.35)}
+.tag.type-game{background:rgba(139,92,255,.15);color:#b99cff;border:1px solid rgba(139,92,255,.3)}
+.tag.type-movie{background:rgba(236,72,153,.15);color:#f472b6;border:1px solid rgba(236,72,153,.3)}
+.tag.type-video_creator{background:rgba(6,182,212,.15);color:#22d3ee;border:1px solid rgba(6,182,212,.3)}
+.tag.type-other{background:rgba(136,136,136,.15);color:#aaa;border:1px solid rgba(136,136,136,.3)}
 .badge-games{display:inline-block;padding:3px 9px;border-radius:7px;font-size:11px;font-weight:700}
 .badge-games.all{background:rgba(0,255,157,.08);color:var(--green);border:1px solid rgba(0,255,157,.22)}
 .badge-games.none{background:rgba(255,69,103,.08);color:var(--red);border:1px solid rgba(255,69,103,.22)}
@@ -149,15 +151,16 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
 .search-w input{padding-left:44px}
 .search-w::before{content:"🔍";position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:15px;opacity:.6;pointer-events:none}
 .games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
-.game-card{background:linear-gradient(145deg,rgba(25,25,40,.7),rgba(15,15,25,.85));border:1px solid var(--border);border-radius:16px;padding:20px;transition:.25s;overflow:hidden}
+.game-card{background:linear-gradient(145deg,rgba(25,25,40,.7),rgba(15,15,25,.85));border:1px solid var(--border);border-radius:16px;padding:20px;transition:.25s;overflow:hidden;position:relative}
 .game-card:hover{border-color:rgba(139,92,255,.4);transform:translateY(-3px)}
-.game-card-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
 .game-card-img{width:64px;height:64px;border-radius:13px;object-fit:cover;border:1px solid var(--border-light);flex-shrink:0;background:linear-gradient(135deg,#6d28d9,#2563eb);display:flex;align-items:center;justify-content:center;font-size:28px}
+.game-card-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
 .game-card-info{flex:1;min-width:0}
 .game-card-name{font-size:16px;font-weight:800;color:#fff;margin-bottom:3px;word-break:break-word}
 .game-card-id{font-size:11px;color:var(--muted);font-family:monospace}
-.game-card-body{font-size:12px;color:#aaa;line-height:1.7;margin-bottom:14px}
+.game-card-body{font-size:12px;color:#aaa;line-height:1.7;margin-bottom:14px;word-break:break-word}
 .game-card-body b{color:#b99cff}
+.game-card-desc{font-size:12.5px;color:#bbb;margin:10px 0;padding:10px 12px;background:rgba(139,92,255,.06);border-radius:9px;border-left:3px solid var(--purple);line-height:1.5;max-height:80px;overflow:hidden}
 .game-card-actions{display:flex;gap:8px;flex-wrap:wrap}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);z-index:1000;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
 .modal-overlay.open{display:flex}
@@ -168,6 +171,38 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
 .modal-close{background:transparent;border:0;color:#888;font-size:24px;cursor:pointer;width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;transition:.15s;font-family:inherit}
 .modal-close:hover{background:rgba(255,255,255,.07);color:#fff}
 .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:18px;border-top:1px solid var(--border)}
+/* CHECKLIST CATEGORÍAS */
+.check-list{background:#08080e;border:1px solid var(--border-light);border-radius:12px;padding:8px;max-height:420px;overflow-y:auto;margin-bottom:14px}
+.check-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:9px;cursor:pointer;transition:.15s;user-select:none;border:1px solid transparent}
+.check-item:hover{background:rgba(139,92,255,.08);border-color:rgba(139,92,255,.15)}
+.check-item input[type="checkbox"]{width:20px;height:20px;accent-color:var(--purple);cursor:pointer;padding:0;margin:0;flex-shrink:0}
+.check-item .ci-icon{font-size:16px;flex-shrink:0}
+.check-item .ci-info{flex:1;min-width:0}
+.check-item .ci-name{font-size:13.5px;font-weight:600;color:#fff;display:block;word-break:break-word}
+.check-item .ci-meta{font-size:11px;color:var(--muted);display:block;margin-top:2px}
+.check-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+/* SUBIDA DE ARCHIVO */
+.upload-drop{padding:24px;border:2px dashed rgba(139,92,255,.35);border-radius:14px;text-align:center;cursor:pointer;transition:.2s;background:rgba(139,92,255,.02);margin-bottom:14px}
+.upload-drop:hover,.upload-drop.dragover{border-color:var(--purple);background:rgba(139,92,255,.08)}
+.upload-drop .ud-ico{font-size:36px;margin-bottom:8px;display:block;opacity:.7}
+.upload-drop .ud-txt{color:#bbb;font-size:13px;font-weight:600}
+.upload-drop .ud-sub{color:#666;font-size:11px;margin-top:4px}
+.file-preview{display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:11px;margin-bottom:14px}
+.file-preview .fp-ico{font-size:24px;flex-shrink:0}
+.file-preview .fp-info{flex:1;min-width:0}
+.file-preview .fp-name{font-size:13px;color:#22c55e;font-weight:700;word-break:break-all}
+.file-preview .fp-size{font-size:11px;color:var(--muted)}
+.file-preview .fp-remove{background:transparent;border:1px solid rgba(255,69,103,.4);color:var(--red);border-radius:8px;padding:4px 10px;cursor:pointer;font-size:11px;font-weight:700;font-family:inherit}
+/* CATEGORÍAS - VISTA ADMIN */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.cat-card{background:linear-gradient(145deg,rgba(25,25,40,.7),rgba(15,15,25,.85));border:1px solid var(--border);border-radius:16px;padding:20px;transition:.25s;position:relative;overflow:hidden}
+.cat-card:hover{border-color:rgba(139,92,255,.4);transform:translateY(-3px)}
+.cat-card-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.cat-card-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.cat-card-info{flex:1;min-width:0}
+.cat-card-name{font-size:17px;font-weight:800;color:#fff;margin-bottom:3px}
+.cat-card-count{font-size:11.5px;color:var(--muted);font-family:monospace}
+.cat-card-actions{display:flex;gap:8px;flex-wrap:wrap}
 .perm-list{background:#08080e;border:1px solid var(--border-light);border-radius:12px;padding:14px;margin-bottom:14px}
 .perm-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:9px;cursor:pointer;transition:.15s;user-select:none;border:1px solid transparent}
 .perm-item:hover{background:rgba(139,92,255,.08);border-color:rgba(139,92,255,.15)}
@@ -192,7 +227,6 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
 .backup-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:22px}
 @media(max-width:900px){.backup-grid{grid-template-columns:1fr}}
 .backup-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;transition:.25s}
-.backup-card:hover{border-color:rgba(139,92,255,.35)}
 .backup-card.export{border-color:rgba(34,197,94,.3)}
 .backup-card.import{border-color:rgba(139,92,255,.3)}
 .backup-card .bc-ico{font-size:42px;margin-bottom:12px;display:block;line-height:1}
@@ -204,44 +238,26 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
 .drop-zone .dz-txt{color:#bbb;font-size:13px;font-weight:600}
 .drop-zone .dz-sub{color:#666;font-size:11px;margin-top:4px}
 .import-result{padding:16px;border-radius:14px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.3);color:var(--green);font-size:13.5px;display:none;margin-top:14px}
-.import-result.show{display:block;animation:fadeIn .3s ease}
+.import-result.show{display:block}
 .import-result h4{margin-bottom:10px;font-size:15px}
 .import-result .ir-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:#ddd}
 .import-result .ir-row b{color:var(--green);font-size:15px}
-
-/* CATEGORÍAS */
-.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px}
-.cat-card{background:linear-gradient(145deg,rgba(25,25,40,.7),rgba(15,15,25,.85));border:1px solid var(--border);border-radius:16px;padding:20px;transition:.25s;position:relative;overflow:hidden}
-.cat-card.dragover{border-color:var(--green);background:linear-gradient(145deg,rgba(34,197,94,.12),rgba(15,15,25,.85));transform:scale(1.02)}
-.cat-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
-.cat-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
-.cat-info{flex:1;min-width:0}
-.cat-name{font-size:17px;font-weight:800;color:#fff;margin-bottom:3px}
-.cat-count{font-size:11.5px;color:var(--muted);font-family:monospace}
-.cat-games{display:flex;flex-direction:column;gap:6px;margin-top:12px;min-height:60px}
-.cat-game{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:9px;background:rgba(255,255,255,.03);font-size:12.5px;color:#ddd;transition:.15s;cursor:grab}
-.cat-game:hover{background:rgba(139,92,255,.08)}
-.cat-game .cg-icon{font-size:16px}
-.cat-game .cg-name{flex:1;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cat-game .cg-remove{background:transparent;border:0;color:#666;cursor:pointer;font-size:14px;padding:3px 6px;border-radius:6px;transition:.15s}
-.cat-game .cg-remove:hover{color:var(--red);background:rgba(255,69,103,.15)}
-.cat-empty{padding:16px;text-align:center;color:var(--muted-dark);font-size:12px;border:1.5px dashed rgba(139,92,255,.15);border-radius:10px}
-.drag-hint{padding:10px 14px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:10px;font-size:12px;color:#bbb;margin-bottom:16px;display:flex;align-items:center;gap:10px}
-
-/* JUEGOS DRAG */
-.draggable-game{padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid var(--border-light);display:flex;align-items:center;gap:10px;cursor:grab;transition:.15s;margin-bottom:6px;user-select:none}
-.draggable-game:hover{border-color:var(--purple);background:rgba(139,92,255,.06);transform:translateX(3px)}
-.draggable-game:active{cursor:grabbing;opacity:.7}
-.draggable-game.dragging{opacity:.4}
-
 /* TICKETS */
+.ticket-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.ticket-stat-card{background:rgba(30,30,45,.6);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.ticket-stat-val{font-size:24px;font-weight:900;color:#fff;line-height:1}
+.ticket-stat-label{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:6px;font-weight:700}
+.ticket-stat-card.open .ticket-stat-val{color:var(--green)}
+.ticket-stat-card.pending .ticket-stat-val{color:var(--yellow)}
+.ticket-stat-card.closed .ticket-stat-val{color:var(--muted)}
+.ticket-stat-card.total .ticket-stat-val{color:#b99cff}
 .ticket-list{display:flex;flex-direction:column;gap:12px}
 .ticket-card{background:linear-gradient(145deg,rgba(25,25,40,.7),rgba(15,15,25,.85));border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;transition:.2s}
 .ticket-card:hover{border-color:rgba(139,92,255,.4);transform:translateX(4px)}
 .ticket-card.unread{border-left:4px solid var(--orange)}
 .ticket-head{display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap}
 .ticket-subject{font-size:15px;font-weight:800;color:#fff;flex:1;min-width:200px}
-.ticket-badge{padding:3px 10px;border-radius:8px;font-size:10.5px;font-weight:800;letter-spacing:.5px}
+.ticket-badge{padding:3px 10px;border-radius:8px;font-size:10.5px;font-weight:800}
 .ticket-badge.open{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3)}
 .ticket-badge.pending{background:rgba(255,209,102,.15);color:var(--yellow);border:1px solid rgba(255,209,102,.3)}
 .ticket-badge.closed{background:rgba(136,136,136,.15);color:var(--muted);border:1px solid rgba(136,136,136,.3)}
@@ -252,21 +268,11 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
 @keyframes urgentPulse{0%,100%{opacity:1}50%{opacity:.7}}
 .ticket-meta{font-size:11.5px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap}
 .ticket-meta b{color:#b99cff;font-weight:600}
-.ticket-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
-.ticket-stat-card{background:rgba(30,30,45,.6);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
-.ticket-stat-val{font-size:24px;font-weight:900;color:#fff;line-height:1}
-.ticket-stat-label{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:6px;font-weight:700}
-.ticket-stat-card.open .ticket-stat-val{color:var(--green)}
-.ticket-stat-card.pending .ticket-stat-val{color:var(--yellow)}
-.ticket-stat-card.closed .ticket-stat-val{color:var(--muted)}
-.ticket-stat-card.total .ticket-stat-val{color:#b99cff}
-/* Chat de ticket */
 .ticket-chat{display:flex;flex-direction:column;gap:10px;max-height:380px;overflow-y:auto;padding:14px;background:#08080e;border:1px solid var(--border-light);border-radius:12px;margin-bottom:14px}
 .msg-bubble{padding:11px 15px;border-radius:14px;font-size:13px;line-height:1.5;max-width:85%;word-wrap:break-word;white-space:pre-wrap}
 .msg-bubble.admin{background:linear-gradient(135deg,#6d28d9,#2563eb);align-self:flex-end;color:#fff;border-bottom-right-radius:4px}
 .msg-bubble.user{background:rgba(139,92,255,.12);border:1px solid rgba(139,92,255,.25);align-self:flex-start;color:#fff;border-bottom-left-radius:4px}
 .msg-bubble .mb-meta{font-size:10px;opacity:.7;margin-top:5px;display:block}
-
 .mob-bar{display:none;position:fixed;top:0;left:0;right:0;height:60px;background:var(--sidebar);border-bottom:1px solid var(--border);z-index:99;align-items:center;padding:0 20px;gap:14px}
 .mob-toggle{width:42px;height:42px;border-radius:10px;border:1px solid var(--border-light);background:transparent;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit}
 .mob-brand{font-size:16px;font-weight:900;letter-spacing:1.5px;background:linear-gradient(90deg,#00b7ff,#8b5cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -313,7 +319,7 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
             </div>
             <div class="nav-section">
                 <div class="nav-title">Contenido</div>
-                <div class="nav-item" data-page="games" onclick="navigateTo('games')"><span class="ico">🕹️</span>Juegos</div>
+                <div class="nav-item" data-page="games" onclick="navigateTo('games')"><span class="ico">📦</span>Productos</div>
                 <div class="nav-item" data-page="categories" onclick="navigateTo('categories')"><span class="ico">📁</span>Categorías</div>
             </div>
             <div class="nav-section">
@@ -353,12 +359,10 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
             <div class="page-head"><h1>📊 Dashboard</h1><p>Resumen general</p></div>
             <div class="stats-grid" id="dashboardStats"></div>
             <div class="card"><div class="card-title">🎫 Tickets recientes</div><div id="dashboardTickets"></div></div>
-            <div class="card"><div class="card-title">🕒 Últimas keys</div><div id="dashboardRecent"></div></div>
         </div>
 
-        <!-- GENERADOR -->
         <div id="page-generate" class="page">
-            <div class="page-head"><h1>🔑 Generar Keys</h1><p>Crea keys de usuario, admin o específicas</p></div>
+            <div class="page-head"><h1>🔑 Generar Keys</h1></div>
             <div class="card">
                 <div class="card-title">1️⃣ Tipo</div>
                 <div style="font-size:11px;color:var(--muted);letter-spacing:1.5px;font-weight:700;margin-bottom:10px;">👤 USUARIO</div>
@@ -379,10 +383,10 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
                 </div>
             </div>
             <div class="card">
-                <div class="card-title">2️⃣ Modo de juegos</div>
+                <div class="card-title">2️⃣ Modo de productos</div>
                 <div class="mode-grid" id="genModeGrid">
                     <button class="mode-btn mode-all active" data-mode="all" onclick="selectModeGen(this)"><span class="mb-ico">🌐</span><span class="mb-name">TODOS</span><span class="mb-desc">Todos + futuros</span></button>
-                    <button class="mode-btn mode-none" data-mode="none" onclick="selectModeGen(this)"><span class="mb-ico">🚫</span><span class="mb-name">NINGUNO</span><span class="mb-desc">Sin juegos</span></button>
+                    <button class="mode-btn mode-none" data-mode="none" onclick="selectModeGen(this)"><span class="mb-ico">🚫</span><span class="mb-name">NINGUNO</span><span class="mb-desc">Sin productos</span></button>
                     <button class="mode-btn mode-wl" data-mode="whitelist" onclick="selectModeGen(this)"><span class="mb-ico">✅</span><span class="mb-name">LISTA BLANCA</span><span class="mb-desc">Solo marcados</span></button>
                     <button class="mode-btn mode-bl" data-mode="blacklist" onclick="selectModeGen(this)"><span class="mb-ico">⛔</span><span class="mb-name">LISTA NEGRA</span><span class="mb-desc">Todos menos marcados</span></button>
                 </div>
@@ -395,9 +399,6 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
                     <div class="games-picker" id="genGamesPicker"></div>
                 </div>
                 <div class="games-picker-info" id="genGamesInfo">🌐 Modo TODOS</div>
-                <div style="margin-top:14px;padding:12px 15px;border-radius:11px;background:rgba(139,92,255,.06);border:1px solid rgba(139,92,255,.2);font-size:12.5px;color:#bbb;">
-                    <b style="color:#b99cff;">Formato:</b> <code id="genFormatCode" style="color:#00c8ff;font-family:monospace;">OMELES-XXXXXX-XXXXXX</code>
-                </div>
             </div>
             <div class="card">
                 <div class="card-title">3️⃣ Generar</div>
@@ -415,14 +416,11 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
             </div>
         </div>
 
-        <!-- MASIVAS -->
         <div id="page-massive" class="page">
-            <div class="page-head"><h1>⚡ Generación Masiva</h1><p>30, 40, 100 o más keys de golpe</p></div>
+            <div class="page-head"><h1>⚡ Generación Masiva</h1></div>
             <div class="massive-box">
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-                    <span class="massive-badge">⚡ MASIVA</span>
-                    <span style="color:var(--muted);font-size:12px;">Aisladas de Globales/Por Juego</span>
-                </div>
+                <span class="massive-badge">⚡ MASIVA</span>
+                <span style="color:var(--muted);font-size:12px;margin-left:10px;">Aisladas de Globales/Por Producto</span>
             </div>
             <div class="card">
                 <div class="card-title">1️⃣ Tipo</div>
@@ -449,7 +447,7 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
                 <input type="number" id="massiveCount" min="1" max="500" value="30" oninput="onMassiveCountChange()">
             </div>
             <div class="card">
-                <div class="card-title">3️⃣ Modo de juegos</div>
+                <div class="card-title">3️⃣ Modo</div>
                 <div class="mode-grid" id="massiveModeGrid">
                     <button class="mode-btn mode-all active" data-mode="all" onclick="selectModeMassive(this)"><span class="mb-ico">🌐</span><span class="mb-name">TODOS</span></button>
                     <button class="mode-btn mode-none" data-mode="none" onclick="selectModeMassive(this)"><span class="mb-ico">🚫</span><span class="mb-name">NINGUNO</span></button>
@@ -480,7 +478,7 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
                             </div>
                             <div style="display:flex;gap:8px;">
                                 <button class="btn success small" onclick="copiarTodasMasivas()">📋 COPIAR TODAS</button>
-                                <button class="btn warn small" onclick="descargarMasivasTxt()">📥 DESCARGAR .TXT</button>
+                                <button class="btn warn small" onclick="descargarMasivasTxt()">📥 .TXT</button>
                             </div>
                         </div>
                         <div class="keys-batch" id="massiveResultList"></div>
@@ -540,38 +538,95 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
             </div>
         </div>
 
+        <!-- PRODUCTOS -->
         <div id="page-games" class="page">
-            <div class="page-head"><h1>🕹️ Gestionar Juegos</h1></div>
+            <div class="page-head"><h1>📦 Gestionar Productos</h1><p>Crea juegos, películas, vídeos o cualquier contenido</p></div>
+
             <div class="card">
-                <div class="card-title">➕ Añadir juego</div>
-                <div class="field"><label>Nombre *</label><input id="gameName" placeholder="Ej: GTA V"></div>
-                <div class="form-row">
-                    <div class="field"><label>Descarga</label><input id="gameDownload" placeholder="https://..."></div>
-                    <div class="field"><label>Reparación</label><input id="gameRepair" placeholder="https://..."></div>
+                <div class="card-title">➕ Añadir producto</div>
+
+                <div class="field">
+                    <label>Tipo de producto</label>
+                    <div class="mode-grid" id="prodTypeGrid">
+                        <button class="mode-btn mode-all active" data-type="game" onclick="selectProdType(this)">
+                            <span class="mb-ico">🎮</span><span class="mb-name">JUEGO</span>
+                            <span class="mb-desc">Juego con descarga y reparación</span>
+                        </button>
+                        <button class="mode-btn mode-wl" data-type="movie" onclick="selectProdType(this)">
+                            <span class="mb-ico">🎬</span><span class="mb-name">PELÍCULA</span>
+                            <span class="mb-desc">Película o serie</span>
+                        </button>
+                        <button class="mode-btn mode-bl" data-type="video_creator" onclick="selectProdType(this)">
+                            <span class="mb-ico">🎥</span><span class="mb-name">CREADOR DE VÍDEOS</span>
+                            <span class="mb-desc">Software de edición</span>
+                        </button>
+                        <button class="mode-btn mode-none" data-type="other" onclick="selectProdType(this)">
+                            <span class="mb-ico">📦</span><span class="mb-name">OTRO</span>
+                            <span class="mb-desc">Contenido genérico</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="form-row">
-                    <div class="field"><label>Password</label><input id="gamePassword" placeholder="..."></div>
-                    <div class="field"><label>Imagen URL</label><input id="gameImage" placeholder="https://..."></div>
+
+                <div class="field"><label>Nombre *</label><input id="gameName" placeholder="Ej: GTA V, Inception, Premiere Pro..."></div>
+
+                <div class="field"><label>Descripción</label><textarea id="gameDescription" placeholder="Describe el producto..."></textarea></div>
+
+                <div class="field"><label>Imagen / Portada (URL)</label><input id="gameImage" placeholder="https://i.imgur.com/abc.jpg"></div>
+
+                <div class="field">
+                    <label>Contenido: enlace o archivo</label>
+                    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+                        <button class="btn ghost small" id="tabLink" onclick="switchContentTab('link')" style="border-color:#8b5cff;color:#fff;">🔗 Enlace</button>
+                        <button class="btn ghost small" id="tabFile" onclick="switchContentTab('file')">📁 Archivo</button>
+                    </div>
+                    <div id="contentLinkTab">
+                        <input id="gameContentUrl" placeholder="https://mega.nz/... o https://youtube.com/...">
+                    </div>
+                    <div id="contentFileTab" style="display:none;">
+                        <div class="upload-drop" id="uploadDrop" onclick="document.getElementById('fileInput').click()">
+                            <span class="ud-ico">📁</span>
+                            <div class="ud-txt">Haz clic o arrastra el archivo aquí</div>
+                            <div class="ud-sub">Máximo 1 GB</div>
+                        </div>
+                        <input type="file" id="fileInput" style="display:none;" onchange="subirArchivo(event)">
+                        <div id="filePreviewBox"></div>
+                    </div>
                 </div>
-                <button class="btn success" onclick="crearJuego()">➕ AÑADIR JUEGO</button>
+
+                <div id="gameSpecificFields">
+                    <div class="form-row">
+                        <div class="field"><label>Link descarga / reparación</label><input id="gameDownload" placeholder="https://..."></div>
+                        <div class="field"><label>Password (opcional)</label><input id="gamePassword" placeholder="..."></div>
+                    </div>
+                </div>
+
+                <button class="btn success" onclick="crearProducto()">➕ AÑADIR PRODUCTO</button>
                 <div id="gameMessage" class="msg"></div>
             </div>
+
             <div class="card">
-                <div class="card-title">📚 Juegos actuales</div>
+                <div class="card-title">📚 Productos actuales</div>
                 <div class="card-sub" id="gamesCountLabel">...</div>
                 <div class="search-w"><input id="gameSearch" placeholder="Buscar..." oninput="renderGamesList()"></div>
+                <div class="filters">
+                    <button class="filter-btn active" data-tf="all" onclick="setProductFilter('all',this)">📦 Todos</button>
+                    <button class="filter-btn" data-tf="game" onclick="setProductFilter('game',this)">🎮 Juegos</button>
+                    <button class="filter-btn" data-tf="movie" onclick="setProductFilter('movie',this)">🎬 Pelis</button>
+                    <button class="filter-btn" data-tf="video_creator" onclick="setProductFilter('video_creator',this)">🎥 Creadores</button>
+                    <button class="filter-btn" data-tf="other" onclick="setProductFilter('other',this)">📦 Otros</button>
+                </div>
                 <div class="games-grid" id="gamesList"></div>
             </div>
         </div>
 
         <!-- CATEGORÍAS -->
         <div id="page-categories" class="page">
-            <div class="page-head"><h1>📁 Categorías / Apartados</h1><p>Organiza tus juegos en carpetas y arrástralos</p></div>
+            <div class="page-head"><h1>📁 Categorías</h1><p>Organiza tus productos en carpetas</p></div>
 
             <div class="card">
                 <div class="card-title">➕ Nueva categoría</div>
                 <div class="form-row">
-                    <div class="field"><label>Nombre</label><input id="catName" placeholder="Ej: Juegos de disparos"></div>
+                    <div class="field"><label>Nombre</label><input id="catName" placeholder="Ej: Películas de acción"></div>
                     <div class="field"><label>Icono (emoji)</label><input id="catIcon" placeholder="📁" maxlength="4" value="📁"></div>
                 </div>
                 <div class="field"><label>Color</label><input type="color" id="catColor" value="#8b5cff" style="height:44px;"></div>
@@ -579,29 +634,17 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
                 <div id="catMessage" class="msg"></div>
             </div>
 
-            <div class="drag-hint">
-                <span style="font-size:20px;">💡</span>
-                <span><b style="color:#fff;">Arrastra juegos</b> desde la lista de abajo a las categorías. También puedes hacer clic en cada juego para añadirlo.</span>
-            </div>
-
-            <div class="card">
-                <div class="card-title">📦 Juegos disponibles (arrastra a una categoría)</div>
-                <div class="card-sub">Todos los juegos activos</div>
-                <div id="draggableGames" style="max-height:300px;overflow-y:auto;padding:4px;"></div>
-            </div>
-
             <div class="card">
                 <div class="card-title">📁 Mis categorías</div>
+                <div class="card-sub">Haz clic en <b style="color:#b99cff;">"Seleccionar productos"</b> para añadir items a cada categoría con una checklist</div>
                 <div class="cat-grid" id="categoriesGrid"></div>
             </div>
         </div>
 
         <!-- TICKETS -->
         <div id="page-tickets" class="page">
-            <div class="page-head"><h1>🎫 Tickets de Soporte</h1><p>Los usuarios envían mensajes y tú respondes</p></div>
-
+            <div class="page-head"><h1>🎫 Tickets de Soporte</h1></div>
             <div class="ticket-stats" id="ticketStats"></div>
-
             <div class="card">
                 <div class="filters" id="ticketFilters">
                     <button class="filter-btn active" onclick="setTicketFilter('all',this)">📋 Todos</button>
@@ -615,8 +658,8 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
 
         <div id="page-stats" class="page">
             <div class="page-head"><h1>📈 Estadísticas</h1></div>
-            <div class="card"><div class="card-title">🔢 Por tipo</div><div id="statsByType"></div></div>
-            <div class="card"><div class="card-title">🎮 Por juego</div><div id="statsByGame"></div></div>
+            <div class="card"><div class="card-title">🔢 Por tipo de key</div><div id="statsByType"></div></div>
+            <div class="card"><div class="card-title">📦 Por producto</div><div id="statsByGame"></div></div>
             <div class="card"><div class="card-title">🌐 IPs</div><div id="statsByIp"></div></div>
         </div>
 
@@ -637,14 +680,12 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
                     <div class="drop-zone" id="dropZone" onclick="document.getElementById('oldDbFile').click()">
                         <span class="dz-ico">📁</span>
                         <div class="dz-txt">Haz clic o arrastra el .db</div>
-                        <div class="dz-sub">Máx 50 MB</div>
                     </div>
                     <input type="file" id="oldDbFile" accept=".db,.sqlite,.sqlite3" style="display:none;" onchange="importarDb(event)">
-                    <button class="btn full" onclick="document.getElementById('oldDbFile').click()" id="importBtn" style="background:linear-gradient(135deg,#6d28d9,#2563eb);">📤 SELECCIONAR</button>
                     <div id="importMessage" class="msg"></div>
                     <div id="importResult" class="import-result">
                         <h4>✅ Importación completada</h4>
-                        <div class="ir-row"><span>🎮 Juegos</span><b id="irGames">0</b></div>
+                        <div class="ir-row"><span>📦 Productos</span><b id="irGames">0</b></div>
                         <div class="ir-row"><span>🔑 Keys</span><b id="irKeys">0</b></div>
                         <div class="ir-row"><span>👥 Usuarios</span><b id="irUsers">0</b></div>
                     </div>
@@ -657,12 +698,22 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
 <!-- MODALES -->
 <div id="editModal" class="modal-overlay">
     <div class="modal-box">
-        <div class="modal-head"><h2>✏️ Editar juego</h2><button class="modal-close" onclick="cerrarModalEditar()">✕</button></div>
+        <div class="modal-head"><h2>✏️ Editar producto</h2><button class="modal-close" onclick="cerrarModalEditar()">✕</button></div>
+        <div class="field"><label>Tipo</label>
+            <div class="mode-grid" id="editProdTypeGrid">
+                <button class="mode-btn" data-type="game" onclick="selectEditProdType(this)"><span class="mb-ico">🎮</span><span class="mb-name">JUEGO</span></button>
+                <button class="mode-btn" data-type="movie" onclick="selectEditProdType(this)"><span class="mb-ico">🎬</span><span class="mb-name">PELÍCULA</span></button>
+                <button class="mode-btn" data-type="video_creator" onclick="selectEditProdType(this)"><span class="mb-ico">🎥</span><span class="mb-name">CREADOR</span></button>
+                <button class="mode-btn" data-type="other" onclick="selectEditProdType(this)"><span class="mb-ico">📦</span><span class="mb-name">OTRO</span></button>
+            </div>
+        </div>
         <div class="field"><label>Nombre</label><input id="editName"></div>
-        <div class="field"><label>Descarga</label><input id="editDownload"></div>
-        <div class="field"><label>Reparación</label><input id="editRepair"></div>
-        <div class="field"><label>Password</label><input id="editPassword"></div>
+        <div class="field"><label>Descripción</label><textarea id="editDescription"></textarea></div>
         <div class="field"><label>Imagen URL</label><input id="editImage"></div>
+        <div class="field"><label>Enlace de contenido</label><input id="editContentUrl"></div>
+        <div class="field"><label>Archivo subido (ruta)</label><input id="editContentFile" placeholder="/uploads/..."></div>
+        <div class="field"><label>Link de descarga / reparación</label><input id="editDownload"></div>
+        <div class="field"><label>Password (opcional)</label><input id="editPassword"></div>
         <div class="modal-actions">
             <button class="btn ghost" onclick="cerrarModalEditar()">CANCELAR</button>
             <button class="btn success" onclick="guardarEdicion()">💾 GUARDAR</button>
@@ -685,7 +736,7 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
 
 <div id="keyGamesModal" class="modal-overlay">
     <div class="modal-box" style="max-width:660px;">
-        <div class="modal-head"><h2>🎮 Modo de juegos</h2><button class="modal-close" onclick="cerrarModalJuegosKey()">✕</button></div>
+        <div class="modal-head"><h2>📦 Modo de productos</h2><button class="modal-close" onclick="cerrarModalJuegosKey()">✕</button></div>
         <p style="color:#888;font-size:12.5px;margin-bottom:14px;"><b style="color:#00c8ff;">MODO:</b> <span id="keyGamesMode">...</span></p>
         <div class="mode-grid" id="kgModeGrid">
             <button class="mode-btn mode-all" data-mode="all" onclick="selectKgMode(this)"><span class="mb-ico">🌐</span><span class="mb-name">TODOS</span></button>
@@ -726,34 +777,6 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
     </div>
 </div>
 
-<div id="ticketModal" class="modal-overlay">
-    <div class="modal-box" style="max-width:700px;">
-        <div class="modal-head"><h2 id="ticketModalTitle">🎫 Ticket</h2><button class="modal-close" onclick="cerrarTicketModal()">✕</button></div>
-        <div id="ticketModalInfo" style="margin-bottom:14px;"></div>
-        <div class="ticket-chat" id="ticketChat"></div>
-        <div class="field">
-            <label>Responder al usuario</label>
-            <textarea id="ticketReplyText" placeholder="Escribe tu respuesta..."></textarea>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
-            <button class="btn ghost small" onclick="cambiarEstadoTicket('open')">🟢 Marcar abierto</button>
-            <button class="btn ghost small" onclick="cambiarEstadoTicket('pending')">🟡 Pendiente</button>
-            <button class="btn ghost small" onclick="cambiarEstadoTicket('closed')">⚫ Cerrar</button>
-            <select id="ticketPrioritySel" onchange="cambiarPrioridadTicket(this.value)" style="max-width:160px;">
-                <option value="low">Prioridad: Baja</option>
-                <option value="normal">Prioridad: Normal</option>
-                <option value="high">Prioridad: Alta</option>
-                <option value="urgent">Prioridad: URGENTE</option>
-            </select>
-        </div>
-        <div class="modal-actions">
-            <button class="btn danger" onclick="borrarTicketActual()">🗑️ BORRAR TICKET</button>
-            <button class="btn success" onclick="enviarRespuestaTicket()">📤 ENVIAR RESPUESTA</button>
-        </div>
-        <div id="ticketModalMessage" class="msg"></div>
-    </div>
-</div>
-
 <div id="catEditModal" class="modal-overlay">
     <div class="modal-box" style="max-width:500px;">
         <div class="modal-head"><h2>✏️ Editar categoría</h2><button class="modal-close" onclick="cerrarModalEditCat()">✕</button></div>
@@ -764,6 +787,56 @@ tbody tr.pinned{background:linear-gradient(90deg,rgba(255,209,102,.08),transpare
             <button class="btn ghost" onclick="cerrarModalEditCat()">CANCELAR</button>
             <button class="btn success" onclick="guardarEditCat()">💾 GUARDAR</button>
         </div>
+    </div>
+</div>
+
+<!-- CHECKLIST DE CATEGORÍA -->
+<div id="catGamesModal" class="modal-overlay">
+    <div class="modal-box" style="max-width:660px;">
+        <div class="modal-head">
+            <h2 id="catGamesTitle">📁 Productos de la categoría</h2>
+            <button class="modal-close" onclick="cerrarCatGamesModal()">✕</button>
+        </div>
+        <p style="color:#888;font-size:12.5px;margin-bottom:14px;">Marca los productos que quieres que aparezcan en esta categoría. Los cambios se aplican al guardar.</p>
+        <div class="check-toolbar">
+            <button class="btn ghost small" onclick="marcarTodosCat(true)">✅ Todos</button>
+            <button class="btn ghost small" onclick="marcarTodosCat(false)">❌ Ninguno</button>
+            <button class="btn ghost small" onclick="marcarTodosCat('invert')">🔁 Invertir</button>
+            <button class="btn ghost small" onclick="filtrarCatPorTipo('game')">🎮 Solo juegos</button>
+            <button class="btn ghost small" onclick="filtrarCatPorTipo('movie')">🎬 Solo pelis</button>
+        </div>
+        <div class="search-w"><input id="catGamesSearch" placeholder="Buscar producto..." oninput="renderCatGames()"></div>
+        <div class="check-list" id="catGamesList"></div>
+        <div class="modal-actions">
+            <button class="btn ghost" onclick="cerrarCatGamesModal()">CANCELAR</button>
+            <button class="btn success" onclick="guardarCatGames()">💾 GUARDAR CAMBIOS</button>
+        </div>
+        <div id="catGamesMessage" class="msg"></div>
+    </div>
+</div>
+
+<div id="ticketModal" class="modal-overlay">
+    <div class="modal-box" style="max-width:700px;">
+        <div class="modal-head"><h2 id="ticketModalTitle">🎫 Ticket</h2><button class="modal-close" onclick="cerrarTicketModal()">✕</button></div>
+        <div id="ticketModalInfo" style="margin-bottom:14px;"></div>
+        <div class="ticket-chat" id="ticketChat"></div>
+        <div class="field"><label>Responder al usuario</label><textarea id="ticketReplyText" placeholder="Escribe tu respuesta..."></textarea></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+            <button class="btn ghost small" onclick="cambiarEstadoTicket('open')">🟢 Abierto</button>
+            <button class="btn ghost small" onclick="cambiarEstadoTicket('pending')">🟡 Pendiente</button>
+            <button class="btn ghost small" onclick="cambiarEstadoTicket('closed')">⚫ Cerrar</button>
+            <select id="ticketPrioritySel" onchange="cambiarPrioridadTicket(this.value)" style="max-width:160px;">
+                <option value="low">Prioridad: Baja</option>
+                <option value="normal">Prioridad: Normal</option>
+                <option value="high">Prioridad: Alta</option>
+                <option value="urgent">Prioridad: URGENTE</option>
+            </select>
+        </div>
+        <div class="modal-actions">
+            <button class="btn danger" onclick="borrarTicketActual()">🗑️ BORRAR</button>
+            <button class="btn success" onclick="enviarRespuestaTicket()">📤 ENVIAR</button>
+        </div>
+        <div id="ticketModalMessage" class="msg"></div>
     </div>
 </div>
 
@@ -787,6 +860,8 @@ let ticketActualId = null;
 let socket = null;
 
 let juegoEditandoId = null;
+let juegoEditandoTipo = "game";
+let juegoEditandoFile = "";
 let keyEditandoId = null;
 let keyGamesEditandoId = null;
 let keyGamesSelected = [];
@@ -795,6 +870,9 @@ let keyGamesMode = "all";
 let permsEditandoId = null;
 let permsSelected = [];
 let catEditandoId = null;
+let catGamesEditandoId = null;
+let catGamesSelected = [];
+let catGamesFiltroTipo = null;
 
 let tipoKeySeleccionado = null;
 let juegosKeySeleccionados = [];
@@ -807,6 +885,11 @@ let modoMassiveSeleccionado = "all";
 let cantidadMasiva = 30;
 let ultimasMasivas = [];
 
+let productFilter = "all";
+let prodType = "game";
+let prodContentTab = "link";
+let prodUploadedFile = "";
+
 const keysFilterState = { all:"all" };
 
 const PERMISOS_DISPONIBLES = [
@@ -818,7 +901,7 @@ const PERMISOS_DISPONIBLES = [
     { id:"keys-global", icon:"🌐", name:"Keys Globales" },
     { id:"keys-exhausted", icon:"⚠️", name:"Keys Agotadas" },
     { id:"users", icon:"👥", name:"Usuarios" },
-    { id:"games", icon:"🕹️", name:"Gestionar Juegos" },
+    { id:"games", icon:"📦", name:"Productos" },
     { id:"categories", icon:"📁", name:"Categorías" },
     { id:"tickets", icon:"🎫", name:"Tickets" },
     { id:"stats", icon:"📈", name:"Estadísticas" },
@@ -829,32 +912,19 @@ const PERMISOS_DISPONIBLES = [
 /* ============================================================
    UTILIDADES
 ============================================================ */
-function escapeHTML(v){
-    return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;").replaceAll("'","&#039;");
-}
-function formatearFecha(f){
-    if(!f) return "-";
-    const d = new Date(f);
-    if(Number.isNaN(d.getTime())) return "-";
-    return d.toLocaleString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"});
-}
-function formatearFechaCorta(f){
-    if(!f) return "Sin fecha";
-    const d = new Date(f);
-    if(Number.isNaN(d.getTime())) return "Sin fecha";
-    return d.toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric"});
-}
-function extraerGameIdDeKey(k){
-    const m = String(k).match(/^OMELES-(\d+)-/);
-    return m ? Number(m[1]) : null;
-}
-function gameNameById(id){
-    const g = todosLosJuegos.find(x => Number(x.id) === Number(id));
-    return g ? g.name : `Juego #${id}`;
-}
+function escapeHTML(v){return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
+function formatearFecha(f){if(!f) return "-";const d = new Date(f);if(Number.isNaN(d.getTime())) return "-";return d.toLocaleString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"});}
+function formatearFechaCorta(f){if(!f) return "Sin fecha";const d = new Date(f);if(Number.isNaN(d.getTime())) return "Sin fecha";return d.toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric"});}
+function extraerGameIdDeKey(k){const m = String(k).match(/^OMELES-(\d+)-/);return m ? Number(m[1]) : null;}
+function gameNameById(id){const g = todosLosJuegos.find(x => Number(x.id) === Number(id));return g ? g.name : `Producto #${id}`;}
 function esMasiva(k){ return Number(k.massive) === 1; }
 function getGameMode(k){ return k.game_mode || "all"; }
+function tipoIcono(t){ return {game:"🎮", movie:"🎬", video_creator:"🎥", other:"📦"}[t] || "📦"; }
+function tipoNombre(t){ return {game:"Juego", movie:"Película", video_creator:"Creador", other:"Otro"}[t] || "Otro"; }
+function tipoTag(t){
+    const cls = {game:"type-game", movie:"type-movie", video_creator:"type-video_creator", other:"type-other"}[t] || "type-other";
+    return `<span class="tag ${cls}">${tipoIcono(t)} ${tipoNombre(t)}</span>`;
+}
 function toast(msg, tipo="info", dur=3000){
     const cont = document.getElementById("toasts");
     const el = document.createElement("div");
@@ -905,14 +975,8 @@ function navigateTo(page){
 
     if(window.innerWidth <= 900) closeSidebar();
 }
-function toggleSidebar(){
-    document.getElementById("sidebar").classList.toggle("open");
-    document.getElementById("mobOverlay").classList.toggle("show");
-}
-function closeSidebar(){
-    document.getElementById("sidebar").classList.remove("open");
-    document.getElementById("mobOverlay").classList.remove("show");
-}
+function toggleSidebar(){document.getElementById("sidebar").classList.toggle("open");document.getElementById("mobOverlay").classList.toggle("show");}
+function closeSidebar(){document.getElementById("sidebar").classList.remove("open");document.getElementById("mobOverlay").classList.remove("show");}
 function aplicarPermisosUI(){
     document.querySelectorAll(".nav-item").forEach(el => {
         const page = el.dataset.page;
@@ -983,9 +1047,9 @@ function conectarSocket(){
     });
     socket.on("games-updated", ()=>{ if(adminKeyValue) recargarTodo(); });
     socket.on("key-updated", ()=>{ if(adminKeyValue) recargarTodo(); });
-    socket.on("categories-updated", ()=>{ if(adminKeyValue){ toast("📁 Categorías actualizadas","info"); recargarTodo(); } });
+    socket.on("categories-updated", ()=>{ if(adminKeyValue) recargarTodo(); });
     socket.on("keys-massive-created", (d)=>{ if(adminKeyValue){ toast(`⚡ ${d.count} keys`, "info"); recargarTodo(); } });
-    socket.on("keys-massive-deleted", (d)=>{ if(adminKeyValue){ toast(`🗑️ ${d.count} keys borradas`, "warning"); recargarTodo(); } });
+    socket.on("keys-massive-deleted", (d)=>{ if(adminKeyValue){ toast(`🗑️ ${d.count} borradas`, "warning"); recargarTodo(); } });
     socket.on("ticket-created", (d)=>{ if(adminKeyValue){ toast(`🎫 Nuevo ticket de ${d.username}`, "info"); recargarTodo(); } });
     socket.on("ticket-reply", ()=>{ if(adminKeyValue) recargarTodo(); });
     socket.on("ticket-status", ()=>{ if(adminKeyValue) recargarTodo(); });
@@ -1047,16 +1111,8 @@ function actualizarTodo(){
     document.getElementById("badgeUsers").textContent = todosLosUsuarios.length;
     document.getElementById("badgeTickets").textContent = ticketStats.open || 0;
 }
-function estaAgotada(k){
-    if(!k.active) return true;
-    if(k.expires_at && new Date(k.expires_at) <= new Date()) return true;
-    return false;
-}
-function estaActiva(k){
-    if(!k.active) return false;
-    if(k.expires_at && new Date(k.expires_at) <= new Date()) return false;
-    return true;
-}
+function estaAgotada(k){if(!k.active) return true;if(k.expires_at && new Date(k.expires_at) <= new Date()) return true;return false;}
+function estaActiva(k){if(!k.active) return false;if(k.expires_at && new Date(k.expires_at) <= new Date()) return false;return true;}
 function refrescarPaginaActiva(){
     const p = document.querySelector(".page.active")?.id.replace("page-","");
     if(p === "dashboard") renderDashboard();
@@ -1103,15 +1159,10 @@ function selectKgMode(el){
 function actualizarInfoGen(){
     const info = document.getElementById("genGamesInfo");
     const nSel = juegosKeySeleccionados.length;
-    if(modoGenSeleccionado === "all") info.innerHTML = `🌐 <b style="color:#22c55e;">TODOS:</b> verá todos los juegos (y los nuevos)`;
+    if(modoGenSeleccionado === "all") info.innerHTML = `🌐 <b style="color:#22c55e;">TODOS:</b> verá todo (y lo nuevo)`;
     else if(modoGenSeleccionado === "none") info.innerHTML = `🚫 <b style="color:#ff4567;">NINGUNO</b>`;
-    else if(modoGenSeleccionado === "whitelist"){
-        if(nSel === 0) info.innerHTML = `⚠️ <b style="color:#ffd166;">Lista blanca vacía</b>`;
-        else info.innerHTML = `✅ <b style="color:#ffd166;">WL (${nSel}):</b> solo estos juegos`;
-    } else if(modoGenSeleccionado === "blacklist"){
-        if(nSel === 0) info.innerHTML = `⛔ <b style="color:#ff8c00;">Lista negra vacía:</b> verá TODOS`;
-        else info.innerHTML = `⛔ <b style="color:#ff8c00;">BL (${nSel}):</b> todos menos estos`;
-    }
+    else if(modoGenSeleccionado === "whitelist") info.innerHTML = nSel === 0 ? `⚠️ <b style="color:#ffd166;">WL vacía</b>` : `✅ <b style="color:#ffd166;">WL (${nSel}):</b> solo estos`;
+    else if(modoGenSeleccionado === "blacklist") info.innerHTML = nSel === 0 ? `⛔ <b style="color:#ff8c00;">BL vacía:</b> ve TODOS` : `⛔ <b style="color:#ff8c00;">BL (${nSel})</b>`;
 }
 function actualizarInfoMassive(){
     const info = document.getElementById("massiveGamesInfo");
@@ -1123,7 +1174,7 @@ function actualizarInfoMassive(){
 }
 
 /* ============================================================
-   GENERADOR NORMAL
+   GENERADOR
 ============================================================ */
 function selectType(el){
     document.querySelectorAll("#page-generate .type-btn").forEach(b => b.classList.remove("active"));
@@ -1133,14 +1184,14 @@ function selectType(el){
 }
 function renderGamesPickerGen(){
     const cont = document.getElementById("genGamesPicker");
-    if(!todosLosJuegos.length){ cont.innerHTML = `<div style="padding:14px;text-align:center;color:#666;">Sin juegos</div>`; return; }
+    if(!todosLosJuegos.length){ cont.innerHTML = `<div style="padding:14px;text-align:center;color:#666;">Sin productos</div>`; return; }
     cont.innerHTML = todosLosJuegos.map(g => {
         const checked = juegosKeySeleccionados.includes(Number(g.id)) ? "checked" : "";
         return `<div class="games-picker-item">
             <input type="checkbox" id="gpg_${g.id}" ${checked} onchange="toggleJuegoGen(${g.id}, this.checked)">
             <label for="gpg_${g.id}" class="gp-info">
-                <span class="gp-name">🎮 ${escapeHTML(g.name)} <span class="gp-id">#${g.id}</span></span>
-                <span class="gp-date">📅 ${formatearFechaCorta(g.created_at)}</span>
+                <span class="gp-name">${tipoIcono(g.type)} ${escapeHTML(g.name)} <span class="gp-id">#${g.id}</span></span>
+                <span class="gp-date">${tipoTag(g.type)}</span>
             </label>
         </div>`;
     }).join("");
@@ -1159,26 +1210,11 @@ function marcarTodosGen(modo){
 }
 function actualizarPreviewGenerador(){
     const btn = document.getElementById("genBtn");
-    const hint = document.getElementById("genFormatCode");
     const summary = document.getElementById("genSummary");
     if(!tipoKeySeleccionado){ btn.disabled = true; btn.style.opacity = .5; summary.textContent = "Elige un tipo"; return; }
     btn.disabled = false; btn.style.opacity = 1;
-    const tipoTexto = {
-        "24H":"24h","7D":"7 días","30D":"30 días","LIFETIME":"Lifetime","ONE_USE":"1 uso",
-        "ADMIN_24H":"Admin 24h","ADMIN_7D":"Admin 7d","ADMIN_30D":"Admin 30d",
-        "ADMIN_ONE_USE":"Admin 1 uso","ADMIN_LIFETIME":"Admin lifetime"
-    }[tipoKeySeleccionado] || tipoKeySeleccionado;
-    const esAdmin = tipoKeySeleccionado.startsWith("ADMIN");
-    let modeTxt = "";
-    if(modoGenSeleccionado === "all") modeTxt = `<b style="color:#22c55e;">TODOS</b>`;
-    else if(modoGenSeleccionado === "none") modeTxt = `<b style="color:#ff4567;">NINGUNO</b>`;
-    else if(modoGenSeleccionado === "whitelist") modeTxt = `<b style="color:#ffd166;">WL ${juegosKeySeleccionados.length}</b>`;
-    else if(modoGenSeleccionado === "blacklist") modeTxt = `<b style="color:#ff8c00;">BL ${juegosKeySeleccionados.length}</b>`;
-
-    if(modoGenSeleccionado === "whitelist" && juegosKeySeleccionados.length === 1){
-        hint.textContent = `OMELES-${juegosKeySeleccionados[0]}-XXXXXX-XXXXXX`;
-    } else hint.textContent = `OMELES-XXXXXX-XXXXXX`;
-    summary.innerHTML = `Vas a generar <b style="color:#b99cff;">${tipoTexto}</b> ${esAdmin?"👑":""} · ${modeTxt}`;
+    const tipoTexto = {"24H":"24h","7D":"7 días","30D":"30 días","LIFETIME":"Lifetime","ONE_USE":"1 uso","ADMIN_24H":"Admin 24h","ADMIN_7D":"Admin 7d","ADMIN_30D":"Admin 30d","ADMIN_ONE_USE":"Admin 1 uso","ADMIN_LIFETIME":"Admin lifetime"}[tipoKeySeleccionado] || tipoKeySeleccionado;
+    summary.innerHTML = `Vas a generar <b style="color:#b99cff;">${tipoTexto}</b>`;
     document.getElementById("keyPreviewBox").style.display = "none";
 }
 async function generarKey(){
@@ -1192,29 +1228,20 @@ async function generarKey(){
             else if(juegosKeySeleccionados.length > 1) body.gameIds = juegosKeySeleccionados;
         }
         if(tipoKeySeleccionado.startsWith("ADMIN")) body.permissions = ["*"];
-
-        const r = await fetch("/api/keys",{
-            method:"POST",
-            headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify(body)
-        });
+        const r = await fetch("/api/keys",{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }, body: JSON.stringify(body) });
         const d = await r.json();
         if(!r.ok || !d.success){ showMsg("genMessage", d.message || "Error", false); return; }
         ultimaKeyGenerada = d.key;
         document.getElementById("keyPreviewValue").textContent = d.key;
-        const modeTexto = {all:"TODOS",none:"NINGUNO",whitelist:"LISTA BLANCA",blacklist:"LISTA NEGRA"}[modoGenSeleccionado];
-        document.getElementById("keyPreviewMeta").innerHTML = `Modo: ${modeTexto} · ${escapeHTML(tipoKeySeleccionado)}`;
+        document.getElementById("keyPreviewMeta").innerHTML = `Modo: ${modoGenSeleccionado} · ${tipoKeySeleccionado}`;
         document.getElementById("keyPreviewBox").style.display = "block";
         showMsg("genMessage","✅ Key generada.", true);
         toast("Key generada","success");
         await cargarKeys(); actualizarTodo();
-    } catch(e){ showMsg("genMessage","Error de conexión", false); }
+    } catch(e){ showMsg("genMessage","Error", false); }
     finally { btn.disabled = false; btn.textContent = "⚡ GENERAR KEY"; }
 }
-function copiarKeyGenerada(){
-    if(!ultimaKeyGenerada) return;
-    navigator.clipboard.writeText(ultimaKeyGenerada).then(()=>toast("Copiada","success")).catch(()=>toast("Error","error"));
-}
+function copiarKeyGenerada(){ if(!ultimaKeyGenerada) return; navigator.clipboard.writeText(ultimaKeyGenerada).then(()=>toast("Copiada","success")).catch(()=>toast("Error","error")); }
 
 /* ============================================================
    MASIVAS
@@ -1229,8 +1256,7 @@ function selectNum(el, n){
     document.querySelectorAll("#numPresets .num-preset").forEach(b => b.classList.remove("active"));
     el.classList.add("active");
     document.getElementById("massiveCount").value = n;
-    cantidadMasiva = n;
-    actualizarPreviewMassive();
+    cantidadMasiva = n; actualizarPreviewMassive();
 }
 function onMassiveCountChange(){
     const v = parseInt(document.getElementById("massiveCount").value) || 0;
@@ -1240,14 +1266,13 @@ function onMassiveCountChange(){
 }
 function renderGamesPickerMassive(){
     const cont = document.getElementById("massiveGamesPicker");
-    if(!todosLosJuegos.length){ cont.innerHTML = `<div style="padding:14px;text-align:center;color:#666;">Sin juegos</div>`; return; }
+    if(!todosLosJuegos.length){ cont.innerHTML = `<div style="padding:14px;text-align:center;color:#666;">Sin productos</div>`; return; }
     cont.innerHTML = todosLosJuegos.map(g => {
         const checked = juegosMassiveSeleccionados.includes(Number(g.id)) ? "checked" : "";
         return `<div class="games-picker-item">
             <input type="checkbox" id="gpm_${g.id}" ${checked} onchange="toggleJuegoMassive(${g.id}, this.checked)">
             <label for="gpm_${g.id}" class="gp-info">
-                <span class="gp-name">🎮 ${escapeHTML(g.name)} <span class="gp-id">#${g.id}</span></span>
-                <span class="gp-date">📅 ${formatearFechaCorta(g.created_at)}</span>
+                <span class="gp-name">${tipoIcono(g.type)} ${escapeHTML(g.name)} <span class="gp-id">#${g.id}</span></span>
             </label>
         </div>`;
     }).join("");
@@ -1267,17 +1292,12 @@ function marcarTodosMassive(modo){
 function actualizarPreviewMassive(){
     const btn = document.getElementById("massiveBtn");
     const summary = document.getElementById("massiveSummary");
-    if(!tipoKeyMassive || !cantidadMasiva){
-        btn.disabled = true; btn.style.opacity = .5;
-        summary.textContent = "Selecciona tipo y cantidad"; return;
-    }
+    if(!tipoKeyMassive || !cantidadMasiva){ btn.disabled = true; btn.style.opacity = .5; summary.textContent = "Selecciona tipo y cantidad"; return; }
     btn.disabled = false; btn.style.opacity = 1;
-    const tipoTexto = {"24H":"24h","7D":"7 días","30D":"30 días","LIFETIME":"Lifetime","ONE_USE":"1 uso"}[tipoKeyMassive] || tipoKeyMassive;
-    const modeTexto = {all:"TODOS",none:"NINGUNO",whitelist:"WL",blacklist:"BL"}[modoMassiveSeleccionado];
-    summary.innerHTML = `Generarás <b style="color:#ff8c00;">${cantidadMasiva}</b> keys <b style="color:#b99cff;">${tipoTexto}</b> · ${modeTexto}`;
+    summary.innerHTML = `Generar <b style="color:#ff8c00;">${cantidadMasiva}</b> keys ${tipoKeyMassive}`;
 }
 async function generarMasivas(){
-    if(!tipoKeyMassive){ toast("Selecciona un tipo","warning"); return; }
+    if(!tipoKeyMassive){ toast("Selecciona tipo","warning"); return; }
     if(!confirm(`⚠️ Vas a generar ${cantidadMasiva} keys.\n\n¿Continuar?`)) return;
     const btn = document.getElementById("massiveBtn");
     btn.disabled = true; btn.textContent = "GENERANDO...";
@@ -1287,52 +1307,28 @@ async function generarMasivas(){
             if(juegosMassiveSeleccionados.length === 1) body.gameId = juegosMassiveSeleccionados[0];
             else if(juegosMassiveSeleccionados.length > 1) body.gameIds = juegosMassiveSeleccionados;
         }
-        const r = await fetch("/api/keys",{
-            method:"POST",
-            headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify(body)
-        });
+        const r = await fetch("/api/keys",{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }, body: JSON.stringify(body) });
         const d = await r.json();
         if(!r.ok || !d.success){ showMsg("massiveMessage", d.message || "Error", false); return; }
         ultimasMasivas = d.keys || [];
         document.getElementById("massiveResultCount").textContent = `${ultimasMasivas.length} keys`;
-        document.getElementById("massiveResultList").innerHTML = ultimasMasivas.map(k =>
-            `<div class="keys-batch-line"><span class="k">${escapeHTML(k)}</span><button class="copy-btn" onclick="copiarUna('${k.replace(/'/g,"\\'")}')">COPIAR</button></div>`
-        ).join("");
+        document.getElementById("massiveResultList").innerHTML = ultimasMasivas.map(k => `<div class="keys-batch-line"><span class="k">${escapeHTML(k)}</span><button class="copy-btn" onclick="copiarUna('${k.replace(/'/g,"\\'")}')">COPIAR</button></div>`).join("");
         document.getElementById("massiveResultBox").style.display = "block";
         showMsg("massiveMessage", `✅ ${ultimasMasivas.length} keys generadas.`, true);
         toast(`⚡ ${ultimasMasivas.length} keys generadas`, "success");
         await cargarKeys(); actualizarTodo();
-    } catch(e){ showMsg("massiveMessage","Error de conexión", false); }
+    } catch(e){ showMsg("massiveMessage","Error", false); }
     finally { btn.disabled = false; btn.textContent = "⚡ GENERAR MASIVAS"; }
 }
-function copiarUna(k){
-    navigator.clipboard.writeText(k).then(()=>toast("Copiada","success")).catch(()=>toast("Error","error"));
-}
-function copiarTodasMasivas(){
-    if(!ultimasMasivas.length) return;
-    navigator.clipboard.writeText(ultimasMasivas.join("\n")).then(()=>toast(`${ultimasMasivas.length} copiadas`,"success")).catch(()=>toast("Error","error"));
-}
-function descargarMasivasTxt(){
-    if(!ultimasMasivas.length) return;
-    const txt = ultimasMasivas.join("\n");
-    const blob = new Blob([txt], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `omeles-keys-masivas-${new Date().toISOString().slice(0,10)}.txt`;
-    document.body.appendChild(a); a.click(); a.remove();
-    URL.revokeObjectURL(url);
-    toast("Descargado","success");
-}
+function copiarUna(k){ navigator.clipboard.writeText(k).then(()=>toast("Copiada","success")).catch(()=>toast("Error","error")); }
+function copiarTodasMasivas(){ if(!ultimasMasivas.length) return; navigator.clipboard.writeText(ultimasMasivas.join("\n")).then(()=>toast(`${ultimasMasivas.length} copiadas`,"success")).catch(()=>toast("Error","error")); }
+function descargarMasivasTxt(){ if(!ultimasMasivas.length) return; const blob = new Blob([ultimasMasivas.join("\n")], { type: "text/plain" }); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = `omeles-keys-${new Date().toISOString().slice(0,10)}.txt`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); toast("Descargado","success"); }
 async function borrarTodasMasivas(){
     const total = todasLasKeys.filter(k => esMasiva(k)).length;
     if(total === 0){ toast("No hay masivas","info"); return; }
     if(!confirm(`⚠️ Borrar las ${total} keys masivas?`)) return;
     try{
-        const r = await fetch("/api/admin/delete-massive-keys",{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }
-        });
+        const r = await fetch("/api/admin/delete-massive-keys",{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue } });
         const d = await r.json();
         if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
         toast(`${d.deleted} borradas`, "warning");
@@ -1342,14 +1338,12 @@ async function borrarTodasMasivas(){
 async function reactivarTodasMasivas(){
     const inactivas = todasLasKeys.filter(k => esMasiva(k) && !k.active).length;
     if(inactivas === 0){ toast("No hay masivas inactivas","info"); return; }
-    if(!confirm(`♻️ Reactivar ${inactivas} keys masivas inactivas?`)) return;
+    if(!confirm(`♻️ Reactivar ${inactivas} keys masivas?`)) return;
     try{
-        const r = await fetch("/api/admin/reactivate-massive-keys",{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }
-        });
+        const r = await fetch("/api/admin/reactivate-massive-keys",{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue } });
         const d = await r.json();
         if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
-        toast(`♻️ ${d.reactivated} keys reactivadas`, "success");
+        toast(`♻️ ${d.reactivated} reactivadas`, "success");
         await cargarKeys(); actualizarTodo(); renderKeysPage("massive");
     } catch(e){ alert("Error"); }
 }
@@ -1364,7 +1358,7 @@ function getModeBadge(k){
         let arr = [];
         try { arr = k.allowed_games ? JSON.parse(k.allowed_games) : []; } catch {}
         if(!arr.length) return `<span class="badge-games none">⚠️ WL VACÍA</span>`;
-        return `<span class="badge-games wl" title="${escapeHTML(arr.map(id => gameNameById(id)).join(", "))}">✅ ${arr.length} juego${arr.length===1?"":"s"}</span>`;
+        return `<span class="badge-games wl" title="${escapeHTML(arr.map(id => gameNameById(id)).join(", "))}">✅ ${arr.length} prod.</span>`;
     }
     if(mode === "blacklist"){
         let arr = [];
@@ -1389,28 +1383,25 @@ function renderKeysPage(pagina){
     } else if(pagina === "massive"){
         keys = keys.filter(k => esMasiva(k));
         const b = (document.getElementById("searchMassive").value||"").toLowerCase().trim();
-        if(b) keys = keys.filter(k => String(k.key).toLowerCase().includes(b) || String(k.nickname||"").toLowerCase().includes(b));
+        if(b) keys = keys.filter(k => String(k.key).toLowerCase().includes(b));
         destino = "keysTableMassive";
     } else if(pagina === "global"){
         keys = keys.filter(k => !esMasiva(k) && getGameMode(k) === "all");
         const b = (document.getElementById("searchGlobal").value||"").toLowerCase().trim();
-        if(b) keys = keys.filter(k => String(k.key).toLowerCase().includes(b) || String(k.nickname||"").toLowerCase().includes(b));
+        if(b) keys = keys.filter(k => String(k.key).toLowerCase().includes(b));
         destino = "keysTableGlobal";
     } else if(pagina === "exhausted"){
         keys = keys.filter(k => estaAgotada(k));
         const b = (document.getElementById("searchExhausted").value||"").toLowerCase().trim();
-        if(b) keys = keys.filter(k => String(k.key).toLowerCase().includes(b) || String(k.nickname||"").toLowerCase().includes(b));
+        if(b) keys = keys.filter(k => String(k.key).toLowerCase().includes(b));
         destino = "keysTableExhausted";
     }
     const cont = document.getElementById(destino);
     if(!cont) return;
-    if(!keys.length){
-        cont.innerHTML = `<div class="empty"><span class="empty-ico">🔑</span>Sin keys</div>`;
-        return;
-    }
+    if(!keys.length){ cont.innerHTML = `<div class="empty"><span class="empty-ico">🔑</span>Sin keys</div>`; return; }
     keys.sort((a,b)=> Number(b.id) - Number(a.id));
     cont.innerHTML = `<div class="table-wrap"><table><thead><tr>
-        <th>MOTE</th><th>KEY</th><th>TIPO</th><th>ESTADO</th><th>MODO JUEGOS</th>
+        <th>MOTE</th><th>KEY</th><th>TIPO</th><th>ESTADO</th><th>MODO PRODUCTOS</th>
         <th>CREADA</th><th>EXPIRA</th><th>USOS</th><th>ACCIÓN</th>
     </tr></thead><tbody>${keys.map(k => renderKeyRow(k)).join("")}</tbody></table></div>`;
 }
@@ -1421,18 +1412,15 @@ function renderKeyRow(key){
     else if(key.expires_at && new Date(key.expires_at) <= new Date()){ estadoHTML = "EXPIRADA"; claseEstado = "inactive"; }
     else if(!key.active){ estadoHTML = "REVOCADA"; claseEstado = "inactive"; }
     else { estadoHTML = "INACTIVA"; claseEstado = "inactive"; }
-
     const t = String(key.type);
     let tipoHTML;
     if(t === "ONE_USE") tipoHTML = `<span class="tag warn">1 USO</span>`;
     else if(t.startsWith("ADMIN")) tipoHTML = `<span class="tag admin">👑 ${escapeHTML(t.replace("ADMIN_","").replace("ADMIN","ALL"))}</span>`;
     else tipoHTML = `<span style="color:#aaa;font-weight:700;">${escapeHTML(t)}</span>`;
-
     const esAdmin = t.startsWith("ADMIN");
     const canManagePerms = isRootAdmin || adminPermissions.includes("*") || adminPermissions.includes("manage_permissions");
     const massiveTag = esMasiva(key) ? ` <span class="tag massive">⚡ MASIVA</span>` : "";
     const reactivarBtn = !key.active ? `<button class="btn success small" onclick="reactivarKey(${key.id})" title="Reactivar">♻️</button>` : "";
-
     return `<tr>
         <td><span class="nickname">${key.nickname ? escapeHTML(key.nickname) : "Sin mote"}</span>${massiveTag}</td>
         <td><span class="key-code">${escapeHTML(key.key)}</span></td>
@@ -1447,7 +1435,7 @@ function renderKeyRow(key){
                 <button class="btn ghost small" onclick="abrirModalMote(${key.id})">✏️</button>
                 ${reactivarBtn}
                 ${esAdmin && canManagePerms ? `<button class="btn small" style="background:linear-gradient(135deg,#8b5cff,#ec4899)" onclick="abrirModalPerms(${key.id})">🔐</button>` : ""}
-                <button class="btn small" style="background:linear-gradient(135deg,#16a34a,#22c55e)" onclick="abrirModalJuegosKey(${key.id})">🎮</button>
+                <button class="btn small" style="background:linear-gradient(135deg,#16a34a,#22c55e)" onclick="abrirModalJuegosKey(${key.id})">📦</button>
                 ${key.active ? `<button class="btn ghost small" onclick="revocarKey(${key.id})">🚫</button>` : ""}
                 <button class="btn danger small" onclick="eliminarKey(${key.id})">🗑️</button>
             </div>
@@ -1470,13 +1458,9 @@ function renderUsersPage(){
     const b = (document.getElementById("searchUsers").value||"").toLowerCase().trim();
     let lista = [...todosLosUsuarios];
     if(b) lista = lista.filter(u => String(u.username).toLowerCase().includes(b) || String(u.key_value||"").toLowerCase().includes(b));
-    // Ordenar: pinned primero
     lista.sort((a,b) => (Number(b.pinned)||0) - (Number(a.pinned)||0) || (Number(b.id) - Number(a.id)));
     document.getElementById("badgeUsers").textContent = todosLosUsuarios.length;
-    if(!lista.length){
-        cont.innerHTML = `<div class="empty"><span class="empty-ico">👥</span>${b ? "Sin resultados" : "Sin usuarios"}</div>`;
-        return;
-    }
+    if(!lista.length){ cont.innerHTML = `<div class="empty"><span class="empty-ico">👥</span>Sin usuarios</div>`; return; }
     cont.innerHTML = `<div class="table-wrap"><table><thead><tr>
         <th>USUARIO</th><th>CONTRASEÑA</th><th>KEY</th><th>TIPO</th>
         <th>ESTADO</th><th>REGISTRADO</th><th>ÚLTIMO LOGIN</th><th>ACCIÓN</th>
@@ -1484,9 +1468,7 @@ function renderUsersPage(){
         ${lista.map(u => {
             const activa = u.key_active && (!u.key_expires || new Date(u.key_expires) > new Date());
             const estadoTag = activa ? `<span class="tag active">ACTIVA</span>` : `<span class="tag inactive">INACTIVA</span>`;
-            const tipoTag = String(u.key_type||"").startsWith("ADMIN")
-                ? `<span class="tag admin">👑 ADMIN</span>`
-                : `<span class="tag warn">${escapeHTML(u.key_type||"-")}</span>`;
+            const tipoTag = String(u.key_type||"").startsWith("ADMIN") ? `<span class="tag admin">👑 ADMIN</span>` : `<span class="tag warn">${escapeHTML(u.key_type||"-")}</span>`;
             const pinnedTag = u.pinned ? ` <span class="tag pin">📌</span>` : "";
             return `<tr class="${u.pinned ? 'pinned' : ''}">
                 <td><span class="nickname">${escapeHTML(u.username)}</span>${pinnedTag}</td>
@@ -1496,26 +1478,21 @@ function renderUsersPage(){
                 <td>${estadoTag}</td>
                 <td style="font-size:11.5px;color:#aaa;">${formatearFecha(u.created_at)}</td>
                 <td style="font-size:11.5px;color:#aaa;">${u.last_login ? formatearFecha(u.last_login) : "-"}</td>
-                <td>
-                    <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                        <button class="btn ${u.pinned?'warn':'ghost'} small" onclick="toggleUserPin(${u.id})" title="${u.pinned?'Desanclar':'Anclar arriba'}">${u.pinned?'📌':'📍'}</button>
-                        <button class="btn ghost small" onclick="resetearPassword(${u.id})" title="Resetear">🔑</button>
-                        <button class="btn danger small" onclick="eliminarUsuario(${u.id})" title="Eliminar">🗑️</button>
-                    </div>
-                </td>
+                <td><div style="display:flex;gap:6px;flex-wrap:wrap;">
+                    <button class="btn ${u.pinned?'warn':'ghost'} small" onclick="toggleUserPin(${u.id})">${u.pinned?'📌':'📍'}</button>
+                    <button class="btn ghost small" onclick="resetearPassword(${u.id})">🔑</button>
+                    <button class="btn danger small" onclick="eliminarUsuario(${u.id})">🗑️</button>
+                </div></td>
             </tr>`;
         }).join("")}
     </tbody></table></div>`;
 }
 async function toggleUserPin(id){
     try{
-        const r = await fetch("/api/admin/toggle-user-pin",{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({ id })
-        });
+        const r = await fetch("/api/admin/toggle-user-pin",{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }, body: JSON.stringify({ id }) });
         const d = await r.json();
         if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
-        toast(d.pinned ? "📌 Usuario anclado" : "📍 Usuario desanclado", "success");
+        toast(d.pinned ? "📌 Anclado" : "📍 Desanclado", "success");
         await cargarUsuarios(); renderUsersPage();
     } catch(e){ alert("Error"); }
 }
@@ -1525,10 +1502,7 @@ async function resetearPassword(id){
     const nueva = prompt(`Nueva contraseña para "${u.username}" (mín. 4):`);
     if(!nueva || nueva.length < 4){ if(nueva !== null) alert("Mínimo 4"); return; }
     try{
-        const r = await fetch("/api/admin/reset-user-password",{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({ id, newPassword: nueva })
-        });
+        const r = await fetch("/api/admin/reset-user-password",{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }, body: JSON.stringify({ id, newPassword: nueva }) });
         const d = await r.json();
         if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
         toast("Contraseña actualizada","success");
@@ -1540,10 +1514,7 @@ async function eliminarUsuario(id){
     if(!u) return;
     if(!confirm(`⚠️ Eliminar a "${u.username}"?`)) return;
     try{
-        const r = await fetch("/api/admin/delete-user",{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({ id })
-        });
+        const r = await fetch("/api/admin/delete-user",{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }, body: JSON.stringify({ id }) });
         const d = await r.json();
         if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
         toast("Usuario eliminado","info");
@@ -1560,12 +1531,14 @@ function renderDashboard(){
     const agotadas = todasLasKeys.filter(k => estaAgotada(k)).length;
     const masivas = todasLasKeys.filter(k => esMasiva(k)).length;
     const totalUsers = todosLosUsuarios.length;
+    const totalProducts = todosLosJuegos.length;
     document.getElementById("dashboardStats").innerHTML = `
-        <div class="stat-card"><span class="stat-ico">🔑</span><div class="stat-label">Total Keys</div><div class="stat-val">${total}</div></div>
+        <div class="stat-card"><span class="stat-ico">🔑</span><div class="stat-label">Keys</div><div class="stat-val">${total}</div></div>
         <div class="stat-card green"><span class="stat-ico">✅</span><div class="stat-label">Activas</div><div class="stat-val">${activas}</div></div>
         <div class="stat-card red"><span class="stat-ico">⚠️</span><div class="stat-label">Agotadas</div><div class="stat-val">${agotadas}</div></div>
         <div class="stat-card orange"><span class="stat-ico">⚡</span><div class="stat-label">Masivas</div><div class="stat-val">${masivas}</div></div>
         <div class="stat-card purple"><span class="stat-ico">👥</span><div class="stat-label">Usuarios</div><div class="stat-val">${totalUsers}</div></div>
+        <div class="stat-card"><span class="stat-ico">📦</span><div class="stat-label">Productos</div><div class="stat-val">${totalProducts}</div></div>
     `;
     const recientes = [...todosLosTickets].sort((a,b) => new Date(b.updated_at) - new Date(a.updated_at)).slice(0,5);
     document.getElementById("dashboardTickets").innerHTML = recientes.length
@@ -1574,45 +1547,140 @@ function renderDashboard(){
             <span style="color:var(--muted);font-size:11.5px;">${escapeHTML(t.username)} · ${formatearFecha(t.updated_at)}</span>
         </div>`).join("")
         : `<div class="empty"><span class="empty-ico">🎫</span>Sin tickets</div>`;
-    const recientesKeys = [...todasLasKeys].sort((a,b)=>b.id-a.id).slice(0,5);
-    document.getElementById("dashboardRecent").innerHTML = recientesKeys.length
-        ? recientesKeys.map(k => `<div style="display:flex;justify-content:space-between;padding:11px 15px;border-radius:11px;background:rgba(255,255,255,.02);margin-bottom:8px;gap:10px;flex-wrap:wrap;">
-            <span class="key-code" style="flex:1;min-width:200px;">${escapeHTML(k.key)} ${esMasiva(k)?'<span class="tag massive">⚡</span>':''}</span>
-            <span style="color:#888;font-size:11.5px;">${formatearFecha(k.created_at)}</span>
-        </div>`).join("")
-        : `<div class="empty"><span class="empty-ico">🕒</span>Sin keys</div>`;
 }
 
 /* ============================================================
-   JUEGOS
+   PRODUCTOS (antes Juegos)
 ============================================================ */
+function selectProdType(el){
+    document.querySelectorAll("#prodTypeGrid .mode-btn").forEach(b => b.classList.remove("active"));
+    el.classList.add("active");
+    prodType = el.dataset.type;
+    // Mostrar/ocultar campos específicos de juego
+    const gameSpecific = document.getElementById("gameSpecificFields");
+    if(prodType === "game") gameSpecific.style.display = "block";
+    else gameSpecific.style.display = "none";
+}
+function switchContentTab(tab){
+    prodContentTab = tab;
+    const tLink = document.getElementById("tabLink");
+    const tFile = document.getElementById("tabFile");
+    const cLink = document.getElementById("contentLinkTab");
+    const cFile = document.getElementById("contentFileTab");
+    if(tab === "link"){
+        tLink.style.borderColor = "#8b5cff"; tLink.style.color = "#fff";
+        tFile.style.borderColor = ""; tFile.style.color = "";
+        cLink.style.display = "block"; cFile.style.display = "none";
+    } else {
+        tFile.style.borderColor = "#8b5cff"; tFile.style.color = "#fff";
+        tLink.style.borderColor = ""; tLink.style.color = "";
+        cLink.style.display = "none"; cFile.style.display = "block";
+    }
+}
+async function subirArchivo(event){
+    const file = event.target.files[0];
+    if(!file) return;
+    if(file.size > 1024 * 1024 * 1024){ alert("Máximo 1 GB"); return; }
+
+    const box = document.getElementById("filePreviewBox");
+    box.innerHTML = `<div style="padding:14px;text-align:center;color:#b99cff;">⏳ Subiendo ${escapeHTML(file.name)}...</div>`;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    try{
+        const r = await fetch("/api/admin/upload", { method: "POST", headers: { "x-admin-key": adminKeyValue }, body: formData });
+        const d = await r.json();
+        if(!r.ok || !d.success){
+            box.innerHTML = `<div style="padding:14px;color:#ff5672;">❌ Error al subir</div>`;
+            return;
+        }
+        prodUploadedFile = d.url;
+        const sizeMB = (d.size / 1024 / 1024).toFixed(2);
+        box.innerHTML = `
+            <div class="file-preview">
+                <span class="fp-ico">📁</span>
+                <div class="fp-info">
+                    <div class="fp-name">✅ ${escapeHTML(d.originalname)}</div>
+                    <div class="fp-size">${sizeMB} MB · <a href="${d.url}" target="_blank" style="color:#22c55e;">Ver archivo</a></div>
+                </div>
+                <button class="fp-remove" onclick="quitarArchivo()">✕ QUITAR</button>
+            </div>
+        `;
+        toast("Archivo subido","success");
+    } catch(e){
+        box.innerHTML = `<div style="padding:14px;color:#ff5672;">❌ Error de conexión</div>`;
+    }
+}
+function quitarArchivo(){
+    prodUploadedFile = "";
+    document.getElementById("filePreviewBox").innerHTML = "";
+    document.getElementById("fileInput").value = "";
+}
+async function crearProducto(){
+    const name = document.getElementById("gameName").value.trim();
+    if(!name){ showMsg("gameMessage","Nombre obligatorio.",false); return; }
+    const content_url = prodContentTab === "link" ? document.getElementById("gameContentUrl").value.trim() : "";
+    const content_file = prodContentTab === "file" ? prodUploadedFile : "";
+    if(prodContentTab === "file" && !content_file){ showMsg("gameMessage","Sube un archivo o cambia a enlace",false); return; }
+    try{
+        const r = await fetch("/api/games",{
+            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
+            body: JSON.stringify({
+                name,
+                type: prodType,
+                description: document.getElementById("gameDescription").value.trim(),
+                image: document.getElementById("gameImage").value.trim(),
+                content_url,
+                content_file,
+                download: document.getElementById("gameDownload")?.value.trim() || "",
+                repair: "",
+                password: document.getElementById("gamePassword")?.value.trim() || ""
+            })
+        });
+        const d = await r.json();
+        if(!r.ok || !d.success){ showMsg("gameMessage", d.message||"Error", false); return; }
+        ["gameName","gameDescription","gameImage","gameContentUrl","gameDownload","gamePassword"].forEach(id => { const el = document.getElementById(id); if(el) el.value = ""; });
+        quitarArchivo();
+        showMsg("gameMessage","✅ Producto añadido.", true);
+        toast("Producto añadido","success");
+        await cargarJuegos(); actualizarTodo(); renderGamesList();
+    } catch(e){ showMsg("gameMessage","Error", false); }
+}
+function setProductFilter(f, btn){
+    productFilter = f;
+    document.querySelectorAll("#page-games .filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    renderGamesList();
+}
 function renderGamesList(){
     const cont = document.getElementById("gamesList");
     const busq = (document.getElementById("gameSearch").value||"").toLowerCase().trim();
     let lista = todosLosJuegos;
+    if(productFilter !== "all") lista = lista.filter(g => (g.type || "game") === productFilter);
     if(busq) lista = lista.filter(g => String(g.name).toLowerCase().includes(busq));
-    document.getElementById("gamesCountLabel").textContent = `${todosLosJuegos.length} juego${todosLosJuegos.length===1?"":"s"}`;
-    if(!lista.length){ cont.innerHTML = `<div class="empty" style="grid-column:1/-1;"><span class="empty-ico">🎮</span>Sin juegos</div>`; return; }
+    document.getElementById("gamesCountLabel").textContent = `${todosLosJuegos.length} producto${todosLosJuegos.length===1?"":"s"}`;
+    if(!lista.length){ cont.innerHTML = `<div class="empty" style="grid-column:1/-1;"><span class="empty-ico">📦</span>Sin productos</div>`; return; }
     cont.innerHTML = lista.map(g => {
-        const keysCount = todasLasKeys.filter(k => {
-            const mode = getGameMode(k);
-            if(mode === "all") return true;
-            if(mode === "whitelist"){ try { return JSON.parse(k.allowed_games || "[]").includes(Number(g.id)); } catch { return false; } }
-            return false;
-        }).length;
+        const t = g.type || "game";
+        const desc = g.description ? `<div class="game-card-desc">${escapeHTML(g.description).slice(0,150)}${g.description.length > 150 ? "..." : ""}</div>` : "";
+        const contentInfo = g.content_file
+            ? `<div>📁 Archivo subido: <b style="color:#22c55e;">Sí</b></div>`
+            : (g.content_url ? `<div>🔗 Enlace: <b style="color:#22c55e;">Sí</b></div>` : "");
+        const gameExtra = t === "game" && g.download ? `<div>⬇️ Descarga: <b>Sí</b></div>` : "";
         return `<div class="game-card">
             <div class="game-card-head">
-                ${g.image ? `<img class="game-card-img" src="${escapeHTML(g.image)}" onerror="this.outerHTML='<div class=\\'game-card-img\\'>🎮</div>'">` : `<div class="game-card-img">🎮</div>`}
+                ${g.image ? `<img class="game-card-img" src="${escapeHTML(g.image)}" onerror="this.outerHTML='<div class=\\'game-card-img\\'>${tipoIcono(t)}</div>'">` : `<div class="game-card-img">${tipoIcono(t)}</div>`}
                 <div class="game-card-info">
                     <div class="game-card-name">${escapeHTML(g.name)}</div>
-                    <div class="game-card-id">ID: ${g.id} · ${keysCount} keys</div>
-                    <div class="game-card-id">📅 ${formatearFechaCorta(g.created_at)}</div>
+                    <div class="game-card-id">ID: ${g.id} · ${tipoTag(t)}</div>
+                    <div class="game-card-id" style="margin-top:3px;">📅 ${formatearFechaCorta(g.created_at)}</div>
                 </div>
             </div>
+            ${desc}
             <div class="game-card-body">
-                <div>⬇️ Descarga: <b>${g.download?"Sí":"No"}</b></div>
-                <div>🔧 Reparación: <b>${g.repair?"Sí":"No"}</b></div>
-                <div>🔑 Password: <b>${g.password?escapeHTML(g.password):"-"}</b></div>
+                ${contentInfo}
+                ${gameExtra}
+                ${g.password ? `<div>🔑 Password: <b>${escapeHTML(g.password)}</b></div>` : ""}
             </div>
             <div class="game-card-actions">
                 <button class="btn small" onclick="abrirModalEditar(${g.id})">✏️ EDITAR</button>
@@ -1621,38 +1689,28 @@ function renderGamesList(){
         </div>`;
     }).join("");
 }
-async function crearJuego(){
-    const name = document.getElementById("gameName").value.trim();
-    if(!name){ showMsg("gameMessage","Nombre obligatorio.",false); return; }
-    try{
-        const r = await fetch("/api/games",{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({
-                name,
-                download: document.getElementById("gameDownload").value.trim(),
-                repair: document.getElementById("gameRepair").value.trim(),
-                password: document.getElementById("gamePassword").value.trim(),
-                image: document.getElementById("gameImage").value.trim()
-            })
-        });
-        const d = await r.json();
-        if(!r.ok || !d.success){ showMsg("gameMessage", d.message||"Error", false); return; }
-        ["gameName","gameDownload","gameRepair","gamePassword","gameImage"].forEach(id => document.getElementById(id).value = "");
-        showMsg("gameMessage","✅ Añadido. Modo TODOS lo verán automáticamente.", true);
-        toast("Juego añadido","success");
-        await cargarJuegos(); actualizarTodo(); renderGamesList();
-    } catch(e){ showMsg("gameMessage","Error", false); }
-}
 function abrirModalEditar(id){
     const j = todosLosJuegos.find(g => Number(g.id) === Number(id));
     if(!j) return;
     juegoEditandoId = id;
+    juegoEditandoTipo = j.type || "game";
+    juegoEditandoFile = j.content_file || "";
+    document.querySelectorAll("#editProdTypeGrid .mode-btn").forEach(b => {
+        b.classList.toggle("active", b.dataset.type === juegoEditandoTipo);
+    });
     document.getElementById("editName").value = j.name||"";
-    document.getElementById("editDownload").value = j.download||"";
-    document.getElementById("editRepair").value = j.repair||"";
-    document.getElementById("editPassword").value = j.password||"";
+    document.getElementById("editDescription").value = j.description||"";
     document.getElementById("editImage").value = j.image||"";
+    document.getElementById("editContentUrl").value = j.content_url||"";
+    document.getElementById("editContentFile").value = j.content_file||"";
+    document.getElementById("editDownload").value = j.download||"";
+    document.getElementById("editPassword").value = j.password||"";
     document.getElementById("editModal").classList.add("open");
+}
+function selectEditProdType(el){
+    document.querySelectorAll("#editProdTypeGrid .mode-btn").forEach(b => b.classList.remove("active"));
+    el.classList.add("active");
+    juegoEditandoTipo = el.dataset.type;
 }
 function cerrarModalEditar(){ document.getElementById("editModal").classList.remove("open"); juegoEditandoId = null; }
 async function guardarEdicion(){
@@ -1664,16 +1722,20 @@ async function guardarEdicion(){
             method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
             body: JSON.stringify({
                 id: juegoEditandoId, name,
+                type: juegoEditandoTipo,
+                description: document.getElementById("editDescription").value.trim(),
+                image: document.getElementById("editImage").value.trim(),
+                content_url: document.getElementById("editContentUrl").value.trim(),
+                content_file: document.getElementById("editContentFile").value.trim(),
                 download: document.getElementById("editDownload").value.trim(),
-                repair: document.getElementById("editRepair").value.trim(),
-                password: document.getElementById("editPassword").value.trim(),
-                image: document.getElementById("editImage").value.trim()
+                repair: "",
+                password: document.getElementById("editPassword").value.trim()
             })
         });
         const d = await r.json();
         if(!r.ok || !d.success){ showMsg("modalMessage",d.message||"Error",false); return; }
         showMsg("modalMessage","✅ Guardado.",true);
-        toast("Actualizado","success");
+        toast("Producto actualizado","success");
         await cargarJuegos(); actualizarTodo(); renderGamesList();
         setTimeout(cerrarModalEditar, 700);
     } catch(e){ showMsg("modalMessage","Error",false); }
@@ -1682,13 +1744,10 @@ async function eliminarJuego(id){
     const j = todosLosJuegos.find(g => Number(g.id) === Number(id));
     if(!confirm(`⚠️ BORRAR "${j?.name||""}"?`)) return;
     try{
-        const r = await fetch("/api/admin/delete-game",{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({ id })
-        });
+        const r = await fetch("/api/admin/delete-game",{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }, body: JSON.stringify({ id }) });
         const d = await r.json();
         if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
-        toast("Eliminado","info");
+        toast("Producto eliminado","info");
         await cargarJuegos(); actualizarTodo(); renderGamesList();
     } catch(e){ alert("Error"); }
 }
@@ -1697,54 +1756,26 @@ async function eliminarJuego(id){
    CATEGORÍAS
 ============================================================ */
 function renderCategoriesPage(){
-    // Lista de juegos arrastrables
-    const drag = document.getElementById("draggableGames");
-    if(!todosLosJuegos.length){
-        drag.innerHTML = `<div style="padding:14px;text-align:center;color:#666;">Sin juegos</div>`;
-    } else {
-        drag.innerHTML = todosLosJuegos.map(g =>
-            `<div class="draggable-game" draggable="true" data-game-id="${g.id}"
-                ondragstart="onDragGameStart(event, ${g.id})">
-                <span style="font-size:16px;">🎮</span>
-                <span style="flex:1;font-size:13px;color:#fff;">${escapeHTML(g.name)}</span>
-                <span style="color:#666;font-size:11px;font-family:monospace;">#${g.id}</span>
-            </div>`
-        ).join("");
-    }
-
-    // Grid de categorías
     const grid = document.getElementById("categoriesGrid");
     if(!todasLasCategorias.length){
         grid.innerHTML = `<div class="empty" style="grid-column:1/-1;"><span class="empty-ico">📁</span>Sin categorías. Crea la primera arriba.</div>`;
         return;
     }
     grid.innerHTML = todasLasCategorias.map(cat => {
-        const catGames = (cat.games || []).map(gid => todosLosJuegos.find(g => Number(g.id) === Number(gid))).filter(Boolean);
-        const gamesHTML = catGames.length
-            ? catGames.map(g => `
-                <div class="cat-game">
-                    <span class="cg-icon">🎮</span>
-                    <span class="cg-name">${escapeHTML(g.name)}</span>
-                    <button class="cg-remove" onclick="quitarJuegoDeCategoria(${cat.id}, ${g.id})" title="Quitar">✕</button>
-                </div>
-            `).join("")
-            : `<div class="cat-empty">Arrastra juegos aquí</div>`;
-        return `<div class="cat-card" data-cat-id="${cat.id}"
-            ondragover="onDragOver(event, ${cat.id})"
-            ondragleave="onDragLeave(event)"
-            ondrop="onDrop(event, ${cat.id})">
-            <div class="cat-head">
-                <div class="cat-icon" style="background:${cat.color}33;border:2px solid ${cat.color};">${cat.icon || '📁'}</div>
-                <div class="cat-info">
-                    <div class="cat-name">${escapeHTML(cat.name)}</div>
-                    <div class="cat-count">${catGames.length} juego${catGames.length===1?"":"s"}</div>
-                </div>
-                <div style="display:flex;gap:6px;">
-                    <button class="btn ghost small" onclick="abrirEditCat(${cat.id})">✏️</button>
-                    <button class="btn danger small" onclick="borrarCategoria(${cat.id})">🗑️</button>
+        const cnt = (cat.games || []).length;
+        return `<div class="cat-card">
+            <div class="cat-card-head">
+                <div class="cat-card-icon" style="background:${cat.color}33;border:2px solid ${cat.color};">${cat.icon || '📁'}</div>
+                <div class="cat-card-info">
+                    <div class="cat-card-name">${escapeHTML(cat.name)}</div>
+                    <div class="cat-card-count">${cnt} producto${cnt===1?"":"s"}</div>
                 </div>
             </div>
-            <div class="cat-games">${gamesHTML}</div>
+            <div class="cat-card-actions">
+                <button class="btn small" style="background:linear-gradient(135deg,#16a34a,#22c55e)" onclick="abrirCatGamesModal(${cat.id})">☑️ SELECCIONAR PRODUCTOS</button>
+                <button class="btn ghost small" onclick="abrirEditCat(${cat.id})">✏️</button>
+                <button class="btn danger small" onclick="borrarCategoria(${cat.id})">🗑️</button>
+            </div>
         </div>`;
     }).join("");
 }
@@ -1754,10 +1785,7 @@ async function crearCategoria(){
     const color = document.getElementById("catColor").value;
     if(!name){ showMsg("catMessage","Nombre obligatorio",false); return; }
     try{
-        const r = await fetch("/api/admin/categories/create",{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({ name, icon, color })
-        });
+        const r = await fetch("/api/admin/categories/create",{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }, body: JSON.stringify({ name, icon, color }) });
         const d = await r.json();
         if(!r.ok || !d.success){ showMsg("catMessage",d.message||"Error",false); return; }
         document.getElementById("catName").value = "";
@@ -1776,10 +1804,7 @@ function abrirEditCat(id){
     document.getElementById("catEditColor").value = c.color || "#8b5cff";
     document.getElementById("catEditModal").classList.add("open");
 }
-function cerrarModalEditCat(){
-    document.getElementById("catEditModal").classList.remove("open");
-    catEditandoId = null;
-}
+function cerrarModalEditCat(){ document.getElementById("catEditModal").classList.remove("open"); catEditandoId = null; }
 async function guardarEditCat(){
     if(!catEditandoId) return;
     const name = document.getElementById("catEditName").value.trim();
@@ -1787,10 +1812,7 @@ async function guardarEditCat(){
     const color = document.getElementById("catEditColor").value;
     if(!name){ alert("Nombre obligatorio"); return; }
     try{
-        const r = await fetch("/api/admin/categories/update",{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({ id: catEditandoId, name, icon, color })
-        });
+        const r = await fetch("/api/admin/categories/update",{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }, body: JSON.stringify({ id: catEditandoId, name, icon, color }) });
         const d = await r.json();
         if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
         toast("Categoría actualizada","success");
@@ -1799,61 +1821,261 @@ async function guardarEditCat(){
     } catch(e){ alert("Error"); }
 }
 async function borrarCategoria(id){
-    if(!confirm("⚠️ ¿Borrar esta categoría?\n\nLos juegos NO se borrarán.")) return;
+    if(!confirm("⚠️ ¿Borrar esta categoría?\n\nLos productos NO se borrarán.")) return;
     try{
-        const r = await fetch("/api/admin/categories/delete",{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({ id })
-        });
+        const r = await fetch("/api/admin/categories/delete",{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }, body: JSON.stringify({ id }) });
         const d = await r.json();
         if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
         toast("Categoría borrada","info");
         await cargarCategorias(); renderCategoriesPage();
     } catch(e){ alert("Error"); }
 }
-function onDragGameStart(event, gameId){
-    event.dataTransfer.setData("text/game-id", String(gameId));
-    event.dataTransfer.effectAllowed = "add";
-    event.target.classList.add("dragging");
-    setTimeout(() => event.target.classList.remove("dragging"), 100);
+
+/* === CHECKLIST DE PRODUCTOS EN CATEGORÍA === */
+function abrirCatGamesModal(catId){
+    const cat = todasLasCategorias.find(c => Number(c.id) === Number(catId));
+    if(!cat) return;
+    catGamesEditandoId = catId;
+    catGamesSelected = [...(cat.games || [])].map(Number);
+    catGamesFiltroTipo = null;
+    document.getElementById("catGamesTitle").innerHTML = `📁 ${cat.icon || "📁"} ${escapeHTML(cat.name)}`;
+    document.getElementById("catGamesSearch").value = "";
+    document.getElementById("catGamesMessage").style.display = "none";
+    renderCatGames();
+    document.getElementById("catGamesModal").classList.add("open");
 }
-function onDragOver(event, catId){
-    event.preventDefault();
-    event.dataTransfer.dropEffect = "add";
-    event.currentTarget.classList.add("dragover");
+function cerrarCatGamesModal(){
+    document.getElementById("catGamesModal").classList.remove("open");
+    catGamesEditandoId = null; catGamesSelected = [];
 }
-function onDragLeave(event){
-    event.currentTarget.classList.remove("dragover");
+function renderCatGames(){
+    const list = document.getElementById("catGamesList");
+    const busq = (document.getElementById("catGamesSearch").value || "").toLowerCase().trim();
+    let arr = [...todosLosJuegos];
+    if(catGamesFiltroTipo) arr = arr.filter(g => (g.type || "game") === catGamesFiltroTipo);
+    if(busq) arr = arr.filter(g => String(g.name).toLowerCase().includes(busq));
+    if(!arr.length){
+        list.innerHTML = `<div style="padding:20px;text-align:center;color:#666;">Sin productos</div>`;
+        return;
+    }
+    list.innerHTML = arr.map(g => {
+        const checked = catGamesSelected.includes(Number(g.id)) ? "checked" : "";
+        return `<label class="check-item">
+            <input type="checkbox" ${checked} onchange="toggleCatGame(${g.id}, this.checked)">
+            <span class="ci-icon">${tipoIcono(g.type)}</span>
+            <div class="ci-info">
+                <span class="ci-name">${escapeHTML(g.name)}</span>
+                <span class="ci-meta">#${g.id} · ${tipoNombre(g.type)} · ${formatearFechaCorta(g.created_at)}</span>
+            </div>
+        </label>`;
+    }).join("");
 }
-async function onDrop(event, catId){
-    event.preventDefault();
-    event.currentTarget.classList.remove("dragover");
-    const gameId = event.dataTransfer.getData("text/game-id");
-    if(!gameId) return;
-    await agregarJuegoACategoria(catId, Number(gameId));
+function toggleCatGame(id, checked){
+    id = Number(id);
+    if(checked){ if(!catGamesSelected.includes(id)) catGamesSelected.push(id); }
+    else catGamesSelected = catGamesSelected.filter(x => x !== id);
 }
-async function agregarJuegoACategoria(catId, gameId){
+function marcarTodosCat(modo){
+    const busq = (document.getElementById("catGamesSearch").value || "").toLowerCase().trim();
+    let visibles = [...todosLosJuegos];
+    if(catGamesFiltroTipo) visibles = visibles.filter(g => (g.type || "game") === catGamesFiltroTipo);
+    if(busq) visibles = visibles.filter(g => String(g.name).toLowerCase().includes(busq));
+    const idsVisibles = visibles.map(g => Number(g.id));
+    if(modo === true){
+        idsVisibles.forEach(id => { if(!catGamesSelected.includes(id)) catGamesSelected.push(id); });
+    } else if(modo === false){
+        catGamesSelected = catGamesSelected.filter(id => !idsVisibles.includes(id));
+    } else if(modo === "invert"){
+        idsVisibles.forEach(id => {
+            if(catGamesSelected.includes(id)) catGamesSelected = catGamesSelected.filter(x => x !== id);
+            else catGamesSelected.push(id);
+        });
+    }
+    renderCatGames();
+}
+function filtrarCatPorTipo(t){
+    catGamesFiltroTipo = catGamesFiltroTipo === t ? null : t;
+    renderCatGames();
+}
+async function guardarCatGames(){
+    if(!catGamesEditandoId) return;
+    const message = document.getElementById("catGamesMessage");
     try{
-        const r = await fetch("/api/admin/categories/add-game",{
+        const r = await fetch("/api/admin/categories/set-games",{
             method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({ categoryId: catId, gameId })
+            body: JSON.stringify({ categoryId: catGamesEditandoId, gameIds: catGamesSelected })
         });
         const d = await r.json();
-        if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
-        toast("Juego añadido a la categoría","success");
+        if(!r.ok || !d.success){ showMsg("catGamesMessage", d.message || "Error", false); return; }
+        showMsg("catGamesMessage", `✅ ${catGamesSelected.length} productos asignados`, true);
+        toast("Categoría actualizada","success");
         await cargarCategorias(); renderCategoriesPage();
+        setTimeout(cerrarCatGamesModal, 700);
+    } catch(e){ showMsg("catGamesMessage","Error",false); }
+}
+
+/* ============================================================
+   MOTE / PERMISOS
+============================================================ */
+function abrirModalMote(id){
+    const k = todasLasKeys.find(x => Number(x.id) === Number(id));
+    if(!k) return;
+    keyEditandoId = id;
+    document.getElementById("editNickname").value = k.nickname||"";
+    document.getElementById("nickModal").classList.add("open");
+}
+function cerrarModalMote(){ document.getElementById("nickModal").classList.remove("open"); keyEditandoId = null; }
+async function guardarMote(){
+    if(!keyEditandoId) return;
+    const nickname = document.getElementById("editNickname").value.trim();
+    try{
+        const r = await fetch("/api/admin/update-key-nickname",{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }, body: JSON.stringify({ id: keyEditandoId, nickname }) });
+        const d = await r.json();
+        if(!r.ok || !d.success){ showMsg("nickMessage",d.message||"Error",false); return; }
+        showMsg("nickMessage","✅ Actualizado.",true);
+        await cargarKeys(); actualizarTodo(); refrescarPaginaActiva();
+        setTimeout(cerrarModalMote, 500);
+    } catch(e){ showMsg("nickMessage","Error",false); }
+}
+function abrirModalPerms(id){
+    const k = todasLasKeys.find(x => Number(x.id) === Number(id));
+    if(!k || !k.type.startsWith("ADMIN")){ alert("Solo keys admin"); return; }
+    permsEditandoId = id;
+    let actuales = [];
+    try{ actuales = k.permissions ? JSON.parse(k.permissions) : ["*"]; } catch { actuales = ["*"]; }
+    if(actuales.includes("*")) permsSelected = PERMISOS_DISPONIBLES.map(p => p.id);
+    else permsSelected = actuales;
+    renderPermsList();
+    document.getElementById("permsModal").classList.add("open");
+}
+function cerrarModalPerms(){ document.getElementById("permsModal").classList.remove("open"); permsEditandoId = null; permsSelected = []; }
+function renderPermsList(){
+    document.getElementById("permsList").innerHTML = PERMISOS_DISPONIBLES.map(p => `
+        <label class="perm-item">
+            <input type="checkbox" ${permsSelected.includes(p.id)?"checked":""} onchange="togglePerm('${p.id}',this.checked)">
+            <div class="perm-item-info"><div class="perm-item-name">${p.icon} ${escapeHTML(p.name)}</div></div>
+        </label>
+    `).join("");
+}
+function togglePerm(id, checked){
+    if(checked){ if(!permsSelected.includes(id)) permsSelected.push(id); }
+    else permsSelected = permsSelected.filter(x => x !== id);
+}
+function toggleAllPerms(marcar){ permsSelected = marcar ? PERMISOS_DISPONIBLES.map(p => p.id) : []; renderPermsList(); }
+async function guardarPerms(){
+    if(!permsEditandoId) return;
+    const todos = PERMISOS_DISPONIBLES.length === permsSelected.length;
+    const value = todos ? ["*"] : permsSelected;
+    try{
+        const r = await fetch("/api/admin/update-key-permissions",{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }, body: JSON.stringify({ id: permsEditandoId, permissions: value }) });
+        const d = await r.json();
+        if(!r.ok || !d.success){ showMsg("permsMessage",d.message||"Error",false); return; }
+        toast("Permisos guardados","success");
+        await cargarKeys(); actualizarTodo(); refrescarPaginaActiva();
+        setTimeout(cerrarModalPerms, 700);
+    } catch(e){ showMsg("permsMessage","Error",false); }
+}
+
+/* ============================================================
+   JUEGOS POR KEY
+============================================================ */
+async function abrirModalJuegosKey(id){
+    keyGamesEditandoId = id;
+    document.getElementById("keyGamesList").innerHTML = `<div style="padding:20px;text-align:center;color:#666;">Cargando...</div>`;
+    document.getElementById("keyGamesModal").classList.add("open");
+    try{
+        const r = await fetch(`/api/admin/key-games/${id}`,{ headers:{"x-admin-key":adminKeyValue} });
+        const d = await r.json();
+        if(!r.ok || !d.success){ document.getElementById("keyGamesList").innerHTML = `<div style="padding:20px;color:#ff5672;">Error</div>`; return; }
+        keyGamesAll = d.allGames || [];
+        keyGamesMode = d.gameMode || "all";
+        keyGamesSelected = d.allowed === null ? keyGamesAll.map(g => Number(g.id)) : d.allowed.map(Number);
+        document.querySelectorAll("#kgModeGrid .mode-btn").forEach(b => b.classList.toggle("active", b.dataset.mode === keyGamesMode));
+        document.getElementById("kgGamesWrap").style.display = (keyGamesMode === "whitelist" || keyGamesMode === "blacklist") ? "block" : "none";
+        actualizarModoJuegosKey(); renderJuegosKey();
+    } catch(e){ document.getElementById("keyGamesList").innerHTML = `<div style="padding:20px;color:#ff5672;">Error</div>`; }
+}
+function cerrarModalJuegosKey(){ document.getElementById("keyGamesModal").classList.remove("open"); keyGamesEditandoId = null; keyGamesSelected = []; }
+function actualizarModoJuegosKey(){
+    const el = document.getElementById("keyGamesMode");
+    const total = keyGamesAll.length, sel = keyGamesSelected.length;
+    if(keyGamesMode === "all"){ el.className = "kg-mode all"; el.textContent = `🌐 TODOS (${total})`; }
+    else if(keyGamesMode === "none"){ el.className = "kg-mode none"; el.textContent = "🚫 NINGUNO"; }
+    else if(keyGamesMode === "whitelist"){ el.className = "kg-mode wl"; el.textContent = `✅ WL: ${sel} de ${total}`; }
+    else if(keyGamesMode === "blacklist"){ el.className = "kg-mode bl"; el.textContent = `⛔ BL: ${sel} excluidos`; }
+}
+function renderJuegosKey(){
+    const list = document.getElementById("keyGamesList");
+    const f = document.getElementById("keyGamesSearch").value.toLowerCase().trim();
+    const vis = keyGamesAll.filter(g => !f || g.name.toLowerCase().includes(f));
+    if(!vis.length){ list.innerHTML = `<div style="padding:20px;text-align:center;color:#666;">Sin resultados</div>`; return; }
+    list.innerHTML = vis.map(g => {
+        const checked = keyGamesSelected.includes(Number(g.id)) ? "checked" : "";
+        return `<div class="games-picker-item">
+            <input type="checkbox" id="kg_${g.id}" ${checked} onchange="toggleJuegoKey(${g.id},this.checked)">
+            <label for="kg_${g.id}" class="gp-info">
+                <span class="gp-name">${tipoIcono("game")} ${escapeHTML(g.name)} <span class="gp-id">#${g.id}</span></span>
+            </label>
+        </div>`;
+    }).join("");
+}
+function filtrarJuegosKey(){ renderJuegosKey(); }
+function toggleJuegoKey(id, checked){
+    id = Number(id);
+    if(checked){ if(!keyGamesSelected.includes(id)) keyGamesSelected.push(id); }
+    else keyGamesSelected = keyGamesSelected.filter(x => x !== id);
+    actualizarModoJuegosKey();
+}
+function marcarTodosJuegos(modo){
+    if(modo === true) keyGamesSelected = keyGamesAll.map(g => Number(g.id));
+    else if(modo === false) keyGamesSelected = [];
+    else if(modo === "invert") keyGamesSelected = keyGamesAll.filter(g => !keyGamesSelected.includes(Number(g.id))).map(g => Number(g.id));
+    actualizarModoJuegosKey(); renderJuegosKey();
+}
+async function guardarJuegosKey(){
+    if(!keyGamesEditandoId) return;
+    let allowed = keyGamesSelected;
+    if(keyGamesMode === "all" || keyGamesMode === "none") allowed = [];
+    try{
+        const r = await fetch("/api/admin/update-key-games",{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }, body: JSON.stringify({ id: keyGamesEditandoId, allowed, gameMode: keyGamesMode }) });
+        const d = await r.json();
+        if(!r.ok || !d.success){ showMsg("keyGamesMessage",d.message||"Error",false); return; }
+        toast("Modo actualizado","success");
+        await cargarKeys(); actualizarTodo(); refrescarPaginaActiva();
+        setTimeout(cerrarModalJuegosKey, 700);
+    } catch(e){ showMsg("keyGamesMessage","Error",false); }
+}
+
+/* ============================================================
+   REVOCAR / REACTIVAR / ELIMINAR
+============================================================ */
+async function revocarKey(id){
+    if(!confirm("¿Revocar esta key?")) return;
+    try{
+        const r = await fetch("/api/admin/revoke-key",{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }, body: JSON.stringify({ id }) });
+        const d = await r.json();
+        if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
+        toast("Key revocada","info");
+        await cargarKeys(); actualizarTodo(); refrescarPaginaActiva();
     } catch(e){ alert("Error"); }
 }
-async function quitarJuegoDeCategoria(catId, gameId){
+async function reactivarKey(id){
     try{
-        const r = await fetch("/api/admin/categories/remove-game",{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({ categoryId: catId, gameId })
-        });
+        const r = await fetch("/api/admin/reactivate-key",{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }, body: JSON.stringify({ id }) });
         const d = await r.json();
         if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
-        toast("Juego quitado","info");
-        await cargarCategorias(); renderCategoriesPage();
+        toast("♻️ Key reactivada","success");
+        await cargarKeys(); actualizarTodo(); refrescarPaginaActiva();
+    } catch(e){ alert("Error"); }
+}
+async function eliminarKey(id){
+    if(!confirm("⚠️ ELIMINAR KEY")) return;
+    try{
+        const r = await fetch("/api/admin/delete-key",{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }, body: JSON.stringify({ id }) });
+        const d = await r.json();
+        if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
+        toast("Key eliminada","info");
+        await cargarKeys(); await cargarUsuarios(); actualizarTodo(); refrescarPaginaActiva();
     } catch(e){ alert("Error"); }
 }
 
@@ -1867,21 +2089,16 @@ function setTicketFilter(filtro, btn){
     renderTicketsPage();
 }
 function renderTicketsPage(){
-    // Stats
     document.getElementById("ticketStats").innerHTML = `
         <div class="ticket-stat-card total"><div class="ticket-stat-val">${ticketStats.total || 0}</div><div class="ticket-stat-label">Total</div></div>
         <div class="ticket-stat-card open"><div class="ticket-stat-val">${ticketStats.open || 0}</div><div class="ticket-stat-label">Abiertos</div></div>
         <div class="ticket-stat-card pending"><div class="ticket-stat-val">${ticketStats.pending || 0}</div><div class="ticket-stat-label">Pendientes</div></div>
         <div class="ticket-stat-card closed"><div class="ticket-stat-val">${ticketStats.closed || 0}</div><div class="ticket-stat-label">Cerrados</div></div>
     `;
-    // Lista
     const list = document.getElementById("ticketsList");
     let lista = todosLosTickets;
     if(ticketFiltroActual !== "all") lista = lista.filter(t => t.status === ticketFiltroActual);
-    if(!lista.length){
-        list.innerHTML = `<div class="empty"><span class="empty-ico">🎫</span>Sin tickets</div>`;
-        return;
-    }
+    if(!lista.length){ list.innerHTML = `<div class="empty"><span class="empty-ico">🎫</span>Sin tickets</div>`; return; }
     list.innerHTML = lista.map(t => {
         const unread = t.last_reply_by === "user" && t.status !== "closed";
         const prioClass = t.priority || "normal";
@@ -1910,7 +2127,6 @@ async function abrirTicket(id){
         <div style="padding:12px 15px;background:rgba(139,92,255,.06);border:1px solid rgba(139,92,255,.2);border-radius:10px;font-size:13px;line-height:1.7;">
             <div><b style="color:#b99cff;">Usuario:</b> ${escapeHTML(t.username)}</div>
             <div><b style="color:#b99cff;">Creado:</b> ${formatearFecha(t.created_at)}</div>
-            <div><b style="color:#b99cff;">Estado:</b> ${t.status.toUpperCase()} · <b style="color:#b99cff;">Prioridad:</b> ${(t.priority||"normal").toUpperCase()}</div>
             ${t.user_key ? `<div><b style="color:#b99cff;">Key:</b> <code style="color:#00c8ff;">${escapeHTML(t.user_key)}</code></div>` : ''}
         </div>
     `;
@@ -1918,8 +2134,6 @@ async function abrirTicket(id){
     document.getElementById("ticketModalMessage").style.display = "none";
     document.getElementById("ticketChat").innerHTML = `<div style="padding:20px;text-align:center;color:#666;">Cargando...</div>`;
     document.getElementById("ticketModal").classList.add("open");
-
-    // Cargar mensajes
     try{
         const r = await fetch(`/api/tickets/${id}`,{ headers:{"x-admin-key":adminKeyValue} });
         const d = await r.json();
@@ -1932,23 +2146,15 @@ async function abrirTicket(id){
             </div>
         `).join("");
         document.getElementById("ticketChat").scrollTop = 999999;
-    } catch(e){
-        document.getElementById("ticketChat").innerHTML = `<div style="color:#ff5672;padding:20px;">Error de conexión</div>`;
-    }
+    } catch(e){ document.getElementById("ticketChat").innerHTML = `<div style="color:#ff5672;padding:20px;">Error</div>`; }
 }
-function cerrarTicketModal(){
-    document.getElementById("ticketModal").classList.remove("open");
-    ticketActualId = null;
-}
+function cerrarTicketModal(){ document.getElementById("ticketModal").classList.remove("open"); ticketActualId = null; }
 async function enviarRespuestaTicket(){
     if(!ticketActualId) return;
     const msg = document.getElementById("ticketReplyText").value.trim();
     if(!msg){ showMsg("ticketModalMessage","Escribe un mensaje",false); return; }
     try{
-        const r = await fetch(`/api/admin/tickets/${ticketActualId}/reply`,{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({ message: msg })
-        });
+        const r = await fetch(`/api/admin/tickets/${ticketActualId}/reply`,{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }, body: JSON.stringify({ message: msg }) });
         const d = await r.json();
         if(!r.ok || !d.success){ showMsg("ticketModalMessage",d.message||"Error",false); return; }
         document.getElementById("ticketReplyText").value = "";
@@ -1960,10 +2166,7 @@ async function enviarRespuestaTicket(){
 async function cambiarEstadoTicket(status){
     if(!ticketActualId) return;
     try{
-        const r = await fetch(`/api/admin/tickets/${ticketActualId}/status`,{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({ status })
-        });
+        const r = await fetch(`/api/admin/tickets/${ticketActualId}/status`,{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }, body: JSON.stringify({ status }) });
         const d = await r.json();
         if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
         toast("Estado actualizado","success");
@@ -1974,10 +2177,7 @@ async function cambiarEstadoTicket(status){
 async function cambiarPrioridadTicket(priority){
     if(!ticketActualId) return;
     try{
-        const r = await fetch(`/api/admin/tickets/${ticketActualId}/priority`,{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({ priority })
-        });
+        const r = await fetch(`/api/admin/tickets/${ticketActualId}/priority`,{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }, body: JSON.stringify({ priority }) });
         const d = await r.json();
         if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
         toast("Prioridad actualizada","success");
@@ -1986,212 +2186,14 @@ async function cambiarPrioridadTicket(priority){
 }
 async function borrarTicketActual(){
     if(!ticketActualId) return;
-    if(!confirm("⚠️ ¿Borrar este ticket? No se puede deshacer.")) return;
+    if(!confirm("⚠️ ¿Borrar este ticket?")) return;
     try{
-        const r = await fetch(`/api/admin/tickets/${ticketActualId}/delete`,{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue }
-        });
+        const r = await fetch(`/api/admin/tickets/${ticketActualId}/delete`,{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue } });
         const d = await r.json();
         if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
         toast("Ticket borrado","warning");
         cerrarTicketModal();
         await cargarTickets(); actualizarTodo(); renderTicketsPage();
-    } catch(e){ alert("Error"); }
-}
-
-/* ============================================================
-   MOTE / PERMISOS
-============================================================ */
-function abrirModalMote(id){
-    const k = todasLasKeys.find(x => Number(x.id) === Number(id));
-    if(!k) return;
-    keyEditandoId = id;
-    document.getElementById("editNickname").value = k.nickname||"";
-    document.getElementById("nickModal").classList.add("open");
-}
-function cerrarModalMote(){ document.getElementById("nickModal").classList.remove("open"); keyEditandoId = null; }
-async function guardarMote(){
-    if(!keyEditandoId) return;
-    const nickname = document.getElementById("editNickname").value.trim();
-    try{
-        const r = await fetch("/api/admin/update-key-nickname",{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({ id: keyEditandoId, nickname })
-        });
-        const d = await r.json();
-        if(!r.ok || !d.success){ showMsg("nickMessage",d.message||"Error",false); return; }
-        showMsg("nickMessage","✅ Actualizado.",true);
-        await cargarKeys(); actualizarTodo(); refrescarPaginaActiva();
-        setTimeout(cerrarModalMote, 500);
-    } catch(e){ showMsg("nickMessage","Error",false); }
-}
-function abrirModalPerms(id){
-    const k = todasLasKeys.find(x => Number(x.id) === Number(id));
-    if(!k || !k.type.startsWith("ADMIN")){ alert("Solo keys admin"); return; }
-    permsEditandoId = id;
-    let actuales = [];
-    try{ actuales = k.permissions ? JSON.parse(k.permissions) : ["*"]; } catch { actuales = ["*"]; }
-    if(actuales.includes("*")) permsSelected = PERMISOS_DISPONIBLES.map(p => p.id);
-    else permsSelected = actuales;
-    renderPermsList();
-    document.getElementById("permsModal").classList.add("open");
-}
-function cerrarModalPerms(){
-    document.getElementById("permsModal").classList.remove("open");
-    permsEditandoId = null; permsSelected = [];
-}
-function renderPermsList(){
-    document.getElementById("permsList").innerHTML = PERMISOS_DISPONIBLES.map(p => `
-        <label class="perm-item">
-            <input type="checkbox" ${permsSelected.includes(p.id)?"checked":""} onchange="togglePerm('${p.id}',this.checked)">
-            <div class="perm-item-info"><div class="perm-item-name">${p.icon} ${escapeHTML(p.name)}</div></div>
-        </label>
-    `).join("");
-}
-function togglePerm(id, checked){
-    if(checked){ if(!permsSelected.includes(id)) permsSelected.push(id); }
-    else permsSelected = permsSelected.filter(x => x !== id);
-}
-function toggleAllPerms(marcar){
-    permsSelected = marcar ? PERMISOS_DISPONIBLES.map(p => p.id) : [];
-    renderPermsList();
-}
-async function guardarPerms(){
-    if(!permsEditandoId) return;
-    const todos = PERMISOS_DISPONIBLES.length === permsSelected.length;
-    const value = todos ? ["*"] : permsSelected;
-    try{
-        const r = await fetch("/api/admin/update-key-permissions",{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({ id: permsEditandoId, permissions: value })
-        });
-        const d = await r.json();
-        if(!r.ok || !d.success){ showMsg("permsMessage",d.message||"Error",false); return; }
-        toast("Permisos guardados","success");
-        await cargarKeys(); actualizarTodo(); refrescarPaginaActiva();
-        setTimeout(cerrarModalPerms, 700);
-    } catch(e){ showMsg("permsMessage","Error",false); }
-}
-
-/* ============================================================
-   JUEGOS POR KEY (modal)
-============================================================ */
-async function abrirModalJuegosKey(id){
-    keyGamesEditandoId = id;
-    document.getElementById("keyGamesList").innerHTML = `<div style="padding:20px;text-align:center;color:#666;">Cargando...</div>`;
-    document.getElementById("keyGamesModal").classList.add("open");
-    try{
-        const r = await fetch(`/api/admin/key-games/${id}`,{ headers:{"x-admin-key":adminKeyValue} });
-        const d = await r.json();
-        if(!r.ok || !d.success){ document.getElementById("keyGamesList").innerHTML = `<div style="padding:20px;color:#ff5672;">Error</div>`; return; }
-        keyGamesAll = d.allGames || [];
-        keyGamesMode = d.gameMode || "all";
-        keyGamesSelected = d.allowed === null ? keyGamesAll.map(g => Number(g.id)) : d.allowed.map(Number);
-        document.querySelectorAll("#kgModeGrid .mode-btn").forEach(b => {
-            b.classList.toggle("active", b.dataset.mode === keyGamesMode);
-        });
-        document.getElementById("kgGamesWrap").style.display =
-            (keyGamesMode === "whitelist" || keyGamesMode === "blacklist") ? "block" : "none";
-        actualizarModoJuegosKey(); renderJuegosKey();
-    } catch(e){ document.getElementById("keyGamesList").innerHTML = `<div style="padding:20px;color:#ff5672;">Error</div>`; }
-}
-function cerrarModalJuegosKey(){
-    document.getElementById("keyGamesModal").classList.remove("open");
-    keyGamesEditandoId = null; keyGamesSelected = [];
-}
-function actualizarModoJuegosKey(){
-    const el = document.getElementById("keyGamesMode");
-    const total = keyGamesAll.length, sel = keyGamesSelected.length;
-    if(keyGamesMode === "all"){ el.className = "kg-mode all"; el.textContent = `🌐 TODOS (${total})`; }
-    else if(keyGamesMode === "none"){ el.className = "kg-mode none"; el.textContent = "🚫 NINGUNO"; }
-    else if(keyGamesMode === "whitelist"){ el.className = "kg-mode wl"; el.textContent = `✅ WL: ${sel} de ${total}`; }
-    else if(keyGamesMode === "blacklist"){ el.className = "kg-mode bl"; el.textContent = `⛔ BL: ${sel} excluidos`; }
-}
-function renderJuegosKey(){
-    const list = document.getElementById("keyGamesList");
-    const f = document.getElementById("keyGamesSearch").value.toLowerCase().trim();
-    const vis = keyGamesAll.filter(g => !f || g.name.toLowerCase().includes(f));
-    if(!vis.length){ list.innerHTML = `<div style="padding:20px;text-align:center;color:#666;">Sin resultados</div>`; return; }
-    list.innerHTML = vis.map(g => {
-        const checked = keyGamesSelected.includes(Number(g.id)) ? "checked" : "";
-        return `<div class="games-picker-item">
-            <input type="checkbox" id="kg_${g.id}" ${checked} onchange="toggleJuegoKey(${g.id},this.checked)">
-            <label for="kg_${g.id}" class="gp-info">
-                <span class="gp-name">${escapeHTML(g.name)} <span class="gp-id">#${g.id}</span></span>
-                <span class="gp-date">📅 ${formatearFechaCorta(g.created_at)}</span>
-            </label>
-        </div>`;
-    }).join("");
-}
-function filtrarJuegosKey(){ renderJuegosKey(); }
-function toggleJuegoKey(id, checked){
-    id = Number(id);
-    if(checked){ if(!keyGamesSelected.includes(id)) keyGamesSelected.push(id); }
-    else keyGamesSelected = keyGamesSelected.filter(x => x !== id);
-    actualizarModoJuegosKey();
-}
-function marcarTodosJuegos(modo){
-    if(modo === true) keyGamesSelected = keyGamesAll.map(g => Number(g.id));
-    else if(modo === false) keyGamesSelected = [];
-    else if(modo === "invert") keyGamesSelected = keyGamesAll.filter(g => !keyGamesSelected.includes(Number(g.id))).map(g => Number(g.id));
-    actualizarModoJuegosKey(); renderJuegosKey();
-}
-async function guardarJuegosKey(){
-    if(!keyGamesEditandoId) return;
-    let allowed = keyGamesSelected;
-    if(keyGamesMode === "all" || keyGamesMode === "none") allowed = [];
-    try{
-        const r = await fetch("/api/admin/update-key-games",{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({ id: keyGamesEditandoId, allowed, gameMode: keyGamesMode })
-        });
-        const d = await r.json();
-        if(!r.ok || !d.success){ showMsg("keyGamesMessage",d.message||"Error",false); return; }
-        toast("Modo actualizado","success");
-        await cargarKeys(); actualizarTodo(); refrescarPaginaActiva();
-        setTimeout(cerrarModalJuegosKey, 700);
-    } catch(e){ showMsg("keyGamesMessage","Error",false); }
-}
-
-/* ============================================================
-   REVOCAR / REACTIVAR / ELIMINAR
-============================================================ */
-async function revocarKey(id){
-    if(!confirm("¿Revocar esta key?")) return;
-    try{
-        const r = await fetch("/api/admin/revoke-key",{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({ id })
-        });
-        const d = await r.json();
-        if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
-        toast("Key revocada","info");
-        await cargarKeys(); actualizarTodo(); refrescarPaginaActiva();
-    } catch(e){ alert("Error"); }
-}
-async function reactivarKey(id){
-    try{
-        const r = await fetch("/api/admin/reactivate-key",{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({ id })
-        });
-        const d = await r.json();
-        if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
-        toast("♻️ Key reactivada","success");
-        await cargarKeys(); actualizarTodo(); refrescarPaginaActiva();
-    } catch(e){ alert("Error"); }
-}
-async function eliminarKey(id){
-    if(!confirm("⚠️ ELIMINAR KEY")) return;
-    try{
-        const r = await fetch("/api/admin/delete-key",{
-            method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key":adminKeyValue },
-            body: JSON.stringify({ id })
-        });
-        const d = await r.json();
-        if(!r.ok || !d.success){ alert(d.message||"Error"); return; }
-        toast("Key eliminada","info");
-        await cargarKeys(); await cargarUsuarios(); actualizarTodo(); refrescarPaginaActiva();
     } catch(e){ alert("Error"); }
 }
 
@@ -2216,10 +2218,8 @@ function renderStats(){
     });
     const gEntries = Object.entries(byGame).sort((a,b)=>b[1]-a[1]);
     document.getElementById("statsByGame").innerHTML = gEntries.length
-        ? gEntries.map(([gid,c]) => {
-            const pct = Math.round(c/total*100);
-            return `<div style="margin-bottom:14px;"><div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;"><span style="font-weight:700;">🎮 ${escapeHTML(gameNameById(gid))}</span><span style="color:#22c55e;font-weight:700;">${c}</span></div><div style="height:8px;background:rgba(255,255,255,.04);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#16a34a,#22c55e);"></div></div></div>`;
-        }).join("") : `<div class="empty"><span class="empty-ico">🎮</span>Sin datos</div>`;
+        ? gEntries.map(([gid,c]) => `<div style="display:flex;justify-content:space-between;padding:10px 14px;border-radius:9px;background:rgba(255,255,255,.02);margin-bottom:7px;"><span>📦 ${escapeHTML(gameNameById(gid))}</span><span style="color:#22c55e;font-weight:700;">${c}</span></div>`).join("")
+        : `<div class="empty"><span class="empty-ico">📦</span>Sin datos</div>`;
     const byIp = {};
     todasLasKeys.forEach(k => { if(k.last_ip) byIp[k.last_ip] = (byIp[k.last_ip]||0)+1; });
     const ipEntries = Object.entries(byIp).sort((a,b)=>b[1]-a[1]).slice(0,8);
@@ -2242,8 +2242,7 @@ async function descargarBackup(){
         const blob = await r.blob();
         const nombre = `omeles-backup-${new Date().toISOString().slice(0,10)}.db`;
         const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url; a.download = nombre;
+        const a = document.createElement("a"); a.href = url; a.download = nombre;
         document.body.appendChild(a); a.click(); a.remove();
         URL.revokeObjectURL(url);
         showMsg("backupMessage", `✅ ${nombre}`, true);
@@ -2259,27 +2258,23 @@ function importarDb(event){
     msg.style.display = "none"; res.classList.remove("show");
     if(file.size > 50 * 1024 * 1024){ showMsg("importMessage", "Máx 50 MB", false); return; }
     const btn = document.getElementById("importBtn");
-    btn.disabled = true; btn.textContent = "⏳...";
+    btn && (btn.disabled = true, btn.textContent = "⏳...");
     showMsg("importMessage", "⏳ Procesando...", true);
     const reader = new FileReader();
     reader.onload = async function(){
         const base64 = reader.result.split(",")[1];
         try{
-            const r = await fetch("/api/admin/import-db",{
-                method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key": adminKeyValue },
-                body: JSON.stringify({ dbBase64: base64 })
-            });
+            const r = await fetch("/api/admin/import-db",{ method:"POST", headers:{ "Content-Type":"application/json", "x-admin-key": adminKeyValue }, body: JSON.stringify({ dbBase64: base64 }) });
             const d = await r.json();
-            if(!r.ok || !d.success){ showMsg("importMessage", d.message || "Error", false); btn.disabled = false; btn.textContent = "📤 SELECCIONAR"; return; }
+            if(!r.ok || !d.success){ showMsg("importMessage", d.message || "Error", false); return; }
             document.getElementById("irGames").textContent = d.imported.games;
             document.getElementById("irKeys").textContent = d.imported.keys;
             document.getElementById("irUsers").textContent = d.imported.users;
-            res.classList.add("show");
-            msg.style.display = "none";
+            res.classList.add("show"); msg.style.display = "none";
             toast("Importado","success");
             await cargarTodo(); refrescarPaginaActiva();
         } catch(e){ showMsg("importMessage", "Error", false); }
-        finally { btn.disabled = false; btn.textContent = "📤 SELECCIONAR"; document.getElementById("oldDbFile").value = ""; }
+        finally { document.getElementById("oldDbFile").value = ""; }
     };
     reader.readAsDataURL(file);
 }
@@ -2292,8 +2287,7 @@ function importarDb(event){
         const files = e.dataTransfer.files;
         if(files.length > 0){
             const input = document.getElementById("oldDbFile");
-            const dt = new DataTransfer();
-            dt.items.add(files[0]);
+            const dt = new DataTransfer(); dt.items.add(files[0]);
             input.files = dt.files;
             importarDb({ target: input });
         }
@@ -2301,9 +2295,28 @@ function importarDb(event){
 })();
 
 /* ============================================================
+   DRAG & DROP de archivos productos
+============================================================ */
+(function setupUploadDrop(){
+    const dz = document.getElementById("uploadDrop");
+    if(!dz) return;
+    ["dragenter","dragover"].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); dz.classList.add("dragover"); }));
+    ["dragleave","drop"].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); dz.classList.remove("dragover"); }));
+    dz.addEventListener("drop", e => {
+        const files = e.dataTransfer.files;
+        if(files.length > 0){
+            const input = document.getElementById("fileInput");
+            const dt = new DataTransfer(); dt.items.add(files[0]);
+            input.files = dt.files;
+            subirArchivo({ target: input });
+        }
+    });
+})();
+
+/* ============================================================
    CERRAR MODALES
 ============================================================ */
-["editModal","nickModal","keyGamesModal","permsModal","catEditModal"].forEach(id => {
+["editModal","nickModal","keyGamesModal","permsModal","catEditModal","catGamesModal"].forEach(id => {
     document.getElementById(id).addEventListener("click", e => {
         if(e.target.id === id){
             if(id === "editModal") cerrarModalEditar();
@@ -2311,6 +2324,7 @@ function importarDb(event){
             if(id === "keyGamesModal") cerrarModalJuegosKey();
             if(id === "permsModal") cerrarModalPerms();
             if(id === "catEditModal") cerrarModalEditCat();
+            if(id === "catGamesModal") cerrarCatGamesModal();
         }
     });
 });
@@ -2319,12 +2333,18 @@ document.getElementById("ticketModal").addEventListener("click", e => {
 });
 document.addEventListener("keydown", e => {
     if(e.key === "Escape"){
-        if(document.getElementById("editModal").classList.contains("open")) cerrarModalEditar();
-        if(document.getElementById("nickModal").classList.contains("open")) cerrarModalMote();
-        if(document.getElementById("keyGamesModal").classList.contains("open")) cerrarModalJuegosKey();
-        if(document.getElementById("permsModal").classList.contains("open")) cerrarModalPerms();
-        if(document.getElementById("catEditModal").classList.contains("open")) cerrarModalEditCat();
-        if(document.getElementById("ticketModal").classList.contains("open")) cerrarTicketModal();
+        ["editModal","nickModal","keyGamesModal","permsModal","catEditModal","catGamesModal","ticketModal"].forEach(id => {
+            const el = document.getElementById(id);
+            if(el?.classList.contains("open")){
+                if(id === "editModal") cerrarModalEditar();
+                if(id === "nickModal") cerrarModalMote();
+                if(id === "keyGamesModal") cerrarModalJuegosKey();
+                if(id === "permsModal") cerrarModalPerms();
+                if(id === "catEditModal") cerrarModalEditCat();
+                if(id === "catGamesModal") cerrarCatGamesModal();
+                if(id === "ticketModal") cerrarTicketModal();
+            }
+        });
     }
 });
 </script>
